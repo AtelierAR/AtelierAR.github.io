@@ -1,4 +1,4 @@
-<h1> AR_MAFD_html
+<h1> AR_MAFD
 <br>
 <h3>
 @AtelierAR = Armando Roman
