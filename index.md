@@ -5,4 +5,4 @@
 <h4>Arquitectura, Diseño & Programación</h4>
 <br>
 
-[Info](about.html)
+[Info](about.md)
