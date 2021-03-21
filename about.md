@@ -1,2 +1,4 @@
 <h1>
-  Información sobre Proyecto
+  Información sobre el Proyecto
+
+[Inicio] (index.md)
