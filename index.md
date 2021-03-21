@@ -1,3 +1,3 @@
 # Bienvenido a Visualización de Información de MAFD por AtelierAR
 
-[About](about.md)
+<h3> [Información](about.md)
