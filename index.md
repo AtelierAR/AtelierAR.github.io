@@ -7,4 +7,4 @@ Armando Román
 Arquitectura, Diseño & Programación
 <br>
 
-[Información](about.md)
+[Info](about.html)
