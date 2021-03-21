@@ -6,6 +6,7 @@ Armando Román
 <br>
 Arquitectura, Diseño & Programación 
 <br>
-atelier.aroman@gmail.com
+<h4> atelier.aroman@gmail.com
+  <br>
 
 [Información](about.md)
