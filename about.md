@@ -3,11 +3,10 @@
 <h2> El proyecto es un resumen de lo visto en clase Visualización de la Información de la Maestría en Arquitectura y Fabricación Digital de la Universidad Anáhuac Norte </h2>
 <br>
 <h3> Este es el ejercicio de Html</h3>
-<h4>¿Que es HTML5?</h4>
+<h4>¿Que es HTML5?
 <p>HTML5, es un lenguaje que permite estructurar el contenido</p>
 <p>de una pagina web. Las siglas HTML quiere decir "HyperText Markup Language.</p>
-
-<h4>Se generó un repositorio en Github para los archivos a compartir <br>
+<p>Se generó un repositorio en Github para los archivos a compartir </p>
         El archivo índice fue generado en Visual Code y es la base de todo lo que se visualiza la página<br>
         Para visualizar una imagen o video, se adjunta la dirección<br>
         Puede ser un vinculo de internet o puede ser una imágen almacenada en la computadora<br>
