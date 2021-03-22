@@ -46,7 +46,7 @@ En el segundo apartado se describen los diferentes tipos de tratamientos que van
 - PROPER
 
 <h2>Ejercicio de Base de Datos</h2>
-<img src="https://i.imgur.com/n4Ne7e6.jpg" style="width: 700px; width: 400px" alt="Base de Datos">
+<img src="https://i.imgur.com/n4Ne7e6.jpg" style="width: 1000px; width: 1000px" alt="Base de Datos">
 <br>
 
 [Inicio](index.md)
