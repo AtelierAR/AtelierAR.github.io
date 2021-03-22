@@ -6,4 +6,5 @@
 <br>
 
 [Info](about.md)
+<br>
 [CV Infográfico](CV-Infografia.md)
