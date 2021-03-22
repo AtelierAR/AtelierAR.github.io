@@ -7,14 +7,14 @@
 <p>HTML5, es un lenguaje que permite estructurar el contenido</p>
 <p>de una pagina web. Las siglas HTML quiere decir "HyperText Markup Language.</p>
 <p>Se generó un repositorio en Github para los archivos a compartir </p>
-        El archivo índice fue generado en Visual Code y es la base de todo lo que se visualiza la página<br>
-        Para visualizar una imagen o video, se adjunta la dirección<br>
-        Puede ser un vinculo de internet o puede ser una imágen almacenada en la computadora<br>
-        Una vez hecho el tronco, se pueden crear ramas que permitan modificaciones a la página<br>
-        El objetivo de de una rama es proponer adiciones<br>
-        Todo esto de manera paralela hasta el visto bueno y anexarlo a main<br>
-        En caso de detectar un problema se puede crear un issue dentro del repositorio
-  </h4> <br>
-
+<p>El archivo índice fue generado en Visual Code y es la base de todo lo que se visualiza la página</p>
+<p>Para visualizar una imagen o video, se adjunta la dirección</p>
+<p>Puede ser un vinculo de internet o puede ser una imágen almacenada en la computadora</p>
+<p>Una vez hecho el tronco, se pueden crear ramas que permitan modificaciones a la página</p>
+<p>El objetivo de de una rama es proponer adiciones</p>
+<p>Todo esto de manera paralela hasta el visto bueno y anexarlo a main</p>
+<p>En caso de detectar un problema se puede crear un issue dentro del repositorio</p>
+</h4>
+<br>
 
 [Inicio](index.md)
