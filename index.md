@@ -9,3 +9,6 @@
 [Info](about.md)
 <br>
 [CV Infográfico](CV-Infografia.md)
+<br>
+[Datos Excel](Data-Excel.md)
+<br>
