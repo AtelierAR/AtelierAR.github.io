@@ -14,7 +14,6 @@
 <p>El objetivo de de una rama es proponer adiciones</p>
 <p>Todo esto de manera paralela hasta el visto bueno y anexarlo a main</p>
 <p>En caso de detectar un problema se puede crear un issue dentro del repositorio</p>
-</h4>
 <br>
 
 [Inicio](index.md)
