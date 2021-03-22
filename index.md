@@ -10,5 +10,23 @@
 <br>
 [CV Infográfico](CV-Infografia.md)
 <br>
-[Datos Excel](Data-Excel.md)
+[Datos Excel](EXCEL-DATA.md)
+<br>
+[Poster Tipográfico](Poster.md)
+<br>
+[Reporte Excel con Tipografía](Reporte-Excel.md)
+<br>
+[Obisidan](Obsidian.md)
+<br>
+[Countifs & Sumifs](Countifs.md)
+<br>
+[Mapeo CDMX](CDMX.md)
+<br>
+[Mapeo NYC](NYC.md)
+<br>
+[Análisis Bioclimático CDMX](BioclimaCDMX.md)
+<br>
+[Github](Github.md)
+<br>
+[Arduino](Arduino.md)
 <br>
