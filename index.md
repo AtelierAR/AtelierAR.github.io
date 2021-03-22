@@ -5,6 +5,8 @@
 <p><a href="https://atelierar.net/">Atelier AR</a></p>
 <h4>Arquitectura, Diseño, Investigación, Fabricación, Parametricismo & Programación</h4>
 <br>
+Menú de Ejercicios:
+<br>
 
 [Info](about.md)
 <br>
