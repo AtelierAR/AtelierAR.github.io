@@ -1,1 +1,4 @@
 theme: jekyll-theme-minimal
+# Proyecto Remotion (no forma parte del sitio)
+exclude:
+  - infierno365

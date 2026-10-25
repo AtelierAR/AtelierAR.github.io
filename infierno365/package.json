@@ -1,0 +1,26 @@
+{
+  "name": "apertura-infierno365",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Animación de apertura INFIERNO 365 — propuesta Estadio Alfredo Harp Helú",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render Apertura render/apertura_infierno365_1080p.mp4 --codec=h264 --crf=20",
+    "render:4k": "remotion render Apertura4K render/apertura_infierno365_2160p.mp4 --codec=h264 --crf=20",
+    "stills": "node scripts/stills.mjs",
+    "audio:marcadores": "node scripts/audio-marcadores.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.528",
+    "@remotion/google-fonts": "4.0.528",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "remotion": "4.0.528"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.12",
+    "typescript": "5.9.2"
+  }
+}
