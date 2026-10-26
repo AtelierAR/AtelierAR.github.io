@@ -85,14 +85,14 @@ export function brick() {
       g.fillStyle = grd; g.fillRect(x0, y0, w, h);
       for (let s = 0; s < 70; s++) {
         const sx = x0 + r() * w, sy = y0 + r() * h, sr = 0.6 + r() * 1.8;
-        g.fillStyle = r() < 0.75 ? css(SWATCH.masonry.speck, 0.8 + r() * 0.4) : 'rgba(140,120,100,0.6)';
+        g.fillStyle = r() < 0.93 ? css(SWATCH.masonry.speck, 0.8 + r() * 0.4) : 'rgba(120,100,84,0.5)';
         g.beginPath(); g.arc(sx, sy, sr, 0, Math.PI * 2); g.fill();
       }
       hg.fillStyle = '#ddd'; hg.fillRect(x0, y0, w, h);
       rg.fillStyle = `rgb(${190 + r() * 40 | 0},0,0)`; rg.fillRect(x0, y0, w, h);
     }
   }
-  const tile = 4 * FT * 4; // 4 bricks of 12" -> 4 ft
+  const tile = 4 * FT; // 4 bricks of 12" = 4 ft
   return {
     map: tex(c, tile),
     normalMap: tex(normalFromHeight(hc, 3), tile, { color: false }),

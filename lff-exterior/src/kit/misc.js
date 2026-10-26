@@ -170,3 +170,22 @@ export class GrandStair extends KitPart {
     this.finish({ edgeAngle: 40 });
   }
 }
+
+// Tilted cantilevered blade (thin planar canopy, aluminium soffit underneath), e.g. the
+// "Soffit" blade over the south-east fin wall on p27. corners: 4 x [x, y, z] top surface (ft).
+export class Blade extends KitPart {
+  constructor({ id, corners, t = 3 }) {
+    super('Blade:' + id);
+    const b = this.b;
+    const dn = (p) => [p[0], p[1] - t, p[2]];
+    const [a, c, d, e] = corners;
+    b.quad('roof', a, c, d, e);
+    b.quad('soffit', dn(e), dn(d), dn(c), dn(a));
+    for (let i = 0; i < 4; i++) {
+      const p = corners[i], q = corners[(i + 1) % 4];
+      b.quad('metal', q, p, dn(p), dn(q));
+    }
+    this.finish({ edgeAngle: 20 });
+    for (const m of Object.values(this.meshes)) m.material.side = THREE.DoubleSide;
+  }
+}

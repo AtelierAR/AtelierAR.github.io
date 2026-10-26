@@ -86,7 +86,14 @@ export class LeaderLabels {
   }
 
   update(camera) {
-    const pos = this.items.map((it) => ({ it, a: this.O.project(it.anchor, camera) }));
+    const pos = [];
+    for (const it of this.items) {
+      const a = this.O.project(it.anchor, camera);
+      const on = a.ok && a.x > -20 && a.x < WIDTH + 20 && a.y > -20 && a.y < HEIGHT + 20;
+      it.el.style.display = on ? '' : 'none';
+      it.line.style.display = on ? '' : 'none';
+      if (on) pos.push({ it, a });
+    }
     for (const band of ['sky', 'ground']) {
       const list = pos.filter((p) => p.it.band === band).sort((a, b) => a.a.x - b.a.x);
       // spacing relaxation that preserves order

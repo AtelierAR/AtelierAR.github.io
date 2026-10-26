@@ -36,7 +36,7 @@ export const SWATCH = {
   masonry: { base: '#6E655D', speck: '#2E2722', joint: '#8A847C', page: 13 }, // iron-spot brick, charcoal-brown w/ speckle
   metal: { base: '#4A4643', page: 13 }, // blackened metal panel, near-black, warm cast
   fins: { base: '#6B655D', page: 13 }, // dark bronze-grey ACM
-  glazing: { base: '#3B4A4E', tint: '#77838C', page: 13 }, // cool grey-green reflective
+  glazing: { base: '#7E8C93', tint: '#77838C', page: 13 }, // cool grey-green reflective
   mesh: { base: '#4C5550', page: 13 }, // dark powder-coated aluminium
   soffit: { base: '#B4B7B9', page: 13 }, // brushed aluminium
   reflective: { base: '#F2F2F0', page: 24 }, // 316 stainless, mirror finish
@@ -147,15 +147,19 @@ export const LAYOUT = {
 
   // canopy wings (p26-29 silhouettes, p30-33 heights, p14-18 plan extents).
   // Each wing is planar: y = y0 + gx*(|x|-inner) + gz*(|z| along wing)
+  // Each wing is a planar skewed quad (see kit/CanopyWing.js): side +1 east / -1 west,
+  // end -1 north / +1 south; inner edge at xin (field side), outer at xout; plan flares from
+  // zEndIn (inner end) to zEndOut (outer end). y = y0 + gIn*(xout-|x|) + gz*|z| (feet).
   wings: [
-    { id: 'NE', x0: 178, x1: 388, z0: -470, z1: 0, y0: 146, gx: 0.075, gz: 0.088 },
-    { id: 'SE', x0: 178, x1: 388, z0: 0, z1: 462, y0: 146, gx: 0.075, gz: 0.08 },
-    { id: 'NW', x0: -388, x1: -178, z0: -548, z1: 0, y0: 146, gx: 0.075, gz: 0.088 },
-    { id: 'SW', x0: -388, x1: -178, z0: 0, z1: 462, y0: 146, gx: 0.075, gz: 0.08 },
+    { id: 'NE', side: 1, end: -1, xin: 178, xout: 400, zEndIn: 505, zEndOut: 560, y0: 136, gIn: 0.1, gz: 0.07 },
+    { id: 'SE', side: 1, end: 1, xin: 178, xout: 400, zEndIn: 492, zEndOut: 545, y0: 136, gIn: 0.1, gz: 0.07 },
+    { id: 'NW', side: -1, end: -1, xin: 178, xout: 432, zEndIn: 604, zEndOut: 680, y0: 136, gIn: 0.1, gz: 0.07 },
+    { id: 'SW', side: -1, end: 1, xin: 178, xout: 432, zEndIn: 492, zEndOut: 545, y0: 136, gIn: 0.1, gz: 0.07 },
   ],
+
   fascia: 2.5, // ft, thin leading edge (p26-29)
   wingDepth: 9, // ft, space-frame depth between PV top and soffit
-  soffitBand: 13.5, // ft, aluminium soffit band around the mirror field: ~17.8 % of the underside (p22)
+  soffitShare: 0.178, // aluminium soffit band share of each wing underside (p22: 17.8 %); band width is solved per wing
 
   // videoboards (p26 trapezoid, p30 elevation, p66 axon)
   boards: [
@@ -165,11 +169,9 @@ export const LAYOUT = {
 
   // vertical circulation towers (p26/p27/p29, p30-33)
   towers: [
-    { id: 'NE', x: 180, z: -448, w: 40, d: 52, h: 182, fins: ['N', 'E', 'W'], logo: 'N', core: 'metal' },
-    { id: 'E', x: 416, z: -46, w: 46, d: 44, h: 176, fins: ['E', 'N', 'S'], logo: 'E', core: 'glazing' },
-    { id: 'SE', x: 372, z: 420, w: 48, d: 48, h: 172, fins: ['S', 'E'], logo: null, core: 'metal' },
-    { id: 'SW', x: -372, z: 420, w: 48, d: 48, h: 168, fins: ['S', 'W'], logo: null, core: 'metal' },
-    { id: 'W', x: -420, z: 172, w: 40, d: 40, h: 172, fins: ['W', 'S'], logo: null, core: 'metal' },
+    { id: 'NE', x: 236, z: -452, w: 66, d: 56, h: 182, fins: ['N', 'E', 'W'], logo: 'N', core: 'metal' },
+    { id: 'E', x: 418, z: 183, w: 46, d: 46, h: 176, fins: ['S', 'N'], logo: 'E', core: 'glazing' }, // p27
+    { id: 'SW', x: -372, z: 420, w: 48, d: 48, h: 168, fins: ['S', 'W'], logo: null, core: 'metal' }, // p28/p29
   ],
 };
 
@@ -200,76 +202,84 @@ export const SCENES = [
 // in feet; band = 'sky' | 'ground'. Camera poses are solved in scripts/solve_cameras.mjs
 // from point correspondences on each page, then checked by overlay (./qa).
 // ---------------------------------------------------------------------------------------
-export const BANDS = { sky: 0.186, ground: 0.85 }; // p26: labels at y 146/787 and 668/787
+export const BANDS = { sky: 0.186, ground: 0.832 }; // label text top at 183 px (sky) / 899 px (ground) on p26
 
 export const ARRIVALS = [
   {
-    id: 'plaza', page: 26, title: 'Plaza View', groundBand: 0.85,
+    id: 'plaza', page: 26, title: 'Plaza View', groundBand: 0.832,
+    cam: { pos: [0, 6, -1350], yaw: 180, fov: 38, shiftY: 0.1 },
+    // x = label centre on the page (1080p px, from the PDF text layer); `at` = fallback anchor (ft)
     labels: [
-      { text: 'Reflective Soffit', band: 'sky', at: [-300, 160, -470] },
-      { text: 'Fins', band: 'sky', at: [180, 150, -476] },
-      { text: 'Glazing', band: 'sky', at: [135, 95, -467] },
-      { text: 'Video Board', band: 'sky', at: [0, 120, -482] },
-      { text: 'Glazing', band: 'sky', at: [-150, 95, -467] },
-      { text: 'Reflective Soffit', band: 'sky', at: [312, 162, -440] },
-      { text: 'Fins', band: 'sky', at: [-272, 120, -472] },
-      { text: 'Masonry', band: 'ground', at: [300, 20, -481] },
-      { text: 'Glazing', band: 'ground', at: [232, 18, -481] },
-      { text: 'Masonry', band: 'ground', at: [110, 15, -470] },
-      { text: 'Masonry', band: 'ground', at: [-190, 20, -491] },
-      { text: 'Glazing', band: 'ground', at: [-250, 16, -540] },
-      { text: 'Masonry', band: 'ground', at: [-355, 25, -501] },
+      { text: 'Reflective Soffit', band: 'sky', x: 379, at: [300, 170, -470] },
+      { text: 'Fins', band: 'sky', x: 558, at: [236, 150, -482] },
+      { text: 'Glazing', band: 'sky', x: 696, at: [150, 95, -471] },
+      { text: 'Video Board', band: 'sky', x: 947, at: [0, 110, -478] },
+      { text: 'Glazing', band: 'sky', x: 1177, at: [-140, 95, -471] },
+      { text: 'Reflective Soffit', band: 'sky', x: 1405, at: [-330, 179, -600] },
+      { text: 'Fins', band: 'sky', x: 1573, at: [-272, 120, -478] },
+      { text: 'Masonry', band: 'ground', x: 374, at: [316, 25, -481] },
+      { text: 'Glazing', band: 'ground', x: 549, at: [182, 12, -473] },
+      { text: 'Masonry', band: 'ground', x: 710, at: [84, 15, -512] },
+      { text: 'Masonry', band: 'ground', x: 1207, at: [-193, 25, -489] },
+      { text: 'Glazing', band: 'ground', x: 1378, at: [-250, 15, -531] },
+      { text: 'Masonry', band: 'ground', x: 1598, at: [-364, 25, -505] },
     ],
   },
   {
-    id: 'vipEast', page: 27, title: 'VIP Entry East', groundBand: 0.953,
+    id: 'vipEast', page: 27, title: 'VIP Entry East', groundBand: 0.938,
+    cam: { pos: [600, 6, 650], yaw: 316, fov: 47, shiftY: 0.36 },
+    // x = label centre on the page (1080p px, from the PDF text layer); `at` = fallback anchor (ft)
     labels: [
-      { text: 'Soffit', band: 'sky', at: [400, 150, -60] },
-      { text: 'Reflective Soffit', band: 'sky', at: [300, 160, -300] },
-      { text: 'Fins', band: 'sky', at: [440, 150, -46] },
-      { text: 'Reflective Soffit', band: 'sky', at: [300, 170, -440] },
-      { text: 'Mesh/Grate', band: 'ground', at: [404, 40, 330] },
-      { text: 'Fins', band: 'ground', at: [404, 20, 140] },
-      { text: 'Fins', band: 'ground', at: [404, 20, 50] },
-      { text: 'Masonry', band: 'ground', at: [410, 15, -10] },
-      { text: 'Glazing', band: 'ground', at: [404, 15, -90] },
-      { text: 'Glazing', band: 'ground', at: [404, 12, -160] },
-      { text: 'Masonry', band: 'ground', at: [404, 15, -250] },
+      { text: 'Soffit', band: 'sky', x: 566, at: [300, 148, 500] },
+      { text: 'Reflective Soffit', band: 'sky', x: 1064, at: [250, 163, 300] },
+      { text: 'Fins', band: 'sky', x: 1418, at: [418, 150, 207] },
+      { text: 'Reflective Soffit', band: 'sky', x: 1716, at: [330, 155, -300] },
+      { text: 'Mesh/Grate', band: 'ground', x: 177, at: [150, 60, 466] },
+      { text: 'Fins', band: 'ground', x: 374, at: [230, 20, 467] },
+      { text: 'Fins', band: 'ground', x: 937, at: [360, 20, 467] },
+      { text: 'Masonry', band: 'ground', x: 1185, at: [409, 30, 400] },
+      { text: 'Glazing', band: 'ground', x: 1307, at: [402, 75, 260] },
+      { text: 'Glazing', band: 'ground', x: 1548, at: [471, 15, 70] },
+      { text: 'Masonry', band: 'ground', x: 1762, at: [471, 15, 140] },
     ],
   },
   {
-    id: 'altGA', page: 28, title: 'Alternate GA', groundBand: 0.967,
+    id: 'altGA', page: 28, title: 'Alternate GA', groundBand: 0.951,
+    cam: { pos: [330, 6, 720], yaw: 357, fov: 62, shiftY: 0.4 },
+    // x = label centre on the page (1080p px, from the PDF text layer); `at` = fallback anchor (ft)
     labels: [
-      { text: 'Fins', band: 'sky', at: [-372, 150, 444] },
-      { text: 'Reflective Soffit', band: 'sky', at: [-280, 180, 380] },
-      { text: 'Metal Panel', band: 'sky', at: [-120, 110, 470] },
-      { text: 'Soffit', band: 'sky', at: [60, 90, 500] },
-      { text: 'Metal Panel', band: 'sky', at: [200, 100, 462] },
-      { text: 'Fins', band: 'ground', at: [-400, 20, 330] },
-      { text: 'Fins', band: 'ground', at: [-330, 20, 446] },
-      { text: 'Metal Panel', band: 'ground', at: [-250, 20, 470] },
-      { text: 'Mesh/Grate', band: 'ground', at: [-160, 30, 470] },
-      { text: 'Glazing', band: 'ground', at: [-40, 20, 470] },
-      { text: 'Mesh/Grate', band: 'ground', at: [100, 30, 470] },
-      { text: 'Fins', band: 'ground', at: [280, 20, 470] },
-      { text: 'Fins', band: 'ground', at: [372, 20, 446] },
+      { text: 'Fins', band: 'sky', x: 432, at: [-315, 130, 470] },
+      { text: 'Reflective Soffit', band: 'sky', x: 1149, at: [260, 170, 380] },
+      { text: 'Metal Panel', band: 'sky', x: 1534, at: [-240, 110, 461] },
+      { text: 'Soffit', band: 'sky', x: 1661, at: [0, 59, 505] },
+      { text: 'Metal Panel', band: 'sky', x: 1787, at: [404, 112, 500] },
+      { text: 'Fins', band: 'ground', x: 398, at: [-372, 20, 446] },
+      { text: 'Fins', band: 'ground', x: 728, at: [-315, 20, 468] },
+      { text: 'Metal Panel', band: 'ground', x: 847, at: [-240, 30, 461] },
+      { text: 'Mesh/Grate', band: 'ground', x: 995, at: [-150, 60, 465] },
+      { text: 'Glazing', band: 'ground', x: 1197, at: [0, 20, 461] },
+      { text: 'Mesh/Grate', band: 'ground', x: 1337, at: [150, 60, 465] },
+      { text: 'Fins', band: 'ground', x: 1673, at: [240, 20, 468] },
+      { text: 'Fins', band: 'ground', x: 1834, at: [350, 20, 468] },
     ],
   },
   {
-    id: 'gaWest', page: 29, title: 'GA West Entry', groundBand: 0.935,
+    id: 'gaWest', page: 29, title: 'GA West Entry', groundBand: 0.919,
+    cam: { pos: [-1250, 6, 480], yaw: 72, fov: 40, shiftY: 0.3 },
+    // x = label centre on the page (1080p px, from the PDF text layer); `at` = fallback anchor (ft)
     labels: [
-      { text: 'Metal Panel', band: 'sky', at: [-404, 100, -340] },
-      { text: 'Fins', band: 'sky', at: [-404, 110, -220] },
-      { text: 'Video Board', band: 'sky', at: [-100, 150, -480] },
-      { text: 'Mesh/Grate', band: 'sky', at: [-404, 120, -120] },
-      { text: 'Reflective Soffit', band: 'sky', at: [-290, 175, 200] },
-      { text: 'Mesh/Grate', band: 'ground', at: [-404, 30, -380] },
-      { text: 'Fins', band: 'ground', at: [-404, 20, -260] },
-      { text: 'Metal Panel', band: 'ground', at: [-404, 30, -160] },
-      { text: 'Mesh/Grate', band: 'ground', at: [-404, 30, -80] },
-      { text: 'Masonry', band: 'ground', at: [-470, 10, 10] },
-      { text: 'Soffit', band: 'ground', at: [-480, 74, 60] },
-      { text: 'Fins', band: 'ground', at: [-422, 20, 150] },
+      { text: 'Metal Panel', band: 'sky', x: 446, at: [-406, 160, -90] },
+      { text: 'Fins', band: 'sky', x: 675, at: [-404, 130, -210] },
+      { text: 'Video Board', band: 'sky', x: 802, at: [-60, 150, -478] },
+      { text: 'Mesh/Grate', band: 'sky', x: 955, at: [-410, 140, 0] },
+      { text: 'Reflective Soffit', band: 'sky', x: 1283, at: [-300, 161, 300] },
+      { text: 'Mesh/Grate', band: 'ground', x: 406, at: [-404, 40, -380] },
+      { text: 'Fins', band: 'ground', x: 554, at: [-404, 20, -210] },
+      { text: 'Metal Panel', band: 'ground', x: 765, at: [-406, 30, -90] },
+      { text: 'Mesh/Grate', band: 'ground', x: 933, at: [-410, 30, 0] },
+      { text: 'Masonry', band: 'ground', x: 1089, at: [-470, 7, 200] },
+      { text: 'Soffit', band: 'ground', x: 1233, at: [-470, 72, 220] },
+      { text: 'Fins', band: 'ground', x: 1403, at: [-404, 20, 360] },
     ],
   },
 ];

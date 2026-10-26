@@ -28,6 +28,8 @@ export async function build(ctx) {
   tl.to(card, { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 4.15);
   tl.set(card, { display: 'none' }, 4.8);
 
+  tl.set(ctx.state, { sunAz: 75, sunEl: 38 }, 0);
+
   // camera: slow 3/4 aerial rotation of the clay model
   director.add(0, 8, (u, T) => {
     const k = smoother((T - 3.6) / 4.4);

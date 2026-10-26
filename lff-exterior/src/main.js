@@ -17,7 +17,8 @@ import { initMaterials, applyMaterials, MAT, setWash } from './materials.js';
 import { buildStadium } from './stadium.js';
 import { buildSite } from './site.js';
 import { createBoardScreen } from './board.js';
-import { Director, ft } from './director.js';
+import { Director, ft, camPose } from './director.js';
+import { ARRIVALS } from './data.js';
 import { createOverlay } from './overlay/overlay.js';
 import { SCENE_MODULES } from './scenes/index.js';
 
@@ -71,7 +72,7 @@ async function boot() {
     // global state tweened by scenes
     state: {
       dusk: 0, boardOn: 0, crowd: 0, mirror: 0, mirrorWing: 'NW', bloom: 0, glow: 0, rim: 0,
-      sunAz: 75, sunEl: 38, dof: 0, studio: 0, plan: 0, exposure: 1, grain: 0.03,
+      sunAz: 75, sunEl: 38, sunK: 1, envK: 1, dof: 0, studio: 0, plan: 0, exposure: 1, grain: 0.03,
     },
   };
   for (const m of SCENE_MODULES) await m.build(ctx);
@@ -96,9 +97,9 @@ async function boot() {
     engine.sunState.az = S.sunAz; engine.sunState.el = S.sunEl;
     engine.placeSun(S.studio > 0.5 ? new THREE.Vector3(0, 0, 0) : new THREE.Vector3(0, 0, 0));
     const L = engine.lights;
-    L.sun.intensity = THREE.MathUtils.lerp(2.6, 0.9, S.dusk);
+    L.sun.intensity = THREE.MathUtils.lerp(2.6, 0.9, S.dusk) * S.sunK;
     L.sun.color.set('#FFF5E8').lerp(new THREE.Color('#FF9E5E'), S.dusk);
-    L.hemi.intensity = THREE.MathUtils.lerp(0.3, 0.2, S.dusk);
+    L.hemi.intensity = THREE.MathUtils.lerp(0.3, 0.2, S.dusk) + (1 - S.sunK) * 1.1;
     L.hemi.color.set('#E4E8F0').lerp(new THREE.Color('#6F7796'), S.dusk);
     L.hemi.groundColor.set('#D6D3CE').lerp(new THREE.Color('#5a4a40'), S.dusk);
     L.rim.intensity = S.rim * 2.2;
@@ -107,9 +108,12 @@ async function boot() {
     const bc = stadium.userData.parts.boards[0].screenCenter;
     L.boardLight.position.set(bc.x, bc.y - 10, bc.z - 40);
     L.plazaGlow.position.set(0, 12, -190);
+    engine.scene.fog.near = THREE.MathUtils.lerp(900, 40, S.studio);
+    engine.scene.fog.far = THREE.MathUtils.lerp(5200, 190, S.studio);
     engine.scene.fog.color.copy(engine.skyU.horizon.value).lerp(engine.skyU.duskHorizon.value.clone().multiplyScalar(0.8), S.dusk);
     setWash(new THREE.Color('#E6E8EC').lerp(new THREE.Color('#8a8796'), S.dusk), 0.62 * (1 - 0.6 * S.dusk));
     engine.updateEnv();
+    engine.scene.environmentIntensity = S.envK;
     const sig = [S.sunAz.toFixed(3), S.sunEl.toFixed(3), stadium.visible, site.trees.visible, ...ctx.shadowKey].join('|');
     if (sig !== shadowSig) { engine.renderer.shadowMap.needsUpdate = true; shadowSig = sig; }
 
@@ -131,15 +135,13 @@ async function boot() {
     site.planMat.opacity = S.plan;
     site.plan.visible = S.plan > 0.001;
 
-    // live mirror for the reflective soffit
+    // live mirror for the reflective soffit (falls back to the sky environment when idle)
+    const wantCube = S.mirror > 0.001 && MAT.state.reflective.mix > 0.001 && stadium.visible;
+    const rm = MAT.materials.reflective;
+    if ((rm.envMap !== null) !== wantCube) { rm.envMap = wantCube ? engine.cubeRT.texture : null; rm.needsUpdate = true; }
     if (S.mirror > 0.001 && MAT.state.reflective.mix > 0.001 && stadium.visible) {
       const wing = stadium.userData.parts.wings.find((w) => w.o.id === S.mirrorWing) || stadium.userData.parts.wings[0];
-      const o = wing.o;
-      const sx = Math.sign(o.x0 + o.x1), sz = Math.sign(o.z0 + o.z1) || 1;
-      const n = tmp.set(-o.gx * sx, 1, -o.gz * sz).normalize();
-      const xin = Math.min(Math.abs(o.x0), Math.abs(o.x1));
-      const p0 = ft(sx * xin, o.y0 - LAYOUT.wingDepth, 0);
-      mirrorPlane.setFromNormalAndCoplanarPoint(n, p0);
+      wing.mirrorPlane(mirrorPlane);
       const cam = engine.camera.position;
       const d = mirrorPlane.distanceToPoint(cam);
       engine.cubeCam.position.copy(cam).addScaledVector(mirrorPlane.normal, -2 * d);
@@ -189,6 +191,21 @@ async function boot() {
   if (params.has('cam')) {
     const v = params.get('cam').split(',').map(Number);
     director.override = { pos: ft(v[0], v[1], v[2]), target: ft(v[3], v[4], v[5]), fov: v[6] || 35, shiftY: v[7] || 0 };
+  }
+
+  // QA: ?qa=26 -> arrival camera from data.js with the rasterized page overlaid at 50 %
+  if (params.has('qa')) {
+    const pg = Number(params.get('qa'));
+    const arr = ARRIVALS.find((a) => a.page === pg);
+    if (arr) director.override = camPose(arr.cam);
+    document.getElementById('overlay').style.display = 'none';
+    if (!params.has('noref')) {
+      const img = document.createElement('img');
+      img.src = `/reference/pages/p-${String(pg).padStart(3, '0')}.png`;
+      Object.assign(img.style, { position: 'absolute', inset: '0', width: '1920px', height: '1080px', opacity: params.get('refop') || '0.5', pointerEvents: 'none', zIndex: 5 });
+      stage.appendChild(img);
+      await new Promise((r) => { img.onload = img.onerror = r; });
+    }
   }
 
   // wait for every texture the timeline will need

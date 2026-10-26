@@ -127,13 +127,22 @@ function buildCrowd() {
   geo.translate(0, 2.7 * FT, 0);
   const mat = new THREE.MeshStandardMaterial({ roughness: 0.8 });
   const mesh = new THREE.InstancedMesh(geo, mat, N);
-  const palette = [PAL.eagles, PAL.eagles, PAL.midnight, '#F4F4F2', PAL.silver, '#1C1F21', '#2B2E31', '#6B5A4A', PAL.eagles];
+  const palette = [PAL.eagles, PAL.eagles, PAL.midnight, '#F4F4F2', '#F4F4F2', PAL.silver, '#3A3E42', '#8B7A66', PAL.glassTeal, '#C9CCD0'];
   const people = [];
   const gates = [[0, -548], [-250, -556], [250, -480], [-420, 40], [470, -100], [0, 520]];
   for (let i = 0; i < N; i++) {
-    let x, z;
+    let x, z, y = 0;
     const zone = r();
-    if (zone < 0.62) { x = (r() - 0.5) * 760; z = -560 - r() * 420; } // north plaza
+    if (zone < 0.2) { // open-air main concourse under the canopy (y = 30 ft)
+      y = 30;
+      const side = r();
+      if (side < 0.7) { x = (r() < 0.5 ? -1 : 1) * (318 + r() * 66); z = (r() - 0.5) * 820; }
+      else { x = (r() - 0.5) * 560; z = (r() < 0.5 ? -1 : 1) * (412 + r() * 40); }
+      people.push({ x, z, y, dx: 0, dz: r() < 0.5 ? -1 : 1, len: 60 + r() * 60, speed: 1.5 + r(), ph: r() * 60, s: 0.9 + r() * 0.2 });
+      mesh.setColorAt(i, new THREE.Color(palette[(r() * palette.length) | 0]));
+      continue;
+    }
+    if (zone < 0.66) { x = (r() - 0.5) * 760; z = -490 - r() * 470; } // north plaza
     else if (zone < 0.78) { x = -470 - r() * 110; z = -420 + r() * 820; } // west
     else if (zone < 0.9) { x = 440 + r() * 90; z = -420 + r() * 700; } // east
     else { x = (r() - 0.5) * 600; z = 500 + r() * 120; } // south
@@ -141,7 +150,7 @@ function buildCrowd() {
     gates.forEach(([gx, gz], k) => { const d = Math.hypot(gx - x, gz - z); if (d < best) { best = d; gi = k; } });
     const [gx, gz] = gates[gi];
     const L = Math.hypot(gx - x, gz - z) || 1;
-    people.push({ x, z, dx: (gx - x) / L, dz: (gz - z) / L, len: L, speed: 3.6 + r() * 1.6, ph: r() * L, s: 0.9 + r() * 0.2 });
+    people.push({ x, z, y, dx: (gx - x) / L, dz: (gz - z) / L, len: L, speed: 3.6 + r() * 1.6, ph: r() * L, s: 0.9 + r() * 0.2 });
     mesh.setColorAt(i, new THREE.Color(palette[(r() * palette.length) | 0]));
   }
   mesh.castShadow = false;
@@ -153,7 +162,7 @@ function buildCrowd() {
       const p = people[i];
       // walk toward the gate, loop back once there (deterministic in t)
       const d = (p.ph + p.speed * t) % (p.len * 0.9);
-      v.set((p.x + p.dx * d) * FT, 0, (p.z + p.dz * d) * FT);
+      v.set((p.x + p.dx * d) * FT, p.y * FT, (p.z + p.dz * d) * FT);
       const k = appear * p.s;
       sc.set(k, k, k);
       m4.compose(v, q, sc);

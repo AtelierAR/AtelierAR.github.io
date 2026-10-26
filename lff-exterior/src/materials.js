@@ -136,22 +136,22 @@ export function initMaterials() {
   }), 'masonry');
 
   M.metal = patch(new THREE.MeshStandardMaterial({
-    map: tx.metal.map, normalMap: tx.metal.normalMap, roughness: 0.42, metalness: 0.55, envMapIntensity: 0.9,
+    map: tx.metal.map, normalMap: tx.metal.normalMap, roughness: 0.42, metalness: 0.15, envMapIntensity: 1.0,
     normalScale: new THREE.Vector2(1, 1),
   }), 'metal');
 
   M.fins = patch(new THREE.MeshStandardMaterial({
-    map: tx.fins.map, normalMap: tx.fins.normalMap, roughness: 0.38, metalness: 0.6, envMapIntensity: 1.0,
+    map: tx.fins.map, normalMap: tx.fins.normalMap, roughness: 0.36, metalness: 0.18, envMapIntensity: 1.0,
   }), 'fins');
 
   M.glass = patch(new THREE.MeshStandardMaterial({
-    map: tx.cw.map, roughnessMap: tx.cw.roughnessMap, roughness: 1, metalness: 0.35, envMapIntensity: 1.6,
+    map: tx.cw.map, roughnessMap: tx.cw.roughnessMap, roughness: 1, metalness: 0.85, envMapIntensity: 1.6,
     emissive: new THREE.Color('#ffb46b'), emissiveMap: tx.cw.emissiveMap, emissiveIntensity: 0,
   }), 'glazing', { clayRough: 0.6, clayColor: '#E2E5E9' });
-  M.frame = patch(new THREE.MeshStandardMaterial({ color: '#24292b', roughness: 0.4, metalness: 0.7 }), 'glazing');
+  M.frame = patch(new THREE.MeshStandardMaterial({ color: '#3a4043', roughness: 0.4, metalness: 0.35 }), 'glazing');
 
   M.mesh = patch(new THREE.MeshStandardMaterial({
-    map: tx.mesh.map, alphaMap: tx.mesh.alphaMap, alphaTest: 0.45, side: THREE.DoubleSide, roughness: 0.55, metalness: 0.6,
+    map: tx.mesh.map, alphaMap: tx.mesh.alphaMap, alphaTest: 0.45, side: THREE.DoubleSide, roughness: 0.5, metalness: 0.15,
   }), 'mesh');
 
   M.soffit = patch(new THREE.MeshStandardMaterial({
@@ -201,7 +201,7 @@ export function applyMaterials() {
   const M = MAT.materials;
   // dusk: warm interior glow behind the glazing (only once glazing is "on")
   M.glass.emissiveIntensity = g.glow * MAT.state.glazing.mix;
-  M.board.emissiveIntensity = (0.15 + 2.2 * g.boardGlow) * MAT.state.board.mix;
+  M.board.emissiveIntensity = (1.1 + 1.3 * g.boardGlow) * MAT.state.board.mix;
 }
 
 export function edgeMaterial(cat) {

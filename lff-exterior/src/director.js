@@ -17,7 +17,7 @@ function hermite(p0, p1, m0, m1, t) {
 // keys: [{t, pos:[x,y,z] m, target:[x,y,z] m, fov, roll}] with t ascending (any unit)
 export function spline(keys) {
   const fields = ['pos', 'target'];
-  const scal = ['fov', 'roll'];
+  const scal = ['fov', 'roll', 'shiftX', 'shiftY'];
   const val = (k, f) => (f === 'pos' || f === 'target' ? k[f] : [k[f] ?? (f === 'fov' ? 35 : 0)]);
   return (t) => {
     if (t <= keys[0].t) t = keys[0].t;
@@ -38,7 +38,7 @@ export function spline(keys) {
         const m1 = k1 === kp ? 0 : ((bp[d] - a[d]) / (kp.t - k0.t)) * dt;
         r.push(hermite(a[d], b[d], m0, m1, u));
       }
-      out[f] = f === 'fov' || f === 'roll' ? r[0] : new THREE.Vector3(...r);
+      out[f] = scal.includes(f) ? r[0] : new THREE.Vector3(...r);
     }
     return out;
   };
@@ -102,4 +102,13 @@ export function ringPoint(azDeg, standoffM, halfX, halfZ) {
   let lo = 0, hi = 5000;
   for (let i = 0; i < 50; i++) { const m = (lo + hi) / 2; if (sd(m) > 0) hi = m; else lo = m; }
   return new THREE.Vector3(dx * lo, 0, dz * lo);
+}
+
+// Arrival camera (2-point perspective like the deck renders): level view along `yaw`
+// (degrees, 0 = deck north / -Z, 90 = east / +X) with lens shift; positions in feet.
+export function camPose(c) {
+  const a = THREE.MathUtils.degToRad(c.yaw);
+  const pos = ft(...c.pos);
+  const target = pos.clone().add(new THREE.Vector3(Math.sin(a), 0, -Math.cos(a)).multiplyScalar(150));
+  return { pos, target, fov: c.fov, shiftX: c.shiftX || 0, shiftY: c.shiftY || 0 };
 }
