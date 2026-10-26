@@ -1,6 +1,6 @@
 # INFIERNO 365 · Animación de apertura
 
-Pieza de apertura (~78 s) para la propuesta de renovación y ampliación del
+Pieza de apertura (~70 s) para la propuesta de renovación y ampliación del
 Estadio Alfredo Harp Helú a los Diablos Rojos del México.
 Hecha en **Remotion 4.0.528** (React + TypeScript), 1920×1080 a 30 fps, con versión 4K desde el mismo código.
 
@@ -24,7 +24,7 @@ Se abre Remotion Studio en el navegador. Composiciones disponibles:
 |-----------------|-------------------------------------------------------------|
 | `Apertura`      | La pieza completa, 1920×1080, con grano y audio             |
 | `Apertura4K`    | La misma pieza escalada a 3840×2160 (todo es vectorial)     |
-| `Escenas/…`     | Cada escena por separado (`Escena01` … `Escena10`), para revisar o iterar una sola |
+| `Escenas/…`     | Cada escena por separado (`Escena01` … `Escena10`; la 06 se retiró), para revisar o iterar una sola |
 
 ## Cambiar textos y cifras
 
@@ -32,7 +32,7 @@ Se abre Remotion Studio en el navegador. Composiciones disponibles:
 
 - Cada cifra lleva un comentario con su fuente. Las marcadas **«POR VALIDAR»** vienen del brief y
   deben confirmarse con el club / la LMB antes de presentar (asistencia 592,153; récord de 1967;
-  edad 60 → 35; los 18 años de campeonato; −11.9 % en el Mundial 2026; los 500 m).
+  edad 60 → 35; los 18 años de campeonato; los 500 m).
 - Usa comillas tipográficas (« » “ ”), acentos y signos de apertura (¿ ¡). El subconjunto de fuente
   cargado los incluye.
 - Un `\n` dentro de un texto fuerza el salto de línea (se usa en la escena 08).
@@ -57,7 +57,7 @@ Las pistas de `public/audio/` son **marcadores sintéticos** (generados con ffmp
 |----------------------|------------------------------------------------------------------|
 | `canto_aficion.mp3`  | 0–4 s. Ritmo del canto; la línea del ECG late en `AUDIO.latidos`  |
 | `impacto.mp3`        | Los 3 golpes: «592 MIL», «18 CORONAS», «INFIERNO 365»            |
-| `ambiente.mp3`       | Rumor de estadio desde los 8 s; baja en la escena 06 y se apaga en el hold final |
+| `ambiente.mp3`       | Rumor de estadio desde los 8 s; se apaga en el hold final |
 
 Para reemplazarlas, sustituye los archivos **con el mismo nombre**. Los puntos de sincronía están en
 `AUDIO` dentro de `brand.ts`:
@@ -100,13 +100,12 @@ render/                MP4 final y stills
 ## Accesibilidad y reglas de marca
 
 - **Fotosensibilidad:** ningún elemento destella más de 3 veces por segundo. Los únicos pulsos de
-  luz son los 3 golpes (separados por más de 10 s) y el destello único de las barras 2024 · 2025.
+  luz son los 3 golpes (separados por varios segundos) y el destello único de las barras 2024 · 2025.
 - **Tamaño:** ningún texto es menor a 36 px a 1080p.
 - **Contraste:** todo el texto de lectura es Blanco Hueso sobre Negro Infierno (17.9 : 1).
   Las cifras display en Rojo Diablo (#D0021B) dan 3.5 : 1 sobre negro: cumplen AA para texto grande
   (≥ 3 : 1), pero **no 4.5 : 1** — ningún rojo de esa familia lo alcanza sobre negro. Si se exige 4.5 : 1
   estricto, pon `ROJO_TEXTO = COLOR.hueso` en `brand.ts`: las cifras pasan a blanco y el rojo queda en
   filetes, barras y anillos.
-- **Marcas:** no se recrea ningún logotipo (club, LMB, MLB, FIFA, F1). En el cierre hay recuadros
-  «LOGO CLIENTE» y «LOGO FIRMA» para colocar los oficiales.
+- **Marcas:** no se recrea ningún logotipo (club, LMB, MLB, FIFA, F1). El cierre no lleva logos.
 - **Mapas:** el distrito es un diagrama abstracto de nodos y líneas; posiciones no cartográficas.

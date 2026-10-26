@@ -15,9 +15,9 @@ mkdirSync('render/stills', { recursive: true });
 const slug = (s) =>
   s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 
-for (const [i, e] of ESCENAS.entries()) {
+for (const e of ESCENAS) {
   const cuadro = seg(inicioEscena(e.id) + CUADRO_FUERTE[e.id]);
-  const salida = `render/stills/${String(i + 1).padStart(2, '0')}_${slug(e.nombre)}.png`;
+  const salida = `render/stills/${e.id.slice(-2)}_${slug(e.nombre)}.png`;
   console.log(`→ ${e.id} · ${e.nombre} · cuadro ${cuadro} → ${salida}`);
   const r = spawnSync('npx', ['remotion', 'still', 'Apertura', salida, `--frame=${cuadro}`, '--image-format=png', ...extra], {
     stdio: ['ignore', 'ignore', 'inherit'],

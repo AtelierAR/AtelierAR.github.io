@@ -21,7 +21,7 @@ export const COLOR = {
   carbon: '#1C1C1C', // apoyo
   grafito: '#2A2A2A', // apoyo
   rojoProfundo: '#8E0A14', // apoyo
-  ceniza: '#6B6B6B', // gris ceniza — SOLO escena 06 (Mundial) y meses fuera de temporada
+  ceniza: '#6B6B6B', // gris ceniza — meses fuera de temporada (07) y arranque sin color (10)
 } as const;
 
 /**
@@ -67,7 +67,6 @@ export const ESCENAS = [
   { id: 'Escena03', nombre: 'EL RÉCORD', dur: 8 },
   { id: 'Escena04', nombre: 'LA NUEVA AFICIÓN', dur: 6 },
   { id: 'Escena05', nombre: 'DIECIOCHO CORONAS', dur: 8 },
-  { id: 'Escena06', nombre: 'EL VERANO FRÍO', dur: 8 },
   { id: 'Escena07', nombre: 'SEIS MESES EN SILENCIO', dur: 8 },
   { id: 'Escena08', nombre: 'EL DISTRITO', dur: 10 },
   { id: 'Escena09', nombre: 'LA PREGUNTA', dur: 13 },
@@ -98,11 +97,10 @@ export const T = {
   e03: { contador: 3.0, golpe: 3.0, anio1967: 3.3, tachado: 3.8, anio2025: 4.1, texto: 4.2 },
   e04: { rodillo: 0.8, durRodillo: 1.4, texto: 1.3 },
   e05: { primeraBarra: 0.6, pasoBarra: 0.18, destello: 4.2, golpe: 4.2, texto: 4.2 },
-  e06: { desaturar: 0.4, durDesaturar: 2.6, texto: 1.2, dato: 3.0 },
   e07: { anillo: 0.3, durAnillo: 2.4, texto: 1.6 },
   e08: { diamante: 0.2, durDiamante: 2.0, nodos: 1.8, pasoNodo: 0.45, lineas: 3.6, anillo: 5.0, texto: 3.0 },
   e09: { inicio: 0.6, palabrasPorSegundo: 3.0 },
-  e10: { anillo: 0.2, durAnillo: 3.0, golpe: 3.4, subtitulo: 4.2, logos: 4.6, congelar: 6.0 },
+  e10: { anillo: 0.2, durAnillo: 3.0, golpe: 3.4, subtitulo: 4.2, congelar: 6.0 },
 } as const;
 
 /** Cuadro "más fuerte" de cada escena (segundo relativo) para los stills del deck. */
@@ -112,7 +110,6 @@ export const CUADRO_FUERTE: Record<EscenaId, number> = {
   Escena03: 7.5,
   Escena04: 5.5,
   Escena05: 7.5,
-  Escena06: 7.5,
   Escena07: 7.5,
   Escena08: 9.5,
   Escena09: 12.5,
@@ -143,7 +140,7 @@ export const AUDIO = {
     coronas: inicioEscenaSeg('Escena05') + 4.2,
     infierno365: inicioEscenaSeg('Escena10') + 3.4,
   },
-  volumen: { canto: 0.9, impacto: 1.0, ambiente: 0.35, ambienteFrio: 0.12 },
+  volumen: { canto: 0.9, impacto: 1.0, ambiente: 0.35 },
 } as const;
 
 function inicioEscenaSeg(id: string): number {

@@ -9,23 +9,6 @@ import { Luminaria } from '../components/Lineas';
 import { estiloDisplay, estiloTexto, Golpe, Revelar } from '../components/Texto';
 import { entrada, lerp, mezclar, tramo } from '../components/utilidades';
 
-const MarcoLogo: React.FC<{ texto: string }> = ({ texto }) => (
-  <div
-    style={{
-      width: 340,
-      height: 120,
-      border: `2px dashed ${COLOR.hueso}`,
-      background: COLOR.negro,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...estiloTexto(36),
-    }}
-  >
-    {texto}
-  </div>
-);
-
 /** 10 · INFIERNO 365 — el anillo de 365 marcas se llena, el color regresa, golpe final. */
 export const Escena10: React.FC = () => {
   const real = useCurrentFrame();
@@ -76,20 +59,6 @@ export const Escena10: React.FC = () => {
         <Revelar desde={seg(T.e10.subtitulo)}>
           <div style={{ ...estiloTexto(42), fontFamily: TIPO.texto }}>{COPY.cierre.subtitulo}</div>
         </Revelar>
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 72,
-          left: 96,
-          right: 96,
-          display: 'flex',
-          justifyContent: 'space-between',
-          opacity: entrada(frame, seg(T.e10.logos), 24),
-        }}
-      >
-        <MarcoLogo texto={COPY.cierre.logoCliente} />
-        <MarcoLogo texto={COPY.cierre.logoFirma} />
       </div>
     </AbsoluteFill>
   );

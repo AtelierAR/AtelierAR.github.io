@@ -47,15 +47,6 @@ export const COPY = {
     texto: 'DIECIOCHO CORONAS.',
   },
 
-  // 06 · EL VERANO FRÍO
-  frio: {
-    texto: 'EL VERANO QUE EL INFIERNO SINTIÓ FRÍO.',
-    /** Variación de asistencia durante el Mundial 2026 vs. mismo periodo de 2025.
-     *  Fuente: brief del cliente. POR VALIDAR. */
-    datoCifra: '−11.9%',
-    datoContexto: 'ASISTENCIA · MUNDIAL 2026',
-  },
-
   // 07 · SEIS MESES EN SILENCIO
   meses: {
     /** Abril → marzo, en el orden del anillo. Los 6 primeros son temporada. */
@@ -85,7 +76,5 @@ export const COPY = {
     palabra: 'INFIERNO',
     numero: '365',
     subtitulo: 'UNA VISIÓN PARA LA CASA DE LA DINASTÍA ESCARLATA.',
-    logoCliente: 'LOGO CLIENTE',
-    logoFirma: 'LOGO FIRMA',
   },
 } as const;
