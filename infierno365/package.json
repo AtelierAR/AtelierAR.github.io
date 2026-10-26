@@ -1,0 +1,31 @@
+{
+  "name": "infierno365",
+  "version": "1.0.0",
+  "private": true,
+  "description": "INFIERNO 365 · Animaciones de la presentación para Diablos Rojos del México (Remotion)",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render Aficion render/aficion_infierno365_1080p.mp4",
+    "stills": "node scripts/stills.ts",
+    "audio": "bash scripts/generar-audio.sh",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.528",
+    "@remotion/cli": "4.0.528",
+    "@remotion/google-fonts": "4.0.528",
+    "@remotion/renderer": "4.0.528",
+    "@types/node": "22.18.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "remotion": "4.0.528"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.12",
+    "typescript": "5.9.2"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  }
+}
