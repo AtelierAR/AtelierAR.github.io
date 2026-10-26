@@ -1,0 +1,46 @@
+{
+ "source": "p61 LOWER BOWL FIELD HEIGHTS",
+ "strip": {
+  "x0": 400,
+  "x1": 1925,
+  "note": "displayed px of the 2000-wide raster"
+ },
+ "goalpost": {
+  "x": 648,
+  "crossbarFt": 10,
+  "uprightFt": 30
+ },
+ "fans": [
+  440,
+  555,
+  690,
+  795,
+  1068,
+  1340
+ ],
+ "rakeStartX": 1325,
+ "rakeEndX": 1885,
+ "columns": [
+  1420,
+  1458,
+  1622,
+  1787
+ ],
+ "cases": [
+  {
+   "key": "grade",
+   "dropFt": 0,
+   "overbuildStartX": 1385
+  },
+  {
+   "key": "minus2",
+   "dropFt": -2,
+   "overbuildStartX": 1385
+  },
+  {
+   "key": "minus4",
+   "dropFt": -4,
+   "overbuildStartX": 1385
+  }
+ ]
+}

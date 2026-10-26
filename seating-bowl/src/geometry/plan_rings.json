@@ -1,0 +1,189 @@
+{
+ "source": "p37 Existing Manifest / p42 New Manifest, rasterized 200 DPI",
+ "calibration": {
+  "page": 37,
+  "cx": 1388,
+  "cy": 754,
+  "pxPerFt": 1.4638888888888888,
+  "method": "field 360 ft = 527 px; checked vs 160 ft field width and 90 ft scale bar"
+ },
+ "axes": "+x south (p37 right), +z west (p37 bottom); feet from field centre",
+ "existing": [
+  {
+   "name": "LB_in",
+   "note": "Field wall / front of 100-level (light apron edge around field)",
+   "xs": 85.4,
+   "zs": 140.7,
+   "xm": 190.6,
+   "zm": 111.3,
+   "xeN": 209,
+   "xeS": 200.8,
+   "ze": 79.9,
+   "anchorsPx": {
+    "xsPx": 1513,
+    "zsPx": 548,
+    "xmPx": 1667,
+    "zmPx": 591,
+    "xeNPx": 1082,
+    "xeSPx": 1682,
+    "zePx": 637
+   }
+  },
+  {
+   "name": "LB_out",
+   "note": "Back of 100-level = front of LS loge band",
+   "xs": 125,
+   "zs": 206.3,
+   "xm": 237.7,
+   "zm": 176.2,
+   "xeN": 303.3,
+   "xeS": 295.1,
+   "ze": 82,
+   "anchorsPx": {
+    "xsPx": 1571,
+    "zsPx": 452,
+    "xmPx": 1736,
+    "zmPx": 496,
+    "xeNPx": 944,
+    "xeSPx": 1820,
+    "zePx": 634
+   }
+  },
+  {
+   "name": "LS_out",
+   "note": "Back of LS loge band; at the ends back of RZS (north) and M mezzanine (south)",
+   "xs": 125,
+   "zs": 226.1,
+   "xm": 250,
+   "zm": 192,
+   "xeN": 329.9,
+   "xeS": 319,
+   "ze": 90.2,
+   "anchorsPx": {
+    "xsPx": 1571,
+    "zsPx": 423,
+    "xmPx": 1754,
+    "zmPx": 473,
+    "xeNPx": 905,
+    "xeSPx": 1855,
+    "zePx": 622
+   }
+  },
+  {
+   "name": "C_out",
+   "note": "Back of C club sections (club absent at the ends)",
+   "xs": 129.8,
+   "zs": 262.3,
+   "xm": 268.5,
+   "zm": 222,
+   "xeN": 329.9,
+   "xeS": 319,
+   "ze": 95,
+   "anchorsPx": {
+    "xsPx": 1578,
+    "zsPx": 370,
+    "xmPx": 1781,
+    "zmPx": 429,
+    "xeNPx": 905,
+    "xeSPx": 1855,
+    "zePx": 615
+   }
+  },
+  {
+   "name": "CS_out",
+   "note": "Back of CS club suites (CS145-CS160 at the south end)",
+   "xs": 135.3,
+   "zs": 286.2,
+   "xm": 290.3,
+   "zm": 239.8,
+   "xeN": 329.9,
+   "xeS": 342.9,
+   "ze": 99.7,
+   "anchorsPx": {
+    "xsPx": 1586,
+    "zsPx": 335,
+    "xmPx": 1813,
+    "zmPx": 403,
+    "xeNPx": 905,
+    "xeSPx": 1890,
+    "zePx": 608
+   }
+  },
+  {
+   "name": "UB_out",
+   "note": "Outer edge of 200-level (single straight chamfer at the corners)",
+   "xs": 301.9,
+   "zs": 347,
+   "xm": 339.5,
+   "zm": 229.5,
+   "xeN": 381.2,
+   "xeS": 383.9,
+   "ze": 146.2,
+   "anchorsPx": {
+    "xsPx": 1830,
+    "zsPx": 246,
+    "xmPx": 1885,
+    "zmPx": 418,
+    "xeNPx": 830,
+    "xeSPx": 1950,
+    "zePx": 540
+   }
+  }
+ ],
+ "proposed": [
+  {
+   "name": "LB_in_new",
+   "note": "p42: front of 100-level after +4 rows and field suites (sideline 17 ft closer)",
+   "xs": 85.4,
+   "zs": 123.6,
+   "xm": 185.8,
+   "zm": 101.1,
+   "xeN": 201.5,
+   "xeS": 199.5,
+   "ze": 77.9,
+   "anchorsPx": {
+    "xsPx": 1513,
+    "zsPx": 573,
+    "xmPx": 1660,
+    "zmPx": 606,
+    "xeNPx": 1093,
+    "xeSPx": 1680,
+    "zePx": 640
+   }
+  },
+  {
+   "name": "LB_out_new",
+   "note": "p42: back of the overbuilt 100-level (loge line)",
+   "xs": 129.8,
+   "zs": 223.4,
+   "xm": 257.5,
+   "zm": 188.5,
+   "xeN": 306,
+   "xeS": 306,
+   "ze": 82,
+   "anchorsPx": {
+    "xsPx": 1578,
+    "zsPx": 427,
+    "xmPx": 1765,
+    "zmPx": 478,
+    "xeNPx": 940,
+    "xeSPx": 1836,
+    "zePx": 634
+   }
+  }
+ ],
+ "boards": {
+  "north": {
+   "xFront": -320,
+   "xBack": -441,
+   "halfWidth": 107,
+   "note": "x from p51 section; width 214 ft (p67)"
+  },
+  "south": {
+   "xFront": 315,
+   "xBack": 430,
+   "halfWidth": 107,
+   "note": "x from p53 section; width 214 ft (p67)"
+  }
+ }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "lff-seating-bowl",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Seating Bowl: Closer, Louder, More Premium. Lincoln Financial Field renovation film (HKS concept pricing package, Oct 22 2026).",
+  "type": "module",
+  "scripts": {
+    "prep": "bash tools/prep_reference.sh",
+    "geometry": "node tools/build_geometry.mjs",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "record": "node scripts/record.mjs",
+    "record:4k": "node scripts/record.mjs --scale 2",
+    "qa": "node scripts/qa.mjs"
+  },
+  "dependencies": {
+    "@fontsource/hanken-grotesk": "^5.2.8",
+    "gsap": "^3.13.0",
+    "n8ao": "^1.10.1",
+    "postprocessing": "^6.37.0",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
