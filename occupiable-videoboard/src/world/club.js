@@ -24,7 +24,8 @@ export function buildClub(volume, quality = 'high') {
   const wallZ = 8; // curtain wall set 8' behind the LED veil
 
   const clay = new THREE.MeshStandardMaterial({ color: CLAY, roughness: 0.82 });
-  const clayDark = new THREE.MeshStandardMaterial({ color: new THREE.Color('#D9DDE1'), roughness: 0.85 });
+  const clayDark = new THREE.MeshStandardMaterial({ color: new THREE.Color('#C9CED3'), roughness: 0.85 });
+  const floorMat = new THREE.MeshStandardMaterial({ color: new THREE.Color('#BFC3C7'), roughness: 0.6 });
   const fabric = new THREE.MeshStandardMaterial({ color: new THREE.Color('#E6E8EB'), roughness: 0.95 });
   const metal = new THREE.MeshStandardMaterial({ color: new THREE.Color('#A5ACAF'), roughness: 0.4, metalness: 0.6 });
   const glass = new THREE.MeshStandardMaterial({
@@ -84,6 +85,18 @@ export function buildClub(volume, quality = 'high') {
   add(new THREE.BoxGeometry(2 * xMax, 0.4, zBack - wallZ), clayDark, 0, ceilY - 0.2, wallZ + (zBack - wallZ) / 2);
   // terrace soffit between the veil and the glass
   add(new THREE.BoxGeometry(2 * xMax, 0.4, wallZ - skinZ(ceilY) - 1), clayDark, 0, ceilY - 0.2, (wallZ + skinZ(ceilY)) / 2 + 0.5);
+
+  // club floor finish (slightly darker than the clay so furniture reads, as on p98)
+  const sec0 = sectionAt(volume.local, floorY + 0.05, 1.6);
+  {
+    const shape = new THREE.Shape(sec0.map(([x, z]) => new THREE.Vector2(x, z)));
+    const g = new THREE.ShapeGeometry(shape).rotateX(Math.PI / 2);
+    const m = new THREE.Mesh(g, floorMat);
+    m.position.y = floorY + 0.06;
+    m.material.side = THREE.DoubleSide;
+    m.receiveShadow = true;
+    group.add(m);
+  }
 
   // ---- bar-height counters at the glass + stools
   const counterGeo = new THREE.BoxGeometry(1, 3.5, 1.6);
@@ -210,5 +223,16 @@ export function buildClub(volume, quality = 'high') {
     lights.push(l);
   }
 
-  return { group, figures, lights, floorY, ceilY, wallZ, opening };
+  // night: dim the interior finishes (the night floods are unshadowed)
+  const mats = new Set();
+  group.traverse((o) => o.material && o.material.color && mats.add(o.material));
+  const base = new Map([...mats].map((m) => [m, m.color.clone()]));
+  let lastNight = -1;
+  const setNight = (night) => {
+    if (Math.abs(night - lastNight) < 1e-3) return;
+    lastNight = night;
+    for (const [m, c] of base) m.color.copy(c).multiplyScalar(1 - 0.55 * night);
+  };
+
+  return { group, figures, lights, floorY, ceilY, wallZ, opening, setNight };
 }

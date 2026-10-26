@@ -13,7 +13,7 @@ page.on('pageerror', (e) => {
   console.log('[pageerror]', e.message);
   process.exit(1);
 });
-await page.goto(`${url}/?record=1${process.env.Q ? `&q=${process.env.Q}` : ''}`);
+await page.goto(`${url}/?record=1${process.env.Q ? `&q=${process.env.Q}` : ''}${process.env.MSAA ? `&msaa=${process.env.MSAA}` : ''}`);
 await page.waitForFunction(() => window.__ready === true, null, { timeout: 300000 });
 for (const t of times) {
   const t0 = Date.now();

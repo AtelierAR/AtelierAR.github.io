@@ -113,6 +113,7 @@ const ctx = {
   quality,
   live: { skin: null, skinFrom: null, skinT: 0 },
   cutPlane: new THREE.Plane(new THREE.Vector3(-1, 0, 0), 70),
+  lights: [env.hemi, env.sun, env.floodE, env.floodW, env.plazaLight, env.boardGlow, ...north.club.lights],
 };
 const { tl, S } = buildTimeline(ctx);
 
@@ -132,7 +133,16 @@ function renderAt(time) {
   t = Math.min(DURATION, Math.max(0, time));
   tl.seek(t, false);
   frame(ctx, S, t);
-  post.render(1 / 60);
+  if (OFF.size > 1 || OFF.has('ao')) {
+    if (OFF.has('ao')) post.ao.enabled = false;
+    if (OFF.has('bloom')) post.passA.enabled = false;
+    if (OFF.has('smaa')) post.passB.enabled = false;
+  }
+  if (OFF.has('post')) {
+    renderer.setRenderTarget(null);
+    renderer.autoClear = true;
+    renderer.render(ctx.scene3d, camA);
+  } else post.render(1 / 60);
 }
 
 // dev bar
@@ -207,9 +217,9 @@ window.addEventListener('keydown', (e) => {
 function applyQuality() {
   ctx.quality = quality;
   ledShared.uPitch.value = quality === 'high' ? 1.0 : 2.0;
-  post.composer.multisampling = quality === 'high' ? 4 : 0;
+  post.composer.multisampling = quality === 'high' ? Number(params.get('msaa') ?? 4) : 0;
   post.ao.configuration.aoSamples = quality === 'high' ? 16 : 8;
-  post.ao.configuration.halfRes = quality !== 'high';
+  post.ao.configuration.halfRes = quality !== 'high' || params.get('aohalf') === '1';
   renderer.shadowMap.enabled = quality === 'high';
   if (!RECORD) renderer.setPixelRatio(quality === 'high' ? Math.min(window.devicePixelRatio, 2) : 1);
   renderer.setSize(W, H, false);
@@ -217,6 +227,8 @@ function applyQuality() {
   north.rebuildStrips?.();
 }
 applyQuality();
+// profiling switches: ?off=ao,bloom,smaa,post
+const OFF = new Set((params.get('off') || '').split(','));
 
 // ---- start
 await document.fonts.load('800 100px "Hanken Grotesk"');

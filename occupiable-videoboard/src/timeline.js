@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { CamPath, setCam } from './camera.js';
-import { FACE, NORTH, SOUTH, OPTIONS, RIBBONS, FLOORS, CALLOUTS, TOTAL_VIDEOBOARD_SF, FACADE_BOARDS_SF, WAVEFORM, fmt } from './data.js';
+import { CAPACITY, FACE, NORTH, SOUTH, OPTIONS, RIBBONS, FLOORS, CALLOUTS, TOTAL_VIDEOBOARD_SF, FACADE_BOARDS_SF, WAVEFORM, fmt } from './data.js';
 import { feetInches } from './geometry/face.js';
 import { ledShared } from './materials/led.js';
 import { energy, amplitude, crowd, TOUCHDOWN_T } from './audio/envelope.js';
@@ -194,8 +194,8 @@ export function buildTimeline(ctx) {
 // North volume field face: bottom (0, 62, −292) · top (0, 171, −283) · club floor y 74.
 export const PATHS = {
   s1: new CamPath([
-    { t: 0, pos: [0, 5.8, 172], look: [0, 92, -300], fov: 46 },
-    { t: 8, pos: [0, 6.4, 140], look: [0, 96, -300], fov: 44 },
+    { t: 0, pos: [0, 5.8, 172], look: [0, 100, -312], fov: 30 },
+    { t: 8, pos: [0, 6.4, 140], look: [0, 104, -312], fov: 27 },
   ]),
   // Field-level frames solved by scripts/fit-cameras.mjs so the field face lands where
   // p70 / p71 draw it (see qa/).
@@ -238,7 +238,8 @@ export const PATHS = {
   ]),
   s7: new CamPath([
     { t: 82, pos: [170, 330, -1000], look: [-10, 70, -220], fov: 35 },
-    { t: 84.6, pos: [300, 190, -160], look: [0, 90, -292], fov: 44 },
+    { t: 84.0, pos: [120, 320, -250], look: [0, 60, -60], fov: 42 },
+    { t: 85.6, pos: [-40, 120, 120], look: [10, 95, -292], fov: 56 },
     { t: 87.4, pos: [-73, 6, -2], look: [36.88, 53.84, -281.17], fov: 72.3 },
     { t: 90, pos: [-72, 6, -5.75], look: [36.88, 53.84, -281.17], fov: 72.3 },
   ]),
@@ -257,8 +258,8 @@ export const PATHS = {
     { tension: 0.4 },
   ),
   s2axon: new CamPath([
-    { t: 21.75, pos: [980, 420, 260], look: [0, 50, -60], fov: 34 },
-    { t: 24.0, pos: [1000, 440, 180], look: [0, 50, -60], fov: 34 },
+    { t: 21.75, pos: [820, 640, 420], look: [-10, 40, -70], fov: 33 },
+    { t: 24.0, pos: [860, 640, 330], look: [-10, 40, -80], fov: 33 },
   ]),
 };
 
@@ -287,9 +288,9 @@ export function frame(ctx, S, t) {
   // ---- environment
   env.set(S.night, S.house);
   world.stadium.existingBoard.visible = S.vis.existing > 0.5;
-  world.stadium.existingScreen.material.color.setScalar(0.95 * S.c.power + 0.01);
-  env.boardGlow.intensity = sc.id === 1 ? 140 * S.c.power : S.night > 0.5 ? 380 * (0.4 + energy(t)) : 0;
-  env.boardGlow.position.set(0, 110, sc.id === 1 ? -300 : -270);
+  world.stadium.existingScreen.material.color.setScalar(0.78 * S.c.power + 0.01);
+  env.boardGlow.intensity = sc.id === 1 ? 260 * S.c.power : S.night > 0.5 ? 380 * (0.4 + energy(t)) : 0;
+  env.boardGlow.position.set(0, sc.id === 1 ? 70 : 110, sc.id === 1 ? -120 : -270);
 
   // ---- LED shared
   ledShared.uEmissive.value = S.led.emissive * (1 + 0.25 * S.night);
@@ -337,7 +338,7 @@ export function frame(ctx, S, t) {
   // interior shows only when it can be seen
   const interior = sc.id === 5 || sc.id === 6 || (sc.id === 3 && S._opt !== 3) || sc.id === 7;
   north.club.group.visible = interior;
-  for (const l of north.club.lights) l.intensity = interior ? (S.night > 0.5 ? 140 : 380) : 0;
+  for (const l of north.club.lights) l.intensity = interior ? (S.night > 0.5 ? 140 : 160) : 0;
   north.plates.visible = sc.id !== 2 || t > 21.7;
 
   // ---- ribbons (Scene 4 chase, Scene 6 whip)
@@ -414,7 +415,9 @@ export function frame(ctx, S, t) {
   // ---- post
   const day = 1 - S.night;
   post.ao.enabled = S.world === 'stadium' && day > 0.5 && split > 0.999 && ctx.quality === 'high';
-  post.ao.configuration.intensity = 2.0 * day;
+  const insideClub = sc.id === 5 && t > 55.6 && t < 62.4;
+  post.ao.configuration.intensity = (insideClub ? 3.6 : 2.0) * day;
+  post.ao.configuration.aoRadius = insideClub ? 7 : 12;
   let bokeh = 0, ca = 0, focus = 200, range = 200;
   if (sc.id === 5) {
     const d = Math.abs(tmpV.copy(camA.position).sub(f.center).dot(f.n));
@@ -426,7 +429,7 @@ export function frame(ctx, S, t) {
   }
   post.setDOF(focus, range, bokeh);
   post.setCA(ca);
-  post.bloom.intensity = 0.6 + 0.25 * S.night + (sc.id === 6 ? 0.45 * energy(t) : 0);
+  post.bloom.intensity = sc.id === 1 ? 0.32 : 0.6 + 0.25 * S.night + (sc.id === 6 ? 0.45 * energy(t) : 0);
 
   // ---- figures: arms up with the crowd
   const e = sc.id === 6 ? clamp01((energy(t) - 0.35) * 1.6) : 0;
@@ -437,7 +440,9 @@ export function frame(ctx, S, t) {
   }
 
   // ---- plaza wash (p26) from the plaza-facing face during the touchdown
-  env.plazaLight.intensity = S.night > 0.5 ? 1.6e5 * (0.25 + energy(t)) : 0;
+  env.plazaLight.intensity = sc.id === 6 || (sc.id === 7 && S.split < 0.999) ? 2.2e4 * (0.25 + energy(t)) : 0;
+  // the club at night: the floods are unshadowed, so dim the interior finishes instead
+  north.club.setNight(S.night);
 
   // ---- shadows: static sun, so re-render the shadow map only when the scene changes or
   //      the volumes are moving (fly-in)
@@ -446,6 +451,9 @@ export function frame(ctx, S, t) {
     ctx.renderer.shadowMap.needsUpdate = true;
     ctx.shadowKey = shadowKey;
   }
+
+  // ---- lights at zero intensity are removed from the shaders (SwiftShader-friendly)
+  for (const l of ctx.lights) l.visible = l.intensity > 1e-4;
 
   // ---- drafting world
   if (S.world === 'draft') draft.update(S.draft);
@@ -464,9 +472,9 @@ function hudFrame(ctx, S, t, sc) {
   // Scene 1 — statements (// PROPOSED COPY) and the p4 TODAY line as a sound cue
   if (sc.id === 1) {
     // PROPOSED COPY
-    hud.show('s1a', 'statement', 'A screen you <b>watch.</b>', { o: win(t, 0.9, 3.5, 0.5), y: 760 });
+    hud.show('s1a', 'statement', 'A screen you <b>watch.</b>', { o: win(t, 0.9, 3.5, 0.5), y: 880 });
     // PROPOSED COPY
-    hud.show('s1b', 'statement', 'A building you <b>enter.</b>', { o: win(t, 4.6, 7.7, 0.5), y: 760 });
+    hud.show('s1b', 'statement', 'A building you <b>enter.</b>', { o: win(t, 4.6, 7.7, 0.5), y: 880 });
     const p = smooth(3.9, 6.6, t);
     const pts = WAVEFORM.today.map(([x, y]) => [140 + x * 2 * 1640, 600 - y * 52]);
     const cut = 140 + p * 1640;
@@ -613,7 +621,7 @@ function hudFrame(ctx, S, t, sc) {
     const x = 1920 * S.split;
     hud.rect(x - 1, 0, 2, 1080, { fill: '#fff', o: 1 });
     const to = sc.id === 6 ? win(t, 66.2, 81.8, 0.4) : 1 - smooth(82, 82.6, t);
-    hud.show('tag-out', 'side-tag', 'Outside · the bowl', { o: to, x: 60, y: 54 });
+    hud.show('tag-out', 'side-tag', `Outside · the bowl · ${fmt(CAPACITY.totalWithSRO)} with SRO (p42)`, { o: to, x: 60, y: 54 });
     hud.show('tag-in', 'side-tag', 'Inside · video board club', { o: to, x: x + 60, y: 54 });
   }
   if (sc.id === 6 || (sc.id === 7 && t < 83.5)) {
