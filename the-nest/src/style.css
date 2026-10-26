@@ -1,0 +1,176 @@
+@import '@fontsource/hanken-grotesk/200.css';
+@import '@fontsource/hanken-grotesk/300.css';
+@import '@fontsource/hanken-grotesk/400.css';
+@import '@fontsource/hanken-grotesk/500.css';
+@import '@fontsource/hanken-grotesk/600.css';
+@import '@fontsource/hanken-grotesk/700.css';
+@import '@fontsource/hanken-grotesk/800.css';
+@import '@fontsource/hanken-grotesk/900.css';
+@import '@fontsource/oswald/500.css';
+@import '@fontsource/oswald/600.css';
+@import '@fontsource/oswald/700.css';
+
+:root {
+  --field: #0b3f46;
+  --shadow: #062e33;
+  --midnight: #004c54;
+  --line: #31b674;
+  --glass: #41b6af;
+  --silver: #a5acaf;
+  --white: #f4f6f6;
+  --sans: 'Hanken Grotesk', 'HKS Sans', system-ui, sans-serif;
+  --cond: 'Oswald', 'Hanken Grotesk', sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  cursor: none;
+}
+
+/* The stage is always laid out at 1920×1080 and scaled to fit, so every position in the
+   overlay is in 1080p pixels and matches the deck measurements × 0.96. */
+#stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+  overflow: hidden;
+  background: #000;
+}
+
+#gl {
+  position: absolute;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+  display: block;
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  font-family: var(--sans);
+  color: var(--white);
+  pointer-events: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+#overlay * {
+  box-sizing: border-box;
+}
+
+#grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.07;
+  background-size: 256px 256px;
+}
+
+#fade {
+  position: absolute;
+  inset: 0;
+  background: var(--midnight);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.abs {
+  position: absolute;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.ch {
+  display: inline-block;
+  white-space: pre;
+  will-change: transform, opacity;
+}
+
+.rule {
+  position: absolute;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.42);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+.vrule {
+  position: absolute;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.55);
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+}
+
+.scrim {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.label-caps {
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+#storyboard {
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  background: #062e33;
+  color: #f4f6f6;
+  font-family: var(--sans);
+  padding: 40px;
+  cursor: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 28px;
+  align-content: start;
+}
+
+#storyboard[hidden] {
+  display: none;
+}
+
+#storyboard h1 {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+}
+
+#storyboard figure {
+  margin: 0;
+}
+
+#storyboard img {
+  width: 100%;
+  display: block;
+}
+
+#storyboard figcaption {
+  font-size: 15px;
+  opacity: 0.8;
+  margin-top: 8px;
+}
+
+#storyboard button {
+  grid-column: 1 / -1;
+  justify-self: start;
+  font: inherit;
+  padding: 10px 18px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  cursor: pointer;
+}

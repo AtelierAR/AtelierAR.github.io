@@ -1,0 +1,28 @@
+{
+  "name": "the-nest",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "The Nest — architectural concept animation, Lincoln Financial Field renovation (HKS S+E)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "refs": "python3 scripts/extract_refs.py",
+    "record": "node scripts/record.mjs",
+    "record:4k": "node scripts/record.mjs --scale 2",
+    "qa": "node scripts/qa.mjs"
+  },
+  "dependencies": {
+    "@fontsource/hanken-grotesk": "^5.1.0",
+    "@fontsource/oswald": "^5.1.0",
+    "gsap": "^3.12.5",
+    "n8ao": "^1.9.4",
+    "postprocessing": "^6.36.4",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0",
+    "vite": "^5.4.11"
+  }
+}
