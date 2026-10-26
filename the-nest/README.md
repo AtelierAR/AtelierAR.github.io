@@ -31,8 +31,10 @@ npm run record:4k                    # 3840×2160 → out/01_the_nest_2160p60.mp
 npm run record -- --gpu              # use the host GPU instead of SwiftShader
 ```
 
-Each frame is rendered by `window.__nest.frame(i)` at exactly `t = i / 60`, so any frame can be
-re-rendered identically and an interrupted run resumes where it stopped. Encoding (also run
+Each frame is rendered by `window.__nest.frame(i)` at exactly `t = i / 60` and is a pure function of
+that time, so any frame can be re-rendered identically, workers take round-robin blocks of frames,
+and an interrupted run resumes where it stopped (delete the PNGs of a passage to re-render just that
+passage). Encoding (also run
 automatically once all frames exist):
 
 ```bash
@@ -40,7 +42,9 @@ ffmpeg -y -framerate 60 -i out/frames_1080/%05d.png -c:v libx264 -preset slow -c
   -pix_fmt yuv420p -profile:v high -movflags +faststart out/01_the_nest_1080p60.mp4
 ```
 
-`npm run qa -- 12.4 58 79` renders stills at given times into `qa/frames/` (`--every 2` for a sweep,
+`npm run check` verifies the brief's reading rules for the p9 paragraph without a browser (every
+sentence fully legible ≥ 0.4 s per word, ≤ 60 characters per line, two lines per chunk, chunks never
+overlapping). `npm run qa -- 12.4 58 79` renders stills at given times into `qa/frames/` (`--every 2` for a sweep,
 `--still=p26` for the deck comparisons).
 
 ## Reference material

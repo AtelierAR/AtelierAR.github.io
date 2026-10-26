@@ -41,12 +41,14 @@ console.log(`${todo.length} of ${f1 - f0} frames to render at ${1920 * scale}×$
 
 const pages = [first];
 for (let w = 1; w < workers; w++) pages.push(await openPage(server.url, { scale, gpu: has('gpu') }));
-const slice = Math.ceil(todo.length / workers);
+// Round-robin blocks of 30 frames, so heavy and light passages spread over all workers
+// (every frame is a pure function of its index, so order does not matter).
+const mine = (w) => todo.filter((_, k) => Math.floor(k / 30) % workers === w);
 const t0 = Date.now();
 let done = 0;
 await Promise.all(
   pages.map(async ({ page }, w) => {
-    for (const f of todo.slice(w * slice, (w + 1) * slice)) {
+    for (const f of mine(w)) {
       await page.evaluate((i) => window.__nest.frame(i), f);
       await page.screenshot({ path: path.join(framesDir, `${String(f).padStart(5, '0')}.png`) });
       done++;
