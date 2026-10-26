@@ -32,13 +32,55 @@ export function wrapBalanced(text, max = 60) {
 
 const MARGIN = 0.12; // the 0.02 s fade-in delay plus rounding, so the rule holds strictly
 
+const PUNCT = /[,.:;”—]$/;
+
+// Line breaking for the paragraph: the fewest lines of ≤ max characters, then the most even
+// lengths, preferring line ends at clause punctuation (a small dynamic program over word breaks).
+export function wrapClauses(text, max = 60) {
+  const w = text.split(' ');
+  const k = wrap(text, max).length;
+  const target = text.length / k;
+  const len = (i, j) => w.slice(i, j).join(' ').length;
+  const memo = new Map();
+  const best = (i, lines) => {
+    const key = i * 100 + lines;
+    if (memo.has(key)) return memo.get(key);
+    let out = null;
+    if (lines === 1) {
+      const L = len(i, w.length);
+      out = L <= max ? { cost: (L - target) ** 2, cuts: [] } : null;
+    } else {
+      for (let j = i + 1; j < w.length; j++) {
+        const L = len(i, j);
+        if (L > max) break;
+        const rest = best(j, lines - 1);
+        if (!rest) continue;
+        const cost = (L - target) ** 2 + rest.cost - (PUNCT.test(w[j - 1]) ? 220 : 0);
+        if (!out || cost < out.cost) out = { cost, cuts: [j, ...rest.cuts] };
+      }
+    }
+    memo.set(key, out);
+    return out;
+  };
+  const r = best(0, k);
+  const cuts = [0, ...r.cuts, w.length];
+  return cuts.slice(0, -1).map((c, i) => w.slice(c, cuts[i + 1]).join(' '));
+}
+
+// Group lines into chunks of ≤ 2, breaking after clause punctuation where there is a choice.
+export function chunkLines(lines) {
+  if (lines.length <= 2) return [lines];
+  if (lines.length === 3) return PUNCT.test(lines[0]) && !PUNCT.test(lines[1]) ? [lines.slice(0, 1), lines.slice(1)] : [lines.slice(0, 2), lines.slice(2)];
+  const out = [];
+  for (let i = 0; i < lines.length; i += 2) out.push(lines.slice(i, i + 2));
+  return out;
+}
+
 export function paragraphSchedule() {
   const chunks = [];
   let prevEnd = 0;
   NEST.paragraph.forEach((sentence, si) => {
-    const lines = wrapBalanced(sentence, 60);
-    const groups = [];
-    for (let i = 0; i < lines.length; i += 2) groups.push(lines.slice(i, i + 2));
+    const groups = chunkLines(wrapClauses(sentence, 60));
     const need = minSeconds(sentence) + groups.length * (FADE_IN + FADE_OUT + MARGIN);
     // a sentence starts at its slot, or later if the previous one needed longer
     const start = Math.max(SLOTS[si], prevEnd);

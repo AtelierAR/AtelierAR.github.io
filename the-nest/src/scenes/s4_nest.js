@@ -503,13 +503,14 @@ function buildParagraph(L, S, ctx) {
   const boxes = [];
   for (const c of paragraphSchedule()) {
     const late = c.sentence === 4;
+    // over the Scene 5 sky the type goes dark, as p26's own titles do
     const box = el('div', 'abs', L, {
       left: late ? '96px' : '206px',
       top: late ? '64px' : '902px',
       fontSize: '22px',
       lineHeight: '31px',
       fontWeight: '600',
-      color: '#eef3f3',
+      color: late ? '#1f2b31' : '#eef3f3',
       whiteSpace: 'normal',
     });
     box.innerHTML = c.lines.map((ln) => `<div>${ln}</div>`).join('');
@@ -525,8 +526,5 @@ function buildParagraph(L, S, ctx) {
   const r2 = rule(L, 204, 978, 760, 37.7, 1.0);
   hide(r1, 64.4, 0.5);
   hide(r2, 64.4, 0.5);
-  const sc2 = scrim(L, { left: '0', top: '0', width: '1400px', height: '330px', background: 'radial-gradient(55% 60% at 22% 18%, rgba(18,28,40,0.72), rgba(18,28,40,0) 100%)' });
-  show(sc2, 65.3, 0.6);
-  hide(sc2, 76.0, 0.5);
   ctx.paragraph = boxes;
 }

@@ -382,9 +382,17 @@ export function build(ctx, S) {
   const labels = [];
   REVEAL.layers.forEach(({ id, label }) => {
     (LABELS[id] || []).forEach(([anchor, row], j) => {
-      const txt = el('div', 'abs', L, { fontSize: '24px', fontWeight: '300', color: '#f3f5f7', transform: 'translateX(-50%)', textShadow: '0 1px 10px rgba(40,46,60,0.35)' });
+      // p26: light labels on the sky, dark grey labels on the white plaza
+      const dark = row === 'bottom';
+      const txt = el('div', 'abs', L, {
+        fontSize: '24px',
+        fontWeight: dark ? '400' : '300',
+        color: dark ? '#3a4448' : '#f3f5f7',
+        transform: 'translateX(-50%)',
+        textShadow: dark ? 'none' : '0 1px 10px rgba(40,46,60,0.35)',
+      });
       txt.textContent = label;
-      const line = el('div', 'abs', L, { width: '1px', background: 'rgba(246,248,250,0.85)' });
+      const line = el('div', 'abs', L, { width: '1px', background: dark ? 'rgba(58,68,72,0.7)' : 'rgba(246,248,250,0.85)' });
       const at = LT[id] + 0.5 + j * 0.08;
       show(txt, at, 0.6, { y: row === 'top' ? -10 : 10 });
       show(line, at, 0.5);
