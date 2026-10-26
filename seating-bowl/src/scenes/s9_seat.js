@@ -15,7 +15,7 @@ export const VIEWS = [
   { page: 57, label: 'SOUTH WEST LOWER BOWL 50 YD VIEW', t: [1.5, 3.0],
     from: { px: 8, py: 13, pz: 158, tx: 8, ty: 32, tz: -300, fov: 62 }, to: { px: 4, py: 13.5, pz: 155, tx: 4, ty: 32, tz: -300, fov: 61 } },
   { page: 58, label: 'SOUTH ENDZONE VIEW', t: [3.0, 4.5],
-    from: { px: 262, py: 40, pz: 70, tx: -180, ty: 6, tz: -74, fov: 60 }, to: { px: 258, py: 40.5, pz: 66, tx: -180, ty: 6, tz: -78, fov: 59 } },
+    from: { px: 300, py: 64, pz: 122, tx: -170, ty: -6, tz: -92, fov: 62 }, to: { px: 296, py: 64.5, pz: 118, tx: -170, ty: -6, tz: -96, fov: 61 } },
   { page: 59, label: 'SOUTH UPPERBOWL VIEW', t: [4.5, 8.0],
     from: { px: 296, py: 122, pz: -236, tx: -190, ty: 6, tz: 40, fov: 58 }, to: { px: 290, py: 120, pz: -230, tx: -200, ty: 12, tz: 40, fov: 54 } },
 ];

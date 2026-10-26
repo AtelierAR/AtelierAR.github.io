@@ -69,5 +69,5 @@ Each hold was placed by rendering it with `?qa=<page>`, which overlays the deck 
 |---|---|---|
 | p56 NW lower bowl | (−206, 17, 134) → target (80, 24, −70), fov 62 | Board centre-right and north goalpost left, as on the page. |
 | p57 SW lower bowl 50 yd | (8, 13, 158) → (8, 32, −300), fov 62 | Straight across at the 50. |
-| p58 South end zone | (262, 40, 70) → (−180, 6, −74), fov 60 | West side of the south end. The board sits about 50 px right of the page's position at 960 px width. |
+| p58 South end zone | (300, 64, 122) → (−170, −6, −92), fov 62 | West side of the south end, raised; board and EAGLES end zone overlap the page within ~30 px. |
 | p59 South upper bowl | (296, 122, −236) → (−190, 6, 40), fov 58 | SE upper corner. The board registers within about 100 px. The tagline closes on this view. |
