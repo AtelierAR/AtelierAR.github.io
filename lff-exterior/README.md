@@ -12,6 +12,13 @@ The animation is built in Vite + Three.js, with a GSAP master timeline driven by
 
 Story: *five materials, one language → how each is built → the canopy that shelters and powers → four arrivals → the building from every side → dusk on the plaza.*
 
+## Video
+
+`media/03_exterior_1080p60.mp4`: the rendered film (1920 × 1080, 60 fps, 85 s, 5,100 frames, H.264).
+
+- The repo copy is re-encoded at CRF 24 (45 MB) to stay under GitHub's file-size limit.
+- The full-quality CRF 16 master (164 MB) is written to `out/03_exterior_1080p60.mp4` by `npm run record`. It is not committed.
+
 ## Run it
 
 ```bash
