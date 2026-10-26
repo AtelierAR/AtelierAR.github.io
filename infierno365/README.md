@@ -77,6 +77,12 @@ npm run render   # → render/aficion_infierno365_1080p.mp4 (H.264, 1080p, 30 fp
 npm run stills   # → render/stills/aficion/<escena>.png
 ```
 
+`npm run render` hace dos pasos: Remotion renderiza `out/aficion_bruto.mp4` y
+`scripts/compatible.sh` lo convierte en el MP4 final, que se reproduce sin instalar nada
+en Windows (Fotos, Películas y TV), macOS (QuickTime), iPhone/iPad, Android, PowerPoint,
+Keynote y navegadores: H.264 High@4.0, yuv420p (rango TV, BT.709), AAC-LC 48 kHz estéreo
+y `+faststart`. Usa el ffmpeg que trae Remotion; no hace falta instalar ffmpeg.
+
 Si Remotion no puede descargar su navegador (red corporativa, sin internet), usa un
 Chrome o Chromium instalado:
 

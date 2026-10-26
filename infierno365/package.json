@@ -5,7 +5,7 @@
   "description": "INFIERNO 365 · Animaciones de la presentación para Diablos Rojos del México (Remotion)",
   "scripts": {
     "dev": "remotion studio",
-    "render": "remotion render Aficion render/aficion_infierno365_1080p.mp4",
+    "render": "remotion render Aficion out/aficion_bruto.mp4 && bash scripts/compatible.sh",
     "stills": "node scripts/stills.ts",
     "audio": "bash scripts/generar-audio.sh",
     "typecheck": "tsc --noEmit"
