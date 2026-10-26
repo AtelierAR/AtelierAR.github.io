@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Occupiable Videoboard · LFF · HKS</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <canvas id="gl"></canvas>
+      <div id="hud"></div>
+    </div>
+    <div id="dev">
+      <span id="dev-time">0.00</span>
+      <span id="dev-scene"></span>
+      <span id="dev-skin"></span>
+      <span id="dev-q"></span>
+      <span id="dev-fps"></span>
+      <span class="keys">Space play/pause · ←/→ ±5 s · R restart · 1/2/3 skin · 0 skin auto · Q quality · H hide</span>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,332 @@
+@import '@fontsource/hanken-grotesk/300.css';
+@import '@fontsource/hanken-grotesk/400.css';
+@import '@fontsource/hanken-grotesk/500.css';
+@import '@fontsource/hanken-grotesk/600.css';
+@import '@fontsource/hanken-grotesk/800.css';
+
+:root {
+  --clay: #f1f2f4;
+  --hairline: #3a4649;
+  --teal: #41b6af;
+  --line-green: #3ccb5a;
+  --midnight: #0f4a52;
+  --eagles: #004c54;
+  --silver: #a5acaf;
+  /* HUD is authored on a 1920 × 1080 canvas and scaled to fit */
+  --u: calc(var(--stage-w, 1920px) / 1920);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #05090a;
+  overflow: hidden;
+  font-family: 'HKS Sans', 'Hanken Grotesk', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  color: #fff;
+}
+
+#stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--stage-w, 1920px);
+  height: var(--stage-h, 1080px);
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  background: #000;
+}
+
+#gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-size: calc(16 * var(--u));
+}
+
+#hud > * {
+  position: absolute;
+  will-change: opacity, transform;
+}
+
+#hud svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.statement {
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-weight: 300;
+  font-size: calc(64 * var(--u));
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+.statement b {
+  font-weight: 800;
+}
+
+.counter {
+  font-weight: 300;
+  color: #fff;
+}
+.counter .num {
+  font-size: calc(76 * var(--u));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.counter .unit {
+  font-size: calc(30 * var(--u));
+  margin-left: calc(10 * var(--u));
+  opacity: 0.8;
+}
+.counter .cap {
+  display: block;
+  font-size: calc(18 * var(--u));
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: calc(6 * var(--u));
+}
+
+.dim {
+  font-size: calc(22 * var(--u));
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  text-shadow: 0 0 calc(6 * var(--u)) rgba(0, 0, 0, 0.35);
+}
+
+.facelabel {
+  transform: translate(-50%, -50%);
+  text-align: center;
+  white-space: nowrap;
+  font-size: calc(17 * var(--u));
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.facelabel .v {
+  display: block;
+  margin-top: calc(2 * var(--u));
+  font-size: calc(24 * var(--u));
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 600;
+}
+
+.card {
+  left: calc(84 * var(--u));
+  top: calc(250 * var(--u));
+  width: calc(520 * var(--u));
+  padding: calc(30 * var(--u)) calc(34 * var(--u));
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--eagles);
+  font-size: calc(24 * var(--u));
+  line-height: 1.38;
+  backdrop-filter: blur(4px);
+}
+.card .t0 {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: calc(19 * var(--u));
+  margin-bottom: calc(18 * var(--u));
+  color: var(--midnight);
+}
+.card .opt {
+  margin-top: calc(14 * var(--u));
+  transition: none;
+}
+.card .opt .h {
+  font-weight: 600;
+}
+.card .opt.dim-opt {
+  opacity: 0.28;
+}
+
+.label3d {
+  white-space: nowrap;
+  font-size: calc(20 * var(--u));
+  color: #fff;
+}
+.label3d .tick {
+  display: inline-block;
+  width: calc(10 * var(--u));
+  height: calc(10 * var(--u));
+  border-radius: 50%;
+  background: var(--line-green);
+  margin-right: calc(10 * var(--u));
+  vertical-align: middle;
+  box-shadow: 0 0 0 calc(2 * var(--u)) rgba(0, 0, 0, 0.25);
+}
+.label3d .lf {
+  font-weight: 600;
+  margin-left: calc(8 * var(--u));
+}
+.label3d.dark {
+  color: var(--eagles);
+}
+
+.callout {
+  white-space: nowrap;
+  font-size: calc(26 * var(--u));
+  line-height: 1.5;
+  color: #fff;
+}
+.callout .k {
+  display: block;
+  font-size: calc(15 * var(--u));
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.callout .sep {
+  color: var(--line-green);
+  padding: 0 calc(10 * var(--u));
+}
+
+.floorlabel {
+  white-space: nowrap;
+  font-size: calc(22 * var(--u));
+  color: #fff;
+  transform: translate(0, -50%);
+}
+.floorlabel::before {
+  content: '';
+  display: inline-block;
+  width: calc(46 * var(--u));
+  height: 2px;
+  background: var(--line-green);
+  margin-right: calc(12 * var(--u));
+  vertical-align: middle;
+}
+
+.kicker {
+  font-size: calc(17 * var(--u));
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+  opacity: 0.85;
+}
+
+.endcard {
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: calc(62 * var(--u));
+  font-weight: 300;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.endcard b {
+  font-weight: 800;
+}
+.endcard .src {
+  display: block;
+  margin-top: calc(22 * var(--u));
+  font-size: calc(17 * var(--u));
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.splitline {
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #fff;
+}
+
+.side-tag {
+  font-size: calc(16 * var(--u));
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.wave-tag {
+  font-size: calc(16 * var(--u));
+  letter-spacing: 0.16em;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ribbon-legend {
+  left: calc(84 * var(--u));
+  top: calc(240 * var(--u));
+  font-size: calc(23 * var(--u));
+  line-height: 1.7;
+  color: var(--eagles);
+}
+.ribbon-legend .t0 {
+  font-size: calc(54 * var(--u));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: calc(10 * var(--u));
+  color: #0b1f22;
+}
+.ribbon-legend .row {
+  opacity: 0.25;
+}
+.ribbon-legend .row b {
+  font-weight: 600;
+}
+.ribbon-legend .row .n {
+  display: inline-block;
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
+  line-height: calc(30 * var(--u));
+  border-radius: 50%;
+  background: var(--eagles);
+  color: #fff;
+  text-align: center;
+  font-size: calc(16 * var(--u));
+  margin-right: calc(12 * var(--u));
+}
+.ribbon-legend .msg {
+  margin-top: calc(26 * var(--u));
+  font-size: calc(26 * var(--u));
+  color: #0b1f22;
+  max-width: calc(560 * var(--u));
+}
+
+#dev {
+  position: fixed;
+  left: 8px;
+  bottom: 6px;
+  font: 12px/1.4 ui-monospace, Menlo, monospace;
+  color: #9fb;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 4px 8px;
+  display: flex;
+  gap: 14px;
+  z-index: 10;
+}
+#dev .keys {
+  color: #9aa;
+}
+body.record #dev,
+body.nodev #dev {
+  display: none;
+}

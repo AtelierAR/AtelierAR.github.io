@@ -1,0 +1,30 @@
+{
+  "name": "lff-occupiable-videoboard",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HKS · Lincoln Financial Field renovation — Prompt 4: The Occupiable Videoboard (90 s showpiece animation)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "test": "vitest run",
+    "fit": "node scripts/fit-volumes.mjs",
+    "audio": "node scripts/render-audio.mjs",
+    "record": "node scripts/record.mjs",
+    "record:4k": "node scripts/record.mjs --4k",
+    "qa": "node scripts/qa-overlays.mjs",
+    "rasterize": "mkdir -p reference/pages && pdftoppm -r 200 -png reference/20261022_LFF_Eagles_HKS.pdf reference/pages/p"
+  },
+  "dependencies": {
+    "@fontsource/hanken-grotesk": "^5.3.0",
+    "gsap": "^3.15.0",
+    "n8ao": "^2.0.1",
+    "postprocessing": "^6.39.5",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}
