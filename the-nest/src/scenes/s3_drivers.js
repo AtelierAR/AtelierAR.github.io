@@ -156,7 +156,8 @@ export function build(ctx, S) {
     show(box, T3 + 1.3 + i * 0.2, 0.8, { x: -24 });
     return box;
   });
-  [eyebrow, g1, g2, sub, skyScrim, ...pillars].forEach((e) => hide(e, S.end - 0.4, 0.4));
+  // pillar bodies (≤ 8 words) are legible from ≈ 33.4 s; they hold to 36.75 s (≥ 3.2 s)
+  [eyebrow, g1, g2, sub, skyScrim, ...pillars].forEach((e) => hide(e, S.end - 0.25, 0.25));
 
   function update(t) {
     placeOnScreen(black, camera, { dist: 70 });

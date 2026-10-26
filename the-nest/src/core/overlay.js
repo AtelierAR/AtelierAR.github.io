@@ -79,29 +79,7 @@ export function scrim(parent, style) {
   return el('div', 'scrim', parent, style);
 }
 
-// Break text into lines of at most `max` characters on word boundaries.
-export function wrap(text, max = 60) {
-  const out = [];
-  let line = '';
-  for (const w of text.split(' ')) {
-    if ((line + ' ' + w).trim().length > max && line) {
-      out.push(line.trim());
-      line = w;
-    } else line += ' ' + w;
-  }
-  if (line.trim()) out.push(line.trim());
-  return out;
-}
-
-// Same, but with lines of near-equal length (no orphans), still ≤ max characters.
-export function wrapBalanced(text, max = 60) {
-  const n = wrap(text, max).length;
-  for (let target = Math.ceil(text.length / n); target <= max; target++) {
-    const lines = wrap(text, target);
-    if (lines.length <= n) return lines;
-  }
-  return wrap(text, max);
-}
+export { wrap, wrapBalanced } from '../paragraph.js';
 
 // A scene-owned layer that is only displayed inside its time window.
 export function layer(name) {

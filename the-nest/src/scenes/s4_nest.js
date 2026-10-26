@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
-import { NEST, minSeconds } from '../data.js';
+import { NEST } from '../data.js';
+import { paragraphSchedule, FADE_IN, FADE_OUT } from '../paragraph.js';
 import { C } from '../palette.js';
 import { to, EASE, clamp01, prog, fromTo } from '../core/timeline.js';
 import { layer, el, textBlock, typeOn, wordsIn, show, hide, rule, scrim, wrapBalanced } from '../core/overlay.js';
@@ -477,43 +478,26 @@ const easeIO = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
 const easeOut = (x) => 1 - Math.pow(1 - x, 3);
 
 // ---------------------------------------------------------------------------------------------
-// p9 paragraph: each sentence wrapped to ≤ 60 characters per line, shown two lines at a time,
-// never overlapping the previous chunk (≤ 3 lines ever on screen) and never shorter than
-// 0.4 s/word of fully legible time. The last sentence runs into Scene 5, where it moves to the
-// top-left so it never meets the p26 leader labels.
+// p9 paragraph (schedule in src/paragraph.js). The last sentence runs into Scene 5, where it moves
+// to the top-left so it never meets the p26 leader labels.
 function buildParagraph(L, S, ctx) {
-  const SLOTS = [37.6, 47.3, 53.95, 60.2, 65.45]; // sentence starts (s)
-  const FADE_IN = 0.35;
-  const FADE_OUT = 0.3;
   const boxes = [];
-  NEST.paragraph.forEach((sentence, si) => {
-    const lines = wrapBalanced(sentence, 60);
-    const chunks = [];
-    for (let i = 0; i < lines.length; i += 2) chunks.push(lines.slice(i, i + 2));
-    const need = minSeconds(sentence) + chunks.length * (FADE_IN + FADE_OUT);
-    const start = SLOTS[si];
-    const end = si + 1 < SLOTS.length ? Math.max(SLOTS[si + 1], start + need) : start + need + 0.4;
-    const total = chunks.reduce((n, c) => n + c.join(' ').length, 0);
-    let at = start;
-    const late = si === 4;
-    chunks.forEach((c) => {
-      const dur = ((end - start) * c.join(' ').length) / total;
-      const box = el('div', 'abs', L, {
-        left: late ? '96px' : '206px',
-        top: late ? '64px' : '902px',
-        fontSize: '22px',
-        lineHeight: '31px',
-        fontWeight: '600',
-        color: '#eef3f3',
-        whiteSpace: 'normal',
-      });
-      box.innerHTML = c.map((ln) => `<div>${ln}</div>`).join('');
-      fromTo(box, at + 0.02, FADE_IN, { opacity: 0, y: 10 }, { opacity: 1, y: 0 }, EASE.type);
-      fromTo(box, at + dur - FADE_OUT, FADE_OUT, { opacity: 1 }, { opacity: 0 }, 'power2.in');
-      boxes.push({ box, at, dur, sentence: si });
-      at += dur;
+  for (const c of paragraphSchedule()) {
+    const late = c.sentence === 4;
+    const box = el('div', 'abs', L, {
+      left: late ? '96px' : '206px',
+      top: late ? '64px' : '902px',
+      fontSize: '22px',
+      lineHeight: '31px',
+      fontWeight: '600',
+      color: '#eef3f3',
+      whiteSpace: 'normal',
     });
-  });
+    box.innerHTML = c.lines.map((ln) => `<div>${ln}</div>`).join('');
+    fromTo(box, c.at + 0.02, FADE_IN, { opacity: 0, y: 10 }, { opacity: 1, y: 0 }, EASE.type);
+    fromTo(box, c.at + c.dur - FADE_OUT, FADE_OUT, { opacity: 1 }, { opacity: 0 }, 'power2.in');
+    boxes.push({ box, ...c });
+  }
   // hairline rules framing the paragraph (p9), and a soft scrim for legibility
   const sc = scrim(L, { left: '0', top: '700px', width: '1400px', height: '380px', background: 'radial-gradient(60% 75% at 22% 82%, rgba(2,20,23,0.82), rgba(2,20,23,0) 100%)' });
   show(sc, 37.4, 0.8);

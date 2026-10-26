@@ -181,17 +181,17 @@ export function build(ctx, S) {
   // --- type (p2 layout × 0.96) -------------------------------------------------------------
   const L = layer('ambition');
   const sc = scrim(L, { left: '0', top: '0', width: '1300px', height: '1080px', background: 'linear-gradient(90deg, rgba(3,25,28,0.88) 0%, rgba(3,25,28,0.65) 55%, rgba(3,25,28,0) 100%)' });
-  show(sc, S.start + 0.6, 1.2, {}, 'power2.out');
-  const rail = vrule(L, 91, 0, 1080, S.start + 0.6, 1.2);
+  show(sc, S.start + 0.9, 1.2, {}, 'power2.out');
+  const rail = vrule(L, 91, 0, 1080, S.start + 0.9, 1.2);
   rail.style.background = 'rgba(255,255,255,0.5)';
   const railLabel = textBlock(L, AMBITION.rail, { left: '30px', top: '285px', fontSize: '19px', fontWeight: '400', letterSpacing: '0.04em', transform: 'rotate(-90deg)', transformOrigin: '0 0', color: '#e9eeee' });
-  typeOn(railLabel, S.start + 1.0, { per: 0.02 });
+  typeOn(railLabel, S.start + 1.3, { per: 0.02 });
   const eyebrow = textBlock(L, AMBITION.eyebrow, { left: '204px', top: '92px', fontSize: '29px', fontWeight: '300', letterSpacing: '0.01em' });
-  typeOn(eyebrow, S.start + 0.9, { per: 0.03 });
+  typeOn(eyebrow, S.start + 1.25, { per: 0.03 });
   const hA = textBlock(L, AMBITION.headline[0], { left: '200px', top: '215px', fontSize: '107px', fontWeight: '500', letterSpacing: '0.035em', lineHeight: '1' });
   const hB = textBlock(L, AMBITION.headline[1], { left: '200px', top: '345px', fontSize: '107px', fontWeight: '500', letterSpacing: '0.035em', lineHeight: '1', color: C.line });
-  typeOn(hA, S.start + 1.2, { duration: 1.0, per: 0.03, rise: 26 });
-  typeOn(hB, S.start + 1.6, { duration: 1.0, per: 0.03, rise: 26 });
+  typeOn(hA, S.start + 1.5, { duration: 1.0, per: 0.03, rise: 26 });
+  typeOn(hB, S.start + 1.9, { duration: 1.0, per: 0.03, rise: 26 });
 
   const RULES = [534, 616, 698, 780, 863]; // p2 rules (556/642/727/813/899) × 0.96
   const LINE_AT = [17.2, 18.3, 19.4, 20.5];

@@ -105,8 +105,8 @@ export function build(ctx, S) {
   const w = { light: { fontWeight: '200' }, black: { fontWeight: '900', color: '#e4eceb' }, dot: { fontWeight: '900', color: C.line } };
   const h1 = textBlock(L, ENERGY.headline[0].map((r) => ({ t: r.t, style: w[r.w] })), { ...H, left: '93px', top: '170px' });
   const h2 = textBlock(L, ENERGY.headline[1].map((r) => ({ t: r.t, style: w[r.w] })), { ...H, left: '96px', top: '266px', letterSpacing: '0.035em' });
-  typeOn(h1, 4.6, { duration: 1.0, per: 0.035, rise: 24 });
-  typeOn(h2, 5.0, { duration: 1.0, per: 0.03, rise: 24 });
+  typeOn(h1, 4.4, { duration: 1.0, per: 0.035, rise: 24 });
+  typeOn(h2, 4.75, { duration: 1.0, per: 0.03, rise: 24 });
 
   // body: 22 px, ≤ 60 characters per line; each sentence stays ≥ 0.4 s/word
   const body = el('div', 'abs', L, { left: '99px', top: '402px', fontSize: '22px', lineHeight: '34px', fontWeight: '400', color: '#dfe6e6', opacity: '1' });
@@ -114,10 +114,10 @@ export function build(ctx, S) {
   lines.forEach((ln, i) => {
     const b = textBlock(body, ln, { position: 'relative', display: 'block' }, '');
     b.style.opacity = '0';
-    wordsIn(b, 5.5 + i * 0.32, { duration: 0.9, per: 0.04 });
+    wordsIn(b, 4.85 + i * 0.18, { duration: 0.9, per: 0.03 });
   });
-  // last sentence (18 words) appears at ≈ 5.8 s → needs ≥ 7.2 s → out at 13.2
-  [h1, h2, body, sc].forEach((e) => hide(e, 13.2, 0.6));
+  // second sentence (18 words) is fully legible from ≈ 5.95 s → needs ≥ 7.2 s → out at 13.25
+  [h1, h2, body, sc].forEach((e) => hide(e, 13.25, 0.55));
 
   // --- per-frame -------------------------------------------------------------------------------
   const work = Array.from({ length: N }, () => [0, 0, 0]);
@@ -137,8 +137,10 @@ export function build(ctx, S) {
     setWidth(silver, 3.6 - 0.9 * st.lineColor);
     setWidth(green, 4.6 - 1.6 * clamp01(st.morph * 1.4));
 
+    // Geometry is recomputed from t every frame (no state carried between frames), so any frame
+    // renders the same whether reached by playing or by seeking. Scene 2 owns visibility and
+    // opacity of the section lines after S.end.
     ctx.section.visible = true;
-    if (t >= S.end) return; // Scene 2 owns the section lines from here
 
     // today line: drawn on left → right with tiny irregular undulations
     const und = WAVE_TODAY.map((p, i) => {
