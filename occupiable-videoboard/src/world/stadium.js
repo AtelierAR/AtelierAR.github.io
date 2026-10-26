@@ -300,6 +300,8 @@ export class Stadium {
 
   #canopies() {
     // Sideline canopies (p66, p70): thin roofs over the upper bowl, rising outward.
+    // Collected into this.canopies so the bowl diagrams (p67/p69 have no roof) can hide them.
+    const before = this.group.children.length;
     const sides = runsWhere(sampleRing(0, 10), (p) => Math.abs(p.z) < 300 && Math.abs(p.x) > 60);
     const ut = this.upperTop;
     const prof = [[ut.d - 120, ut.y + 34], [ut.d + 30, ut.y + 52], [ut.d + 30, ut.y + 49], [ut.d - 120, ut.y + 31], [ut.d - 120, ut.y + 34]];
@@ -321,6 +323,9 @@ export class Stadium {
         this.group.add(m);
       }
     }
+    this.canopies = new THREE.Group();
+    this.canopies.add(...this.group.children.slice(before));
+    this.group.add(this.canopies);
   }
 
   #building() {

@@ -414,7 +414,9 @@ export function frame(ctx, S, t) {
 
   // ---- post
   const day = 1 - S.night;
-  post.ao.enabled = S.world === 'stadium' && day > 0.5 && split > 0.999 && ctx.quality === 'high';
+  // AO off for the aerials: at ~1,000' the screen-space AO only adds streaks
+  post.ao.enabled = S.world === 'stadium' && day > 0.5 && split > 0.999 && ctx.quality === 'high' && camA.position.y < 260;
+  world.stadium.canopies.visible = sc.id !== 4;
   const insideClub = sc.id === 5 && t > 55.6 && t < 62.4;
   post.ao.configuration.intensity = (insideClub ? 3.6 : 2.0) * day;
   post.ao.configuration.aoRadius = insideClub ? 7 : 12;
@@ -587,13 +589,23 @@ function hudFrame(ctx, S, t, sc) {
     // PROPOSED COPY
     const msg = `<div class="msg" style="opacity:${smooth(44.6, 45.2, t).toFixed(3)}">One continuous digital ring with two inhabitable hearts.</div>`;
     hud.show('ribbon-legend', 'ribbon-legend', `<div class="t0">Ribbon boards</div>${legend}${msg}`, { o: win(t, 38.6, 45.9, 0.4) });
-    for (const r of ctx.world.ribbons.runs) {
-      const on = smooth(39.4 + (r.n - 1) * 0.78, 39.8 + (r.n - 1) * 0.78, t);
-      hud.show3d(`rl-${r.n}`, 'label3d dark', `<span class="tick"></span>${r.name}<span class="lf">${r.lf} LF</span>`, r.mid, camA, {
-        o: on * win(t, 38.6, 45.9, 0.3),
-        dx: r.side === 'west' ? -14 : 14,
-        dy: (((r.n - 1) % 4) - 1.5) * 30,
-        right: r.side === 'west',
+    // labels with leader lines: per side, stacked in screen space so they never collide
+    for (const side of ['west', 'east']) {
+      const runs = ctx.world.ribbons.runs
+        .filter((r) => r.side === side)
+        .map((r) => ({ r, p: hud.project(r.mid, camA) }))
+        .filter((x) => x.p)
+        .sort((a, b) => a.p.y - b.p.y);
+      if (!runs.length) continue;
+      const cy = runs.reduce((s, x) => s + x.p.y, 0) / runs.length;
+      const lx = side === 'west' ? Math.min(...runs.map((x) => x.p.x)) - 70 : Math.max(...runs.map((x) => x.p.x)) + 70;
+      runs.forEach(({ r, p }, i) => {
+        const on = smooth(39.4 + (r.n - 1) * 0.78, 39.8 + (r.n - 1) * 0.78, t) * win(t, 38.6, 45.9, 0.3);
+        const ly = cy + (i - (runs.length - 1) / 2) * 34;
+        hud.line(p.x, p.y, lx, ly, { stroke: '#004C54', w: 1.2, o: on * 0.8 });
+        hud.svgParts.push(`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" fill="#3CCB5A" opacity="${on.toFixed(3)}"/>`);
+        const e = hud.show(`rl-${r.n}`, 'label3d dark', `${r.name}<span class="lf">${r.lf} LF</span>`, { o: on, x: lx + (side === 'west' ? -8 : 8), y: ly });
+        if (e) e.style.transform = side === 'west' ? 'translate(-100%, -50%)' : 'translate(0, -50%)';
       });
     }
   }
