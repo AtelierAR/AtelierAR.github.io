@@ -117,7 +117,8 @@ export function steelMaterial() {
   const rough = canvas(W);
   const c = col.getContext('2d');
   const rc = rough.getContext('2d');
-  c.fillStyle = C.steel;
+  // a metal's reflectance comes from its base colour, so blackened steel is a dark grey, not black
+  c.fillStyle = '#5a6066';
   c.fillRect(0, 0, W, W);
   rc.fillStyle = '#707070';
   rc.fillRect(0, 0, W, W);
@@ -136,7 +137,9 @@ export function steelMaterial() {
     rc.stroke();
   }
   for (let i = 0; i < 60; i++) {
-    const g = c.createRadialGradient(r() * W, r() * W, 0, r() * W, r() * W, 40 + r() * 90);
+    const cx = r() * W;
+    const cy = r() * W;
+    const g = c.createRadialGradient(cx, cy, 0, cx, cy, 40 + r() * 90); // concentric, or it draws cones
     g.addColorStop(0, 'rgba(20,24,26,0.35)');
     g.addColorStop(1, 'rgba(20,24,26,0)');
     c.fillStyle = g;
@@ -232,7 +235,9 @@ export function withEdges(mesh, mat = edgeMaterial()) {
 
 // Environment for reflections: p26 sky gradient over a white plaza, a low warm sun, and a ring of
 // darker city blocks so mirror surfaces have something to reflect.
-export function environment(renderer) {
+// `sun: false` gives a studio variant (soft broad highlight, no sun disc) for close-up
+// material tiles, where a hard sun reflection would bloom into a lens-flare look.
+export function environment(renderer, { sun: withSun = true } = {}) {
   const scene = new THREE.Scene();
   const sky = new THREE.Mesh(
     new THREE.SphereGeometry(100, 48, 24),
@@ -245,12 +250,24 @@ export function environment(renderer) {
     }),
   );
   scene.add(sky);
-  const sun = new THREE.Mesh(new THREE.SphereGeometry(5, 16, 8), new THREE.MeshBasicMaterial({ color: new THREE.Color('#fff1dc').multiplyScalar(14) }));
-  sun.position.set(-60, 18, 55);
+  const sun = withSun
+    ? new THREE.Mesh(new THREE.SphereGeometry(5, 16, 8), new THREE.MeshBasicMaterial({ color: new THREE.Color('#fff1dc').multiplyScalar(14) }))
+    : new THREE.Mesh(new THREE.SphereGeometry(26, 16, 8), new THREE.MeshBasicMaterial({ color: new THREE.Color('#f3f1ec').multiplyScalar(1.0) }));
+  sun.position.set(-60, withSun ? 18 : 40, 55);
   scene.add(sun);
   const r = rng(3);
+  if (!withSun) {
+    // studio: a few large soft panels around a neutral sphere give metals a readable gradient
+    const panel = new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffffff').multiplyScalar(0.8), side: THREE.DoubleSide });
+    [[0, 30, 80, 90, 30], [-80, 20, -10, 40, 50], [75, -5, 20, 30, 60]].forEach(([x, y, z, w, h]) => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), panel);
+      m.position.set(x, y, z);
+      m.lookAt(0, 0, 0);
+      scene.add(m);
+    });
+  }
   const blockMat = new THREE.MeshBasicMaterial({ color: '#4b5560' });
-  for (let i = 0; i < 46; i++) {
+  for (let i = 0; i < (withSun ? 46 : 0); i++) {
     const a = r() * Math.PI * 2;
     const h = 4 + r() * 22;
     const b = new THREE.Mesh(new THREE.BoxGeometry(4 + r() * 6, h, 4 + r() * 6), blockMat);

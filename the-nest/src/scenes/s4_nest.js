@@ -6,7 +6,7 @@ import { C } from '../palette.js';
 import { to, EASE, clamp01, prog, fromTo } from '../core/timeline.js';
 import { layer, el, textBlock, typeOn, wordsIn, show, hide, rule, scrim, wrapBalanced } from '../core/overlay.js';
 import { plate, placeOnScreen, fieldPlate } from '../core/plates.js';
-import { masonryMaterial, steelMaterial, glassMaterial, digitalMaterial, stainlessMaterial } from '../core/materials.js';
+import { masonryMaterial, steelMaterial, glassMaterial, digitalMaterial, stainlessMaterial, environment } from '../core/materials.js';
 
 // Scene 4 — The Nest: a kit of parts (p9, p10). Title card → four era frames that collapse into
 // the five material tiles → Our City › Our Architecture › Our Identity as one continuous morph of
@@ -215,7 +215,19 @@ export function build(ctx, S) {
     reflective: stainlessMaterial(),
   };
   ctx.materials = mats;
-  const tiles = buildTiles(mats);
+  // the tiles are seen close-up: light them with the studio environment (no sun disc)
+  const studio = environment(ctx.renderer, { sun: false });
+  const tileMats = Object.fromEntries(
+    Object.entries(mats).map(([k, m]) => {
+      const c = m.clone();
+      c.envMap = studio;
+      if (k === 'steel') Object.assign(c, { metalness: 0.75, roughness: 0.42 });
+      if (k === 'reflective') Object.assign(c, { roughness: 0.14 }); // spread the raking highlight; no flare
+      if (k === 'digital') c.userData.draw = m.userData.draw;
+      return [k, c];
+    }),
+  );
+  const tiles = buildTiles(tileMats);
   const tileState = NEST.materials.map((m, i) => {
     const g = tiles[m.id];
     g.traverse((o) => o.layers.set(1));
@@ -235,11 +247,11 @@ export function build(ctx, S) {
     return { g, s, i, m };
   });
   const heading = textBlock(L, NEST.materialHeading, { left: `${X0}px`, top: `${TILE_Y - 64}px`, fontSize: '24px', fontWeight: '700', letterSpacing: '0.12em', color: '#e6eeee' });
-  typeOn(heading, COLLAPSE[0] + 0.2, { per: 0.03 });
+  typeOn(heading, COLLAPSE[1] + 0.45, { per: 0.03 });
   hide(heading, T_TRIPTYCH - 0.8, 0.4);
 
   // light raking across the tiles: rides with the camera like the tiles do
-  const rake = new THREE.DirectionalLight('#fff3e2', 2.6);
+  const rake = new THREE.DirectionalLight('#fff3e2', 2.1);
   const rakeTarget = new THREE.Object3D();
   rakeTarget.position.set(0, 0, -SCREEN_DIST);
   cam.add(rake, rakeTarget);
@@ -412,7 +424,7 @@ export function build(ctx, S) {
     });
     const a = rakeS.a;
     rake.position.set(-40 + 80 * a, 14, -SCREEN_DIST + 26);
-    rake.intensity = t < T_TRIPTYCH + 0.5 ? 2.6 : 0;
+    rake.intensity = t < T_TRIPTYCH + 0.5 ? 2.1 : 0;
     fill.intensity = t < T_TRIPTYCH + 0.5 ? 0.35 : 0;
     mats.digital.userData.draw(t, 'wave');
 
@@ -450,7 +462,14 @@ export function build(ctx, S) {
       parts.setMatrixAt(i, m4);
       col.set(from.hidden ? tgt.c : from.c);
       colB.set(tgt.hidden ? from.c : tgt.c);
-      parts.setColorAt(i, col.lerp(colB, kk));
+      col.lerp(colB, kk);
+      // Our Architecture: each fin brightens as the light wave passes it
+      if (B[i].a !== undefined && toB > 0) {
+        const phase = Math.max(0, Math.sin(B[i].a * 2 - (t - T_ARCH) * 2.4));
+        const lift = 0.9 * Math.pow(phase, 6) * tr.wave * (1 - toC);
+        col.multiplyScalar(1 + lift);
+      }
+      parts.setColorAt(i, col);
     }
     parts.instanceMatrix.needsUpdate = true;
     parts.instanceColor.needsUpdate = true;
@@ -458,7 +477,7 @@ export function build(ctx, S) {
     partMat.roughness = 0.82 + (0.05 - 0.82) * toB + (0.22 - 0.05) * toC;
     partMat.metalness = 0.04 + (0.85 - 0.04) * toB + (0.5 - 0.85) * toC;
     partMat.envMapIntensity = 0.7 + 0.9 * toB;
-    glint.intensity = 1600 * tr.wave * (1 - toC);
+    glint.intensity = 450 * tr.wave * (1 - toC);
     const ga = (t - T_ARCH) * 0.9;
     glint.position.set(Math.cos(ga) * 260, 150, Math.sin(ga) * 260 + 80);
     const sp = easeOut(clamp01((toC - 0.75) / 0.25));

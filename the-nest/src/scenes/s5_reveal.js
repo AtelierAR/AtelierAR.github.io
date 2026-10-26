@@ -179,6 +179,30 @@ export function build(ctx, S) {
   bowl.position.z = BOWL_Z;
   bowl.castShadow = bowl.receiveShadow = true;
   ghost.add(withEdges(bowl));
+  // seating tiers: hairline rings along the lower and upper rakes so the bowl reads from the air
+  {
+    const seg = [];
+    const ring = (u, y) => {
+      for (let k = 0; k < per.length; k++) {
+        const p = per[k];
+        const q = per[(k + 1) % per.length];
+        seg.push(p.x + p.nx * u, y, p.z + p.nz * u, q.x + q.nx * u, y, q.z + q.nz * u);
+      }
+    };
+    const rake = (a, b, rows) => {
+      for (let i = 1; i < rows; i++) {
+        const f = i / rows;
+        ring(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f + 0.3);
+      }
+    };
+    rake(RIB_BOWL[0], RIB_BOWL[1], 14);
+    rake(RIB_BOWL[3], RIB_BOWL[4], 12);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(seg, 3));
+    const tiers = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: C.edge, transparent: true, opacity: 0.28 }));
+    tiers.position.z = BOWL_Z;
+    ghost.add(tiers);
+  }
   const field = new THREE.Mesh(new THREE.PlaneGeometry(FIELD_HALF.x * 2, FIELD_HALF.z * 2), clayMaterial('#dfe5e1'));
   field.rotation.x = -Math.PI / 2;
   field.position.set(0, -12, BOWL_Z);
