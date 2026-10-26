@@ -1,0 +1,17 @@
+{
+  "page": 74,
+  "w": 2136,
+  "h": 1381,
+  "fieldCenterPx": [
+    1431.0,
+    804.0
+  ],
+  "fieldBoxPx": [
+    1294,
+    714,
+    1568,
+    894
+  ],
+  "ftPerPx": 1.5121,
+  "note": "image left = deck north (plaza); image up = deck east. ftPerPx assumes the 1,037 ft N-S extent measured on the east elevation (p31)."
+}

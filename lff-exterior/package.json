@@ -1,0 +1,27 @@
+{
+  "name": "lff-exterior-animation",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Lincoln Financial Field renovation — Exterior Strategies animation (HKS Concept Pricing Package, Oct 22 2026)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173",
+    "pages": "bash scripts/rasterize.sh",
+    "prep": "python3 scripts/prep_assets.py",
+    "qa": "node scripts/qa.mjs",
+    "record": "node scripts/record.mjs",
+    "record:4k": "node scripts/record.mjs --scale=2"
+  },
+  "dependencies": {
+    "@fontsource/hanken-grotesk": "5.2.8",
+    "gsap": "3.13.0",
+    "n8ao": "1.10.1",
+    "postprocessing": "6.37.8",
+    "three": "0.178.0"
+  },
+  "devDependencies": {
+    "vite": "6.3.5"
+  }
+}

@@ -1,0 +1,21 @@
+:root {
+  --midnight: #0F4A52;
+  --eagles: #004C54;
+  --teal: #41B6AF;
+  --line: #3CCB5A;
+  --silver: #A5ACAF;
+  --ink: #1d2a2d;
+  --edge: #3A4649;
+  --font: 'Hanken Grotesk', system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #0b0d0e; overflow: hidden; }
+#stage {
+  position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px;
+  transform-origin: 0 0; overflow: hidden; background: #E3E6EC;
+  font-family: var(--font); color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+#gl { position: absolute; inset: 0; width: 1920px; height: 1080px; display: block; }
+#overlay { position: absolute; inset: 0; pointer-events: none; }
+#hud { position: fixed; left: 8px; bottom: 8px; font: 12px/1.3 ui-monospace, monospace; color: #9fb; background: rgba(0,0,0,.55); padding: 4px 8px; border-radius: 4px; z-index: 9; }
