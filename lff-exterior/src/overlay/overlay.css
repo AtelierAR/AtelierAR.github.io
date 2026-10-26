@@ -53,11 +53,11 @@
 .asm-index b { color: var(--eagles); font-weight: 600; }
 
 /* ---------------- canopy stats (scene 4) */
-.stat { color: #fff; text-shadow: 0 1px 18px rgba(10,30,34,.35); }
+.stat { color: #fff; text-shadow: 0 1px 18px rgba(10,30,34,.55); }
 .stat .big { font-size: 84px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; }
 .stat .big em { font-style: normal; font-size: 40px; font-weight: 400; margin: 0 14px; opacity: .8; }
 .stat .cap { font-size: 22px; letter-spacing: .12em; text-transform: uppercase; opacity: .85; margin-top: 10px; }
-.roofrows { left: 103px; top: 760px; color: #fff; text-shadow: 0 1px 14px rgba(10,30,34,.35); }
+.roofrows { left: 72px; top: 740px; color: #fff; text-shadow: 0 1px 14px rgba(10,30,34,.35); padding: 22px 36px 20px 31px; background: linear-gradient(90deg, rgba(15,74,82,.82), rgba(15,74,82,.55) 70%, rgba(15,74,82,0)); }
 .roofrows .row { display: flex; align-items: baseline; gap: 24px; font-size: 30px; line-height: 1.45; }
 .roofrows .row b { font-weight: 600; width: 270px; }
 .roofrows .row span { font-variant-numeric: tabular-nums; }

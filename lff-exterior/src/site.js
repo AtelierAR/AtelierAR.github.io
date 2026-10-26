@@ -52,7 +52,25 @@ export function buildSite(siteplanMeta) {
   const ticketing = buildTicketing();
   root.add(ticketing.group);
 
-  return { root, ground, groundMat, plan, planMat, trees, crowd, ticketing };
+  // trees grow in/out (scene 6 -> 7) by scaling their instances
+  const base = [];
+  for (let i = 0; i < trees.count; i++) { const m = new THREE.Matrix4(); trees.getMatrixAt(i, m); base.push(m); }
+  let treeK = 1;
+  const setTrees = (k) => {
+    if (Math.abs(k - treeK) < 1e-4) return;
+    treeK = k;
+    trees.visible = k > 0.001;
+    const s = new THREE.Matrix4(), t = new THREE.Matrix4();
+    base.forEach((m, i) => {
+      const e = Math.min(1, Math.max(0, k * 1.6 - (i % 7) * 0.09)); // staggered growth
+      s.makeScale(e, e, e);
+      t.copy(m).multiply(s);
+      trees.setMatrixAt(i, t);
+    });
+    trees.instanceMatrix.needsUpdate = true;
+  };
+
+  return { root, ground, groundMat, plan, planMat, trees, crowd, ticketing, setTrees };
 }
 
 // ------------------------------------------------------------------ trees

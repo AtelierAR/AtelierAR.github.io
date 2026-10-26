@@ -72,7 +72,7 @@ async function boot() {
     // global state tweened by scenes
     state: {
       dusk: 0, boardOn: 0, crowd: 0, mirror: 0, mirrorWing: 'NW', bloom: 0, glow: 0, rim: 0,
-      sunAz: 75, sunEl: 38, sunK: 1, envK: 1, dof: 0, studio: 0, plan: 0, exposure: 1, grain: 0.03,
+      sunAz: 75, sunEl: 38, sunK: 1, envK: 1, paper: 0, trees: 1, dof: 0, studio: 0, plan: 0, exposure: 1, grain: 0.03,
     },
   };
   for (const m of SCENE_MODULES) await m.build(ctx);
@@ -81,7 +81,8 @@ async function boot() {
   const tmp = new THREE.Vector3();
   const mirrorPlane = new THREE.Plane();
   function update(T) {
-    master.seek(Math.min(T, master.duration()), false);
+    // epsilon so zero-duration sets placed at t = 0 are applied on the very first frame
+    master.seek(Math.min(Math.max(T, 1e-4), master.duration()), false);
     director.update(T);
     ctx.shadowKey.length = 0;
     for (const fn of frameFns) fn(T, ctx);
@@ -94,6 +95,7 @@ async function boot() {
     // sky follows the camera; sun; dusk
     engine.sky.position.copy(engine.camera.position);
     engine.skyU.uDusk.value = S.dusk;
+    engine.skyU.uPaper.value = S.paper;
     engine.sunState.az = S.sunAz; engine.sunState.el = S.sunEl;
     engine.placeSun(S.studio > 0.5 ? new THREE.Vector3(0, 0, 0) : new THREE.Vector3(0, 0, 0));
     const L = engine.lights;
@@ -103,8 +105,8 @@ async function boot() {
     L.hemi.color.set('#E4E8F0').lerp(new THREE.Color('#6F7796'), S.dusk);
     L.hemi.groundColor.set('#D6D3CE').lerp(new THREE.Color('#5a4a40'), S.dusk);
     L.rim.intensity = S.rim * 2.2;
-    L.boardLight.intensity = S.boardOn * S.dusk * 9000;
-    L.plazaGlow.intensity = S.dusk * S.glow * 5000;
+    L.boardLight.intensity = S.boardOn * S.dusk * 3200;
+    L.plazaGlow.intensity = S.dusk * S.glow * 1800;
     const bc = stadium.userData.parts.boards[0].screenCenter;
     L.boardLight.position.set(bc.x, bc.y - 10, bc.z - 40);
     L.plazaGlow.position.set(0, 12, -190);
@@ -114,7 +116,7 @@ async function boot() {
     setWash(new THREE.Color('#E6E8EC').lerp(new THREE.Color('#8a8796'), S.dusk), 0.62 * (1 - 0.6 * S.dusk));
     engine.updateEnv();
     engine.scene.environmentIntensity = S.envK;
-    const sig = [S.sunAz.toFixed(3), S.sunEl.toFixed(3), stadium.visible, site.trees.visible, ...ctx.shadowKey].join('|');
+    const sig = [S.sunAz.toFixed(3), S.sunEl.toFixed(3), stadium.visible, S.trees.toFixed(3), ...ctx.shadowKey].join('|');
     if (sig !== shadowSig) { engine.renderer.shadowMap.needsUpdate = true; shadowSig = sig; }
 
     // post
@@ -132,6 +134,7 @@ async function boot() {
     // crowd
     site.crowd.mesh.visible = S.crowd > 0.001;
     if (site.crowd.mesh.visible) site.crowd.update(T, S.crowd);
+    site.setTrees(S.trees);
     site.planMat.opacity = S.plan;
     site.plan.visible = S.plan > 0.001;
 

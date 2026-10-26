@@ -146,7 +146,7 @@ export function initMaterials() {
 
   M.glass = patch(new THREE.MeshStandardMaterial({
     map: tx.cw.map, roughnessMap: tx.cw.roughnessMap, roughness: 1, metalness: 0.85, envMapIntensity: 1.6,
-    emissive: new THREE.Color('#ffb46b'), emissiveMap: tx.cw.emissiveMap, emissiveIntensity: 0,
+    emissive: new THREE.Color('#ffd2a1'), emissiveMap: tx.cw.emissiveMap, emissiveIntensity: 0,
   }), 'glazing', { clayRough: 0.6, clayColor: '#E2E5E9' });
   M.frame = patch(new THREE.MeshStandardMaterial({ color: '#3a4043', roughness: 0.4, metalness: 0.35 }), 'glazing');
 

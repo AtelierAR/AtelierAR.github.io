@@ -30,20 +30,21 @@ export function createEngine(canvas, { pixelRatio = 1, record = false } = {}) {
   const skyU = {
     top: { value: C(PAL.skyTop) }, horizon: { value: C(PAL.skyHorizon) },
     duskTop: { value: C(PAL.duskTop) }, duskMid: { value: C(PAL.duskMid) }, duskHorizon: { value: C(PAL.duskHorizon) },
-    ground: { value: C('#E9EAEE') }, uDusk: { value: 0 }, uBright: { value: 1 },
+    ground: { value: C('#E9EAEE') }, uDusk: { value: 0 }, uBright: { value: 1 }, uPaper: { value: 0 },
   };
   const sky = new THREE.Mesh(
     new THREE.SphereGeometry(8000, 48, 24),
     new THREE.ShaderMaterial({
       uniforms: skyU, side: THREE.BackSide, depthWrite: false, fog: false,
       vertexShader: `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix*viewMatrix*modelMatrix*vec4(position,1.0); gl_Position.z = gl_Position.w; }`,
-      fragmentShader: `uniform vec3 top, horizon, duskTop, duskMid, duskHorizon, ground; uniform float uDusk, uBright; varying vec3 vDir;
+      fragmentShader: `uniform vec3 top, horizon, duskTop, duskMid, duskHorizon, ground; uniform float uDusk, uBright, uPaper; varying vec3 vDir;
         void main(){ float h = normalize(vDir).y;
           vec3 day = mix(horizon, top, smoothstep(0.0, 0.5, h));
           vec3 dusk = mix(duskHorizon, duskMid, smoothstep(0.0, 0.16, h)); dusk = mix(dusk, duskTop, smoothstep(0.16, 0.65, h));
           vec3 c = mix(day, dusk, uDusk);
           vec3 g = mix(ground, ground*0.35 + duskHorizon*0.12, uDusk);
           c = mix(c, g, smoothstep(0.0, -0.04, h));
+          c = mix(c, vec3(0.86, 0.87, 0.89), uPaper);
           gl_FragColor = vec4(c*uBright, 1.0); }`,
     }),
   );
@@ -67,7 +68,7 @@ export function createEngine(canvas, { pixelRatio = 1, record = false } = {}) {
   scene.add(sun, sun.target);
   const rim = new THREE.DirectionalLight(C('#FFC58F'), 0);
   scene.add(rim, rim.target);
-  const boardLight = new THREE.PointLight(C('#1E8C8F'), 0, 260, 1.6);
+  const boardLight = new THREE.PointLight(C('#1B6F74'), 0, 260, 1.6);
   scene.add(boardLight);
   const plazaGlow = new THREE.PointLight(C('#FFB878'), 0, 320, 1.5);
   scene.add(plazaGlow);

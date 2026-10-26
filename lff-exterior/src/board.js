@@ -51,8 +51,8 @@ export function createBoardScreen() {
     g.fillStyle = `rgba(165,172,175,${0.18 + 0.12 * pulse})`;
     g.fillRect(0, H * 0.66, W, 3);
     g.restore();
-    if (mode === 1) { // dusk: richer green wash to light the plaza
-      g.fillStyle = 'rgba(15,74,82,0.25)'; g.fillRect(0, 0, W, H);
+    if (mode === 1) { // dusk: deeper midnight-green wash so the board lights the plaza green
+      g.fillStyle = 'rgba(8,52,58,0.45)'; g.fillRect(0, 0, W, H);
     }
     g.drawImage(grid, 0, 0);
     tex.needsUpdate = true;

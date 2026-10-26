@@ -161,7 +161,7 @@ export function curtainWall() {
     grd.addColorStop(0, css(SWATCH.glazing.base, 1.25 * k)); grd.addColorStop(1, css(SWATCH.glazing.base, 0.85 * k));
     g.fillStyle = grd; g.fillRect(x * mw, y * mh, mw, mh);
     const lit = r();
-    eg.fillStyle = lit > 0.25 ? `rgb(${200 + r() * 55 | 0},${140 + r() * 40 | 0},${70 + r() * 30 | 0})` : '#120c06';
+    eg.fillStyle = lit > 0.25 ? `rgb(${236 + r() * 19 | 0},${196 + r() * 30 | 0},${146 + r() * 34 | 0})` : '#120c06';
     eg.fillRect(x * mw, y * mh, mw, mh);
     rg.fillStyle = '#0a0a0a'; rg.fillRect(x * mw, y * mh, mw, mh);
   }

@@ -62,6 +62,8 @@ for key, n in [('n', 30), ('e', 31), ('s', 32), ('w', 33)]:
     cx0, cx1 = int(min(gxs.min(), bx0)) - 8, int(max(gxs.max(), bx1)) + 8
     cy0, cy1 = by0 - 8, gy + 10
     crop = region[cy0:cy1, cx0:cx1]
+    # thicken hairlines (min filter on ink) so strokes survive downscaling to the 2x2 grid
+    crop = np.asarray(Image.fromarray(crop.astype(np.uint8)).filter(ImageFilter.MinFilter(3))).astype(np.int32)
     alpha = np.clip((235 - crop) * 255 / 200, 0, 255).astype(np.uint8)
     img = Image.fromarray(np.dstack([np.full_like(alpha, 255)] * 3 + [alpha]).astype(np.uint8), 'RGBA')
     img.save(os.path.join(OUT, f'elev_{key}.png'), optimize=True)
