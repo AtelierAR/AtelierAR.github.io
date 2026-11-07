@@ -1,0 +1,1933 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meridian Field Section Anatomy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Animated exploded axonometric of one sideline seating section of Meridian Field, a fictional 50,000-seat stadium.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: full-bleed WebGL drawing; HUD grid = control strip on top, legend + title block on the bottom edge like a drawing sheet. */
+:root {
+  --bg: #e4e7ea;
+  --panel: rgba(249, 250, 250, 0.88);
+  --panel-solid: #f9fafa;
+  --ink: #1b1f26;
+  --muted: #5b626c;
+  --rule: #c3c8ce;
+  --chip: #ffffff;
+  --focus: #1b1f26;
+
+  --c-seating: #2f6bd1;
+  --c-premium: #d08a0c;
+  --c-structure: #858b94;
+  --c-circulation: #23915d;
+  --c-mep: #d0423a;
+  --c-access: #7454d0;
+  --c-envelope: #a1896a;
+
+  --m-base: #f7f7f4;
+  --m-dark: #4a4f58;
+  --m-line: #1f232a;
+  --m-line-alpha: 0.5;
+  --m-glass: #b4ccd9;
+  --m-turf: #c9d8c0;
+  --m-white: #ffffff;
+  --m-glow: #ffe7a0;
+  --m-ray: #1b1f26;
+
+  --font-ui: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-narrow: "Archivo Narrow", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111418;
+    --panel: rgba(24, 28, 34, 0.88);
+    --panel-solid: #181c22;
+    --ink: #e7eaee;
+    --muted: #9aa2ad;
+    --rule: #38404a;
+    --chip: #20252c;
+    --focus: #e7eaee;
+    --c-seating: #5d95f2;
+    --c-premium: #f0b23a;
+    --c-structure: #9aa2ad;
+    --c-circulation: #3cc488;
+    --c-mep: #f0685d;
+    --c-access: #a185f2;
+    --c-envelope: #c2ab8a;
+    --m-base: #2c3139;
+    --m-dark: #a3aab4;
+    --m-line: #d6dae0;
+    --m-line-alpha: 0.36;
+    --m-glass: #5f7d90;
+    --m-turf: #2b4532;
+    --m-white: #c9ced5;
+    --m-glow: #ffe7a0;
+    --m-ray: #e7eaee;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111418;
+  --panel: rgba(24, 28, 34, 0.88);
+  --panel-solid: #181c22;
+  --ink: #e7eaee;
+  --muted: #9aa2ad;
+  --rule: #38404a;
+  --chip: #20252c;
+  --focus: #e7eaee;
+  --c-seating: #5d95f2;
+  --c-premium: #f0b23a;
+  --c-structure: #9aa2ad;
+  --c-circulation: #3cc488;
+  --c-mep: #f0685d;
+  --c-access: #a185f2;
+  --c-envelope: #c2ab8a;
+  --m-base: #2c3139;
+  --m-dark: #a3aab4;
+  --m-line: #d6dae0;
+  --m-line-alpha: 0.36;
+  --m-glass: #5f7d90;
+  --m-turf: #2b4532;
+  --m-white: #c9ced5;
+  --m-glow: #ffe7a0;
+  --m-ray: #e7eaee;
+  color-scheme: dark;
+}
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font: 13px/1.4 var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+#gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+#gl.dragging { cursor: grabbing; }
+#leaders, #labels { position: fixed; inset: 0; pointer-events: none; }
+#leaders { width: 100%; height: 100%; overflow: visible; }
+#leaders g { transition: opacity 0.35s ease; }
+
+#hud {
+  position: fixed; inset: 0;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 8px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+}
+.panel {
+  pointer-events: auto;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* control strip */
+#bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 8px 12px; }
+#bar .grp { display: flex; align-items: center; gap: 10px; min-width: 0; }
+#bar .scrub-grp { flex: 1 1 320px; }
+button {
+  font: 600 12px/1 var(--font-ui);
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  background: var(--chip);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+button:hover { border-color: var(--muted); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+#play { width: 74px; display: inline-flex; gap: 6px; align-items: center; justify-content: center; }
+#play svg { width: 10px; height: 10px; fill: currentColor; }
+.scrub-wrap { position: relative; flex: 1; min-width: 0; padding-bottom: 14px; }
+.phases { position: absolute; left: 0; right: 0; bottom: 0; height: 12px; font: 500 9.5px/12px var(--font-narrow); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.phases span { position: absolute; top: 0; white-space: nowrap; transform: translateX(2px); }
+.phases span.on { color: var(--ink); }
+input[type="range"] { width: 100%; margin: 0; accent-color: var(--ink); height: 18px; }
+#scrub { display: block; }
+.tnum { font: 500 12px var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+#phase { font: 600 11px var(--font-narrow); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-width: 84px; }
+.explode-grp label { font: 600 11px var(--font-narrow); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.explode-grp input { width: 120px; }
+
+/* layer chips */
+#layers { display: flex; flex-wrap: wrap; gap: 6px; justify-self: start; padding: 6px; }
+#layers button { display: inline-flex; align-items: center; gap: 6px; padding: 6px 9px; font-weight: 500; }
+#layers button i { width: 9px; height: 9px; border-radius: 2px; background: var(--sw); display: inline-block; }
+#layers button[aria-pressed="false"] { opacity: 0.45; }
+#layers button[aria-pressed="false"] i { background: transparent; box-shadow: inset 0 0 0 1.5px var(--sw); }
+#layers .hint { font: 500 10.5px var(--font-narrow); color: var(--muted); letter-spacing: 0.04em; align-self: center; padding: 0 4px; }
+
+/* bottom sheet strip */
+#foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+#legend { padding: 10px 12px; max-width: 300px; }
+#legend summary { font: 700 10.5px var(--font-narrow); letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 8px; }
+#legend summary::-webkit-details-marker { display: none; }
+#legend summary::after { content: "–"; color: var(--muted); }
+#legend:not([open]) summary::after { content: "+"; }
+#legend ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 5px 14px; }
+#legend li { display: flex; align-items: center; gap: 7px; font-size: 12px; white-space: nowrap; }
+#legend li i { width: 12px; height: 12px; border-radius: 2px; background: var(--sw); flex: none; border: 1px solid color-mix(in srgb, var(--sw) 70%, var(--ink)); }
+#legend .keys { margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--rule); display: grid; gap: 4px; font-size: 11.5px; color: var(--muted); }
+#legend .keys span { display: flex; align-items: center; gap: 8px; }
+#legend .keys svg { flex: none; }
+
+#titleblock { display: grid; grid-template-columns: auto auto; min-width: 0; font-size: 11px; }
+#titleblock .name { grid-column: 1 / -1; padding: 9px 12px 8px; border-bottom: 1px solid var(--rule); }
+#titleblock h1 { margin: 0; font: 700 17px/1.15 var(--font-narrow); letter-spacing: 0.01em; text-wrap: balance; }
+#titleblock .sub { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+#titleblock .cell { padding: 5px 12px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+#titleblock .cell:nth-child(odd) { border-right: 0; }
+#titleblock .cell:nth-last-child(-n+2) { border-bottom: 0; }
+#titleblock .k { display: block; font: 600 9px var(--font-narrow); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+#titleblock .v { font: 500 12px var(--font-mono); font-variant-numeric: tabular-nums; }
+#titleblock .scalebar { display: flex; align-items: center; gap: 6px; }
+#scaleRule { height: 6px; border: 1.5px solid var(--ink); border-top: 0; width: 60px; }
+
+/* labels */
+.lbl {
+  position: absolute; left: 0; top: 0;
+  padding: 5px 8px 6px;
+  background: var(--panel-solid);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--sw);
+  border-radius: 2px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  will-change: transform;
+}
+.lbl b { display: block; font: 700 12px/1.2 var(--font-narrow); letter-spacing: 0.02em; }
+.lbl span { display: block; font: 400 11px/1.3 var(--font-ui); color: var(--muted); }
+.lbl.show { opacity: 1; }
+.cval {
+  position: absolute; left: 0; top: 0;
+  font: 500 10.5px/1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  padding: 3px 5px;
+  background: var(--panel-solid);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.cval.show { opacity: 1; }
+.cval.focus { font-family: var(--font-narrow); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* hover card */
+#card {
+  position: fixed; left: 0; top: 0; z-index: 5;
+  pointer-events: none;
+  min-width: 210px; max-width: 280px;
+  padding: 9px 11px 10px;
+  background: var(--panel-solid);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--sw);
+  border-radius: 3px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.14);
+}
+#card .cat { font: 600 9.5px var(--font-narrow); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+#card h2 { margin: 1px 0 6px; font: 700 14px/1.2 var(--font-narrow); }
+#card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; }
+#card dt { font: 600 9.5px/1.6 var(--font-narrow); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+#card dd { margin: 0; font-size: 12px; }
+
+#fail { position: fixed; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); }
+
+@media (max-width: 720px) {
+  #bar { gap: 8px 10px; padding: 7px 9px; }
+  .explode-grp input { width: 90px; }
+  #phase { display: none; }
+  .phases { display: none; }
+  .scrub-wrap { padding-bottom: 0; }
+  #layers .hint { display: none; }
+  #titleblock .cell { display: none; }
+  #titleblock .name { border-bottom: 0; }
+  #titleblock h1 { font-size: 14px; }
+  #legend { max-width: 100%; }
+  .lbl span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lbl, .cval { transition: none; }
+}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-label="Exploded axonometric drawing of a stadium seating section. Drag to orbit, scroll to zoom."></canvas>
+<svg id="leaders" aria-hidden="true"></svg>
+<div id="labels" aria-hidden="true"></div>
+
+<div id="hud">
+  <header id="bar" class="panel">
+    <div class="grp">
+      <button id="play" type="button" aria-label="Pause animation"><svg viewBox="0 0 10 10" aria-hidden="true"><rect x="1" y="1" width="3" height="8"/><rect x="6" y="1" width="3" height="8"/></svg><span>Pause</span></button>
+    </div>
+    <div class="grp scrub-grp">
+      <div class="scrub-wrap">
+        <input id="scrub" type="range" min="0" max="30" step="0.01" value="0" aria-label="Timeline position in seconds">
+        <div class="phases" id="phases"></div>
+      </div>
+      <output id="time" class="tnum" for="scrub">00.0 / 30 s</output>
+      <span id="phase">Assembled</span>
+    </div>
+    <div class="grp explode-grp">
+      <label for="explode">Explode</label>
+      <input id="explode" type="range" min="0" max="1.5" step="0.01" value="1">
+      <output id="explodeVal" class="tnum" for="explode">100%</output>
+    </div>
+    <div class="grp">
+      <button id="reset" type="button">Reset view</button>
+    </div>
+  </header>
+
+  <nav id="layers" class="panel" aria-label="Program layers"></nav>
+  <div></div>
+
+  <div id="foot">
+    <details id="legend" class="panel" open>
+      <summary>Legend</summary>
+      <ul id="legendList"></ul>
+      <div class="keys">
+        <span><svg width="26" height="8" aria-hidden="true"><line x1="1" y1="4" x2="25" y2="4" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"/></svg>Sightline ray to touchline</span>
+        <span><svg width="26" height="8" aria-hidden="true"><circle cx="13" cy="4" r="3" fill="currentColor"/></svg>Eye point · C = clearance over row in front</span>
+        <span><svg width="26" height="8" aria-hidden="true"><rect x="2" y="1" width="22" height="6" fill="none" stroke="currentColor" stroke-width="1" opacity=".6"/></svg>Glazing, shown translucent</span>
+      </div>
+    </details>
+
+    <aside id="titleblock" class="panel" aria-label="Title block">
+      <div class="name">
+        <h1>Meridian Field — Section Anatomy</h1>
+        <div class="sub">Sideline wedge, 15° of bowl, field to roof</div>
+      </div>
+      <div class="cell"><span class="k">Stadium capacity</span><span class="v">50,000</span></div>
+      <div class="cell"><span class="k">This section</span><span class="v" id="tbSeats">—</span></div>
+      <div class="cell"><span class="k">Field to grade</span><span class="v" id="tbGrade">—</span></div>
+      <div class="cell"><span class="k">Scale (view plane)</span><span class="v scalebar"><span id="scaleRule"></span><span id="scaleTxt">50 ft</span></span></div>
+      <div class="cell"><span class="k">Drawing</span><span class="v">A-314 · Rev C</span></div>
+      <div class="cell"><span class="k">Date</span><span class="v">2026-11-07</span></div>
+    </aside>
+  </div>
+</div>
+
+<div id="card" hidden>
+  <div class="cat" id="cardCat"></div>
+  <h2 id="cardName"></h2>
+  <dl>
+    <dt>Type</dt><dd id="cardType"></dd>
+    <dt>Capacity</dt><dd id="cardCap"></dd>
+    <dt>Size</dt><dd id="cardDims"></dd>
+  </dl>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+"use strict";
+if (!window.THREE) {
+  const f = document.createElement("div");
+  f.id = "fail";
+  f.textContent = "The 3D library did not load. Check your connection and reload the page.";
+  document.body.appendChild(f);
+  return;
+}
+
+/* =====================================================================
+   0. CONSTANTS & PROGRAM CATEGORIES
+   Units are feet. Local frame: +x radial (field → facade), +y up,
+   +z tangential. The wedge apex sits on the bowl centre; the touchline
+   is at r = 100 ft.
+   ===================================================================== */
+const DEG = Math.PI / 180;
+const HALF = 7.5 * DEG;               // half of the 15° wedge
+const FRAME_TH = 5.5 * DEG;           // structural frame lines at ±5.5°
+const FOCUS = { r: 100, y: 0 };       // point of focus: touchline
+const LOOP = 30;                      // seconds
+
+const CATS = {
+  seating:     { label: "Seating",       css: "--c-seating" },
+  premium:     { label: "Premium",       css: "--c-premium" },
+  structure:   { label: "Structure",     css: "--c-structure" },
+  circulation: { label: "Circulation",   css: "--c-circulation" },
+  mep:         { label: "MEP",           css: "--c-mep" },
+  access:      { label: "Accessibility", css: "--c-access" },
+  envelope:    { label: "Envelope",      css: "--c-envelope" },
+};
+
+const ft = (v) => {
+  const s = v < 0 ? "-" : "";
+  v = Math.abs(v);
+  let f = Math.floor(v), i = Math.round((v - f) * 12);
+  if (i === 12) { f += 1; i = 0; }
+  return i ? `${s}${f} ft ${i} in` : `${s}${f} ft`;
+};
+const inch = (v) => `${(v * 12).toFixed(1)} in`;
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const lerp = (a, b, t) => a + (b - a) * t;
+const P = (r, th, y) => [r * Math.cos(th), y, r * Math.sin(th)];
+const thz = (z, r) => Math.asin(z / r);  // angle that puts a point at tangential offset z on radius r
+
+/* =====================================================================
+   1. GEOMETRY KIT
+   Every part is merged into one BufferGeometry per material slot
+   (base, tint, accent, dark, glass, turf, white, glow) so a part is
+   only a handful of draw calls. AO is faked with vertex colours that
+   darken toward the bottom of each primitive.
+   ===================================================================== */
+const UNIT_BOX = new THREE.BoxGeometry(1, 1, 1).toNonIndexed().attributes.position.array;
+const CYL = {};
+function unitCyl(seg) {
+  if (!CYL[seg]) CYL[seg] = new THREE.CylinderGeometry(0.5, 0.5, 1, seg, 1).toNonIndexed().attributes.position.array;
+  return CYL[seg];
+}
+const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _c = new THREE.Vector3();
+const _e1 = new THREE.Vector3(), _e2 = new THREE.Vector3(), _nn = new THREE.Vector3();
+
+class Kit {
+  constructor() {
+    this.bufs = {};
+    this.stack = [new THREE.Matrix4()];
+    this.seats = 0;
+  }
+  get M() { return this.stack[this.stack.length - 1]; }
+  push(m) { this.stack.push(this.M.clone().multiply(m)); return this; }
+  pop() { this.stack.pop(); return this; }
+  /* local frame on the polar point: +x radial, +z tangential */
+  frame(r, th, y = 0) {
+    const [x, , z] = P(r, th, 0);
+    return this.push(new THREE.Matrix4().makeTranslation(x, y, z).multiply(new THREE.Matrix4().makeRotationY(-th)));
+  }
+  buf(slot) { return this.bufs[slot] || (this.bufs[slot] = { p: [], n: [], c: [] }); }
+
+  /* push raw triangles (local coords), transformed by stack top and optional matrix m */
+  tris(slot, pos, ao, m) {
+    const M = m ? this.M.clone().multiply(m) : this.M;
+    const B = this.buf(slot);
+    for (let i = 0; i < pos.length; i += 9) {
+      _a.set(pos[i], pos[i + 1], pos[i + 2]).applyMatrix4(M);
+      _b.set(pos[i + 3], pos[i + 4], pos[i + 5]).applyMatrix4(M);
+      _c.set(pos[i + 6], pos[i + 7], pos[i + 8]).applyMatrix4(M);
+      _e1.subVectors(_b, _a); _e2.subVectors(_c, _a);
+      _nn.crossVectors(_e1, _e2).normalize();
+      B.p.push(_a.x, _a.y, _a.z, _b.x, _b.y, _b.z, _c.x, _c.y, _c.z);
+      for (let k = 0; k < 3; k++) {
+        B.n.push(_nn.x, _nn.y, _nn.z);
+        const s = ao[(i / 3) + k];
+        B.c.push(s, s, s);
+      }
+    }
+  }
+  unit(slot, src, m, aoLow = 0.8) {
+    const ao = new Array(src.length / 3);
+    for (let i = 0; i < ao.length; i++) ao[i] = aoLow + (1 - aoLow) * (src[i * 3 + 1] + 0.5);
+    this.tris(slot, src, ao, m);
+  }
+  /* axis-aligned box in current frame (centre + size), optional rotations */
+  box(slot, cx, cy, cz, sx, sy, sz, ry = 0, rz = 0, rx = 0) {
+    const m = new THREE.Matrix4().makeTranslation(cx, cy, cz);
+    if (ry) m.multiply(new THREE.Matrix4().makeRotationY(ry));
+    if (rz) m.multiply(new THREE.Matrix4().makeRotationZ(rz));
+    if (rx) m.multiply(new THREE.Matrix4().makeRotationX(rx));
+    m.multiply(new THREE.Matrix4().makeScale(sx, sy, sz));
+    this.unit(slot, UNIT_BOX, m);
+  }
+  /* vertical cylinder by centre of its base */
+  cyl(slot, cx, y0, cz, rad, h, seg = 12, rz = 0, rx = 0) {
+    const m = new THREE.Matrix4().makeTranslation(cx, y0, cz);
+    if (rz) m.multiply(new THREE.Matrix4().makeRotationZ(rz));
+    if (rx) m.multiply(new THREE.Matrix4().makeRotationX(rx));
+    m.multiply(new THREE.Matrix4().makeTranslation(0, h / 2, 0)).multiply(new THREE.Matrix4().makeScale(rad * 2, h, rad * 2));
+    this.unit(slot, unitCyl(seg), m, 0.85);
+  }
+  /* box positioned in polar terms: centred on radius r, base at y0 */
+  pbox(slot, r, th, y0, dr, h, w) {
+    this.frame(r, th, y0);
+    this.box(slot, 0, h / 2, 0, dr, h, w);
+    this.pop();
+  }
+  /* revolve a closed (r, y) profile between two angles: treads, slabs, girders, roof skins */
+  rev(slot, prof, th0 = -HALF, th1 = HALF, segs) {
+    if (th1 <= th0) return;
+    segs = segs || Math.max(1, Math.ceil((th1 - th0) / (2.5 * DEG)));
+    let ymin = Infinity, ymax = -Infinity;
+    for (const [, y] of prof) { ymin = Math.min(ymin, y); ymax = Math.max(ymax, y); }
+    const span = ymax - ymin || 1;
+    const ao = (y) => 0.8 + 0.2 * (y - ymin) / span;
+    const pos = [], aos = [];
+    const put = (r, y, t) => { pos.push(r * Math.cos(t), y, r * Math.sin(t)); aos.push(ao(y)); };
+    const n = prof.length;
+    for (let s = 0; s < segs; s++) {
+      const a = th0 + (th1 - th0) * s / segs, b = th0 + (th1 - th0) * (s + 1) / segs;
+      for (let i = 0; i < n; i++) {
+        const [r0, y0] = prof[i], [r1, y1] = prof[(i + 1) % n];
+        put(r0, y0, a); put(r1, y1, a); put(r1, y1, b);
+        put(r0, y0, a); put(r1, y1, b); put(r0, y0, b);
+      }
+    }
+    const tri = THREE.ShapeUtils.triangulateShape(prof.map(([r, y]) => new THREE.Vector2(r, y)), []);
+    for (const t of tri) {
+      for (const k of t) put(prof[k][0], prof[k][1], th0);
+      for (const k of t) put(prof[k][0], prof[k][1], th1);
+    }
+    this.tris(slot, pos, aos);
+  }
+  /* annular slab */
+  ring(slot, r0, r1, y0, y1, th0 = -HALF, th1 = HALF) {
+    this.rev(slot, [[r0, y0], [r1, y0], [r1, y1], [r0, y1]], th0, th1);
+  }
+  /* slab with a rectangular opening (stair / escalator well), opening given in tangential z */
+  slabWithOpening(slot, r0, r1, y0, y1, o) {
+    this.ring(slot, r0, o.r0, y0, y1);
+    this.ring(slot, o.r1, r1, y0, y1);
+    const rm = (o.r0 + o.r1) / 2;
+    this.ring(slot, o.r0, o.r1, y0, y1, -HALF, thz(o.z0, rm));
+    this.ring(slot, o.r0, o.r1, y0, y1, thz(o.z1, rm), HALF);
+  }
+  /* straight member in the radial-vertical plane at angle th (rakers, chords, fins) */
+  beam(slot, th, r0, y0, r1, y1, depth, width, align = "below") {
+    const dr = r1 - r0, dy = y1 - y0, L = Math.hypot(dr, dy);
+    const mid = P((r0 + r1) / 2, th, (y0 + y1) / 2);
+    const off = align === "below" ? -depth / 2 : align === "above" ? depth / 2 : 0;
+    const m = new THREE.Matrix4().makeTranslation(mid[0], mid[1], mid[2])
+      .multiply(new THREE.Matrix4().makeRotationY(-th))
+      .multiply(new THREE.Matrix4().makeRotationZ(Math.atan2(dy, dr)))
+      .multiply(new THREE.Matrix4().makeTranslation(0, off, 0))
+      .multiply(new THREE.Matrix4().makeScale(L, depth, width));
+    this.unit(slot, UNIT_BOX, m);
+  }
+  /* guard rail along an arc: top rail + posts */
+  rail(slot, r, y, h, th0 = -HALF, th1 = HALF, postEvery = 6) {
+    this.ring(slot, r - 0.08, r + 0.08, y + h - 0.16, y + h, th0, th1);
+    const n = Math.max(1, Math.round((th1 - th0) * r / postEvery));
+    for (let i = 0; i <= n; i++) {
+      const th = th0 + (th1 - th0) * i / n;
+      this.pbox(slot, r, th, y, 0.12, h, 0.12);
+    }
+  }
+  glassGuard(r, y, h, th0 = -HALF, th1 = HALF) {
+    this.ring("glass", r - 0.06, r + 0.06, y, y + h, th0, th1);
+    this.ring("dark", r - 0.1, r + 0.1, y + h - 0.12, y + h + 0.05, th0, th1);
+  }
+}
+
+/* =====================================================================
+   2. SEAT TEMPLATES (local frame: +x toward the back of the seat,
+   seat faces −x toward the field; origin on the tread at seat centre)
+   ===================================================================== */
+const SEATS = {
+  standard: { width: 20 / 12, prims: [
+    ["box", "accent", [-0.32, 1.42, 0], [1.3, 0.16, 1.5]],
+    ["box", "accent", [0.38, 2.06, 0], [0.14, 1.25, 1.5]],
+    ["box", "dark",   [0.05, 1.05, 0.79], [1.0, 0.85, 0.08]],
+  ] },
+  club: { width: 22 / 12, prims: [
+    ["box", "accent", [-0.35, 1.45, 0], [1.5, 0.34, 1.62]],
+    ["box", "accent", [0.45, 2.25, 0], [0.32, 1.6, 1.62]],
+    ["box", "dark",   [-0.08, 2.02, 0.88], [1.55, 0.14, 0.15]],
+    ["box", "dark",   [0.1, 1.0, 0.88], [0.25, 2.0, 0.12]],
+    ["cyl", "dark",   [-0.72, 2.05, 0.88], 0.14, 0.14],
+  ] },
+  swivel: { width: 2.4, prims: [
+    ["cyl", "dark",   [0, 0, 0], 0.55, 0.08],
+    ["cyl", "dark",   [0, 0.08, 0], 0.09, 1.0],
+    ["cyl", "accent", [0, 1.08, 0], 0.8, 0.3],
+    ["box", "accent", [0.62, 1.9, 0], [0.26, 1.25, 1.35]],
+  ] },
+  railSeat: { width: 20 / 12, prims: [
+    ["box", "accent", [0.32, 1.95, 0], [0.12, 1.1, 1.4]],
+    ["box", "accent", [0.15, 1.3, 0], [0.22, 0.95, 1.3]],
+  ] },
+  benchBack: { width: 19 / 12, prims: [
+    ["box", "accent", [0.48, 2.0, 0], [0.12, 0.85, 1.38]],
+  ] },
+};
+function placeSeat(k, tmpl, r, th, y) {
+  k.frame(r, th, y);
+  for (const pr of tmpl.prims) {
+    if (pr[0] === "box") k.box(pr[1], pr[2][0], pr[2][1], pr[2][2], pr[3][0], pr[3][1], pr[3][2]);
+    else k.cyl(pr[1], pr[2][0], pr[2][1], pr[2][2], pr[3], pr[4]);
+  }
+  k.pop();
+  k.seats++;
+}
+/* lay a row of seats along the arc; skip(z) can omit seats (vomitory, platforms) */
+function seatRow(k, tmpl, r, y, opt = {}) {
+  const spacing = opt.spacing || tmpl.width;
+  const a0 = opt.th0 ?? -HALF, a1 = opt.th1 ?? HALF;
+  const aisle = opt.aisle ?? 2.2;
+  const s0 = a0 * r + aisle, s1 = a1 * r - aisle;
+  const n = Math.floor((s1 - s0) / spacing);
+  if (n < 1) return 0;
+  const start = (s0 + s1) / 2 - (n - 1) * spacing / 2;
+  let c = 0;
+  for (let i = 0; i < n; i++) {
+    const s = start + i * spacing;
+    if (opt.skip && opt.skip(s)) continue;
+    placeSeat(k, tmpl, r, s / r, y);
+    c++;
+  }
+  return c;
+}
+
+/* =====================================================================
+   3. BOWL PROFILE
+   Rows are generated from the sightline (C-value) formula:
+     E(n+1) = (E(n) + C) · D(n+1) / D(n)
+   E = eye height above the point of focus, D = horizontal distance.
+   Fixed-riser tiers (upper deck at 34°) report the C they achieve.
+   ===================================================================== */
+function rakeTier(o) {
+  const rows = [];
+  const eyeFrac = o.eyeFrac ?? 0.45;
+  let y = o.y0, r = o.r0;
+  let prevD = o.guard.r - FOCUS.r, prevE = o.guard.y - FOCUS.y;
+  for (let i = 0; i < o.rows; i++) {
+    if (i > 0) {
+      r += o.T;
+      if (o.cross && i === o.cross.after) r += o.cross.width;
+    }
+    const eyeR = r + o.T * eyeFrac, D = eyeR - FOCUS.r;
+    if (i > 0) {
+      let rise;
+      if (o.fixedRiser) rise = o.fixedRiser;
+      else rise = ((prevE + o.C) * D / prevD - o.eyeH + FOCUS.y) - y;
+      if (o.cross && i === o.cross.after) rise = Math.max(rise, o.cross.lift) + o.cross.lift * 0.25;  // cross-aisle wall
+      else rise = clamp(rise, o.minR ?? 0.5, o.maxR ?? 2.5);
+      rise = Math.round(rise * 24) / 24;
+      y += rise;
+    }
+    const E = y + o.eyeH - FOCUS.y;
+    const C = E * prevD / D - prevE;
+    rows.push({ i, r, y, T: o.T, eyeR, eyeY: y + o.eyeH, C, riser: i ? y - rows[i - 1].y : null });
+    prevD = D; prevE = E;
+  }
+  return rows;
+}
+const tierYAt = (tier, r) => {
+  let y = tier[0].y;
+  for (const row of tier) if (r >= row.r) y = row.y;
+  return y;
+};
+
+const PROFILE = (() => {
+  const LB = rakeTier({ r0: 140, y0: 9, rows: 30, T: 33 / 12, eyeH: 3.9, C: 0.3, guard: { r: 139, y: 11.5 }, minR: 0.6, maxR: 2.0 });
+  const lbEnd = LB[29].r + LB[29].T;
+  const conc = Math.round((LB[29].y + 1.1) * 2) / 2;         // main concourse = grade
+  const lv = { conc, club: conc + 20, suite: conc + 32, upper: conc + 44 };
+
+  // club tier: six 36 in rows, top row lands one step below the club lounge floor
+  let clubY0 = lv.conc + 7, CL;
+  for (let pass = 0; pass < 3; pass++) {
+    CL = rakeTier({ r0: 210, y0: clubY0, rows: 6, T: 3, eyeH: 3.9, C: 0.3, guard: { r: 209.5, y: clubY0 + 2.17 }, minR: 0.8 });
+    clubY0 += (lv.club - 1) - CL[5].y;
+  }
+  // suite exterior: two 40 in rows, back row one step below the suite floor
+  const sT = 40 / 12, sR0 = 229.2, sY2 = lv.suite - 0.5, eyeH = 3.9;
+  const D1 = sR0 + sT * 0.45 - FOCUS.r, D2 = D1 + sT;
+  const sY1 = Math.round(((sY2 + eyeH) * D1 / D2 - eyeH - 0.33) * 24) / 24;
+  const SU = rakeTier({ r0: sR0, y0: sY1, rows: 2, T: sT, eyeH, C: 0.33, guard: { r: 229, y: sY1 + 2.17 }, minR: 0.5 });
+  // mezzanine rail seats: five 30 in rows, standing eye height
+  //   (safe-standing rake capped at 35°)
+  const MZ = rakeTier({ r0: 266.6, y0: lv.upper + 1, rows: 5, T: 2.5, eyeH: 5.25, C: 0.3, guard: { r: 266.3, y: lv.upper + 1 + 3.5 }, minR: 0.8, maxR: 2.5 * Math.tan(35 * DEG) });
+  // upper deck: 32 in treads, risers from C ≥ 2.5 in, clamped to a 32°–36° rake (≈34° average)
+  const uT = 32 / 12, mzL = MZ[MZ.length - 1];
+  const uR0 = mzL.r + mzL.T + 8, uD1   // 8 ft cross-aisle behind the rail seats
+    = uR0 + uT * 0.45 - FOCUS.r;
+  const uY0 = Math.ceil((((mzL.eyeY - FOCUS.y) + 0.25) * uD1 / (mzL.eyeR - FOCUS.r) - 3.9 + FOCUS.y) * 24) / 24;
+  const UP = rakeTier({ r0: uR0, y0: uY0, rows: 22, T: uT, eyeH: 3.9, C: 0.21,
+    cross: { after: 8, width: 6, lift: 2.2 }, guard: { r: mzL.eyeR, y: mzL.eyeY },
+    minR: uT * Math.tan(32 * DEG), maxR: uT * Math.tan(36 * DEG) });
+  const upEnd = UP[21].r + UP[21].T;
+  const rk = UP.filter((r) => r.i > 0 && r.i !== 8);
+  const upRake = rk.reduce((m, r) => m + Math.atan(r.riser / r.T) / DEG, 0) / rk.length;   // excludes the cross-aisle wall
+  const facade = { r0: 318, y0: lv.conc, r1: upEnd + 8, y1: UP[21].y + 9 };
+  const rFac = (y) => facade.r0 + (y - facade.y0) * (facade.r1 - facade.r0) / (facade.y1 - facade.y0);
+  const roofEdge = facade.y1 + 2;
+  const span = facade.r1 + 2 - 60;
+  const roofTop = (r) => roofEdge + 43 * (1 - Math.pow((r - 60) / span, 2));
+  const roofDepth = (r) => 4 + 11 * Math.sin(Math.PI * clamp((r - 60) / span));
+  return { LB, CL, SU, MZ, UP, lbEnd, upEnd, upRake, lv, facade, rFac, roofEdge, roofTop, roofDepth, uRise: UP[1].riser };
+})();
+const { LB, CL, SU, MZ, UP, lv: LV } = PROFILE;
+
+/* =====================================================================
+   4. COMPONENT BUILDERS — one small function per component.
+   Each returns one or more parts: { id, name, info, build(kit) }.
+   ===================================================================== */
+const VOM = { half: 4.25, rows: [11, 17] };   // 8 ft 6 in vomitory, open trench rows 12–18
+const inVomRow = (i) => i >= VOM.rows[0] && i <= VOM.rows[1];
+
+/* --- 4.1 precast tread / riser units (used by STRUCTURE) --- */
+function treadUnits(k, tier, opt = {}) {
+  for (let i = 0; i < tier.length; i++) {
+    const row = tier[i];
+    const rEnd = i < tier.length - 1 ? tier[i + 1].r : row.r + row.T;
+    const yPrev = i > 0 ? tier[i - 1].y : row.y - (opt.firstRiser ?? 2);
+    const prof = [[row.r, yPrev - 0.6], [row.r + 0.5, yPrev - 0.6], [row.r + 0.5, row.y - 0.6], [rEnd, row.y - 0.6], [rEnd, row.y], [row.r, row.y]];
+    const ranges = opt.ranges ? opt.ranges(i, row) : [[-HALF, HALF]];
+    for (const [a, b] of ranges) k.rev("tint", prof, a, b);
+    // aisle intermediate steps at both wedge edges
+    if (opt.aisleSteps && i > 0 && row.riser > 1.0) {
+      const h = row.riser / 2;
+      for (const sgn of [-1, 1]) k.pbox("tint", row.r - row.T / 4 + 0.25, sgn * (HALF - 1.1 / row.r), tier[i - 1].y, tier[i - 1].T / 2, h, 2);
+    }
+  }
+}
+
+/* --- 4.2 FIELD EDGE --- */
+function partsFieldEdge() {
+  return [
+    { id: "turf", name: "Turf strip & sideline", offset: [0, 0, 0],
+      info: { type: "Natural-hybrid turf, 6 ft sideline border, team area", cap: "Team bench zone", dims: "Touchline at r = 100 ft · team area 28 ft deep" },
+      build(k) {
+        k.ring("turf", 40, 100, -0.5, 0);
+        k.ring("white", 100, 106, -0.5, 0.02);
+        k.ring("turf", 106, 134, -0.5, -0.05);
+        k.ring("white", 111.8, 112.3, -0.05, 0.0);       // restraining line
+        for (const s of [-15, 0, 15]) {                    // 5-yard lines
+          const th = s / 100;
+          k.frame(70, th, 0); k.box("white", 0, 0.01, 0, 60, 0.04, 0.33); k.pop();
+        }
+        for (let s = -9; s <= 9; s += 3) { k.frame(97.5, s / 100, 0); k.box("white", 0, 0.01, 0, 2, 0.04, 0.33); k.pop(); }
+      } },
+    { id: "bunker", name: "Bunker suite", offset: [-28, 0, 0],
+      info: { type: "Field-level premium lounge behind glass", cap: "48 guests · lounge seating", dims: "28 ft deep × 37 ft · 8 ft 3 in clear" },
+      build(k) {
+        k.ring("tint", 134, 162, -0.5, 0);
+        k.ring("base", 134, 162, 8.25, 9);                 // ceiling / bowl transfer slab
+        k.ring("base", 161.5, 162, 0, 8.25);               // back wall
+        k.ring("glass", 134, 134.3, 0, 8.25);              // glass frontage
+        for (let s = -16; s <= 16; s += 6.4) { k.frame(134.15, s / 134, 0); k.box("dark", 0, 4.12, 0, 0.35, 8.25, 0.3); k.pop(); }
+        // lounge seating groups: sofa, two lounge chairs, low table
+        for (const s of [-12, 0, 12]) {
+          k.frame(143, s / 143, 0);
+          k.box("accent", 0.8, 0.75, 0, 2.6, 1.5, 7);       // sofa seat
+          k.box("accent", 1.85, 1.6, 0, 0.6, 3.2, 7);       // back
+          k.box("base", -1.9, 0.6, 0, 2.2, 1.2, 3.6);       // low table
+          k.box("accent", -4.5, 0.8, -1.6, 2.4, 1.6, 2.4);
+          k.box("accent", -4.5, 0.8, 1.6, 2.4, 1.6, 2.4);
+          k.pop();
+        }
+        // bar counter along back wall
+        k.ring("base", 155, 157.5, 0, 3.4, -11 / 156, 11 / 156);
+        k.ring("accent", 154.8, 157.7, 3.4, 3.65, -11.3 / 156, 11.3 / 156);
+        for (let s = -9; s <= 9; s += 3) placeSeatStool(k, 153.2, s / 153.2);
+      } },
+  ];
+}
+function placeSeatStool(k, r, th) {
+  k.frame(r, th, 0);
+  k.cyl("dark", 0, 0, 0, 0.1, 2.4);
+  k.cyl("accent", 0, 2.4, 0, 0.6, 0.25);
+  k.pop();
+}
+
+/* --- 4.3 LOWER BOWL --- */
+function partsLowerBowl() {
+  return [
+    { id: "lbSeats", name: "Lower bowl seating", offset: [0, 22, 0],
+      info: { type: "Standard riser-mounted seats", cap: "", dims: "30 rows · 33 in tread · 20 in seat width" },
+      build(k) {
+        for (const row of LB) {
+          const skip = inVomRow(row.i) ? (s) => Math.abs(s) < VOM.half + 0.9 : null;
+          seatRow(k, SEATS.standard, row.r + row.T - 0.9, row.y, { skip });
+        }
+        k.glassGuard(139.35, LB[0].y, 2.5);
+        // aisle handrails up both aisles
+        for (const sgn of [-1, 1]) {
+          for (let i = 0; i < LB.length - 1; i += 1) {
+            const a = LB[i], b = LB[i + 1];
+            k.beam("dark", sgn * (HALF - 0.2 / a.r) , a.r + a.T / 2, a.y + 2.8, b.r + b.T / 2, b.y + 2.8, 0.14, 0.14, "center");
+          }
+        }
+        k.rail("dark", PROFILE.lbEnd + 0.4, LV.conc, 3.5, -HALF, HALF, 8);
+      } },
+    { id: "vom", name: "Vomitory tunnel", offset: [0, 22, 0],
+      info: { type: "Vomitory portal and tunnel to concourse stair", cap: "Egress ≈ 1,100 persons / 8 min", dims: "8 ft 6 in wide · 8 ft 6 in clear · portal rows 12–18" },
+      build(k) {
+        const a = LB[VOM.rows[0]], b = LB[VOM.rows[1] + 1];
+        const floorY = a.y, rStart = a.r, rTun = b.r, rEnd = PROFILE.lbEnd;
+        const w = VOM.half;
+        // floor + side walls of the open portal (walls follow the treads)
+        k.ring("tint", rStart, rEnd + 0.1, floorY - 0.6, floorY, -thz(w, 190), thz(w, 190));
+        for (const sgn of [-1, 1]) {
+          for (let i = VOM.rows[0]; i <= VOM.rows[1]; i++) {
+            const row = LB[i];
+            k.frame(row.r + row.T / 2, 0, 0);
+            k.box("base", 0, (floorY + row.y + 3.2) / 2, sgn * (w + 0.25), row.T, row.y + 3.2 - floorY, 0.5);
+            k.pop();
+          }
+          // tunnel walls
+          k.frame((rTun + rEnd) / 2, 0, 0);
+          k.box("base", 0, floorY + 4.6, sgn * (w + 0.25), rEnd - rTun, 9.2, 0.5);
+          k.pop();
+          // guard rail on top of portal walls
+          for (let i = VOM.rows[0]; i <= VOM.rows[1]; i++) {
+            const row = LB[i];
+            k.frame(row.r + row.T / 2, 0, 0); k.box("dark", 0, row.y + 3.4, sgn * (w + 0.25), row.T, 0.12, 0.12); k.pop();
+          }
+        }
+        // tunnel soffit
+        k.frame((rTun + rEnd) / 2, 0, 0); k.box("base", 0, floorY + 9.2, 0, rEnd - rTun, 0.6, 2 * w + 1); k.pop();
+        // stair rising from tunnel to the main concourse
+        const rise = LV.conc - floorY, nR = Math.ceil(rise / 0.6), tread = 0.92;
+        const h = rise / nR;
+        for (let i = 0; i < nR; i++) {
+          k.frame(rEnd + 0.5 + i * tread + tread / 2, 0, 0);
+          k.box("tint", 0, floorY + (i + 0.5) * h, 0, tread, h, 2 * w);
+          k.pop();
+        }
+        for (const sgn of [-1, 1]) {
+          const th = thz(sgn * (w - 0.2), 240);
+          k.beam("dark", th, rEnd + 0.5, floorY + 3, rEnd + 0.5 + nR * tread, LV.conc + 3, 0.14, 0.14, "center");   // handrail
+          k.beam("base", th, rEnd + 0.5, floorY - 0.6, rEnd + 0.5 + nR * tread, LV.conc, 1.2, 0.4, "center");       // stringer
+        }
+      } },
+  ];
+}
+
+/* --- 4.4 CLUB --- */
+function partsClub() {
+  const lounge = { r0: 228.4, r1: PROFILE.rFac(LV.club) - 1.2 };
+  return [
+    { id: "clubSeats", name: "Club seats", offset: [0, 40, 0],
+      info: { type: "Padded club seats with cupholders", cap: "", dims: "6 rows · 36 in row depth · 22 in seat width" },
+      build(k) {
+        for (const row of CL) seatRow(k, SEATS.club, row.r + row.T - 1.0, row.y, { aisle: 2.4 });
+        k.glassGuard(209.7, CL[0].y, 2.17);
+      } },
+    { id: "clubLounge", name: "Club lounge", offset: [55, 32, 0],
+      info: { type: "Enclosed club lounge with bar and dining", cap: "≈ 400 standing · 96 seated", dims: `${Math.round(lounge.r1 - lounge.r0)} ft deep · 12 ft to suite level` },
+      build(k) {
+        k.slabWithOpening("tint", lounge.r0, lounge.r1, LV.club - 1, LV.club, { r0: 256, r1: 297.5, z0: 9.8, z1: 15.4 });
+        k.ring("glass", lounge.r0, lounge.r0 + 0.3, LV.club, SU[0].y - 0.6);
+        // curved bar with back bar
+        k.ring("base", 266, 269, LV.club, LV.club + 3.5, -0.105, -0.02);
+        k.ring("accent", 265.8, 269.2, LV.club + 3.5, LV.club + 3.75, -0.105, -0.02);
+        k.ring("dark", 274, 275.2, LV.club, LV.club + 7, -0.1, -0.025);
+        // high-top tables with stools
+        for (const [r, s] of [[245, -26], [245, -14], [256, -26], [256, -14], [245, 22], [256, 24], [280, -20], [292, -30], [280, 30]]) {
+          k.frame(r, s / r, LV.club);
+          k.cyl("dark", 0, 0, 0, 0.12, 3.4);
+          k.cyl("base", 0, 3.4, 0, 1.4, 0.15);
+          for (const [dx, dz] of [[1.9, 0], [-1.9, 0], [0, 1.9], [0, -1.9]]) { k.cyl("dark", dx, 0, dz, 0.08, 2.4); k.cyl("accent", dx, 2.4, dz, 0.55, 0.2); }
+          k.pop();
+        }
+        // lounge sofas facing the glass
+        for (const s of [-30, 4]) {
+          k.frame(236, s / 236, LV.club);
+          k.box("accent", 0, 0.75, 0, 2.6, 1.5, 8); k.box("accent", 1.1, 1.6, 0, 0.5, 3.0, 8);
+          k.pop();
+        }
+      } },
+  ];
+}
+
+/* --- 4.5 LOGE BOXES --- */
+function partsLoges() {
+  return [
+    { id: "loges", name: "Loge boxes", offset: [42, 14, 0],
+      info: { type: "Open-air loge boxes, swivel chairs, drink rails", cap: "", dims: "2 × 6-seat (9 ft 6 in) · 2 × 4-seat (6 ft 6 in) · 9 ft deep" },
+      build(k) {
+        const rc = 228.3, y = LV.conc;
+        const boxes = [6, 4, 6, 4];
+        const widths = boxes.map((n) => (n === 6 ? 9.5 : 6.5));
+        let s = -10.5;
+        for (let b = 0; b < boxes.length; b++) {
+          const w = widths[b], cols = boxes[b] / 2;
+          k.frame(rc, (s + w / 2) / rc, y);
+          k.box("tint", 0, 0.75, 0, 9, 1.5, w);                 // platform
+          k.box("tint", 2.25, 2.25, 0, 4.5, 1.5, w);            // raised rear step
+          k.box("base", 0, 2.75, -w / 2 + 0.12, 9, 5.5, 0.24);  // partitions
+          k.box("base", 0, 2.75, w / 2 - 0.12, 9, 5.5, 0.24);
+          // drink rails
+          k.box("base", -4.0, 4.6, 0, 1.17, 0.18, w - 0.5); k.box("dark", -4.0, 3.05, 0, 0.12, 3.1, w - 1);
+          k.box("base", 0.2, 5.9, 0, 1.17, 0.18, w - 0.5);  k.box("dark", 0.2, 4.3, 0, 0.12, 3.1, w - 1);
+          for (let c = 0; c < cols; c++) {
+            const z = -w / 2 + w * (c + 0.5) / cols;
+            for (const [x, yy] of [[-1.9, 1.5], [2.4, 3.0]]) {
+              k.push(new THREE.Matrix4().makeTranslation(x, yy, z).multiply(new THREE.Matrix4().makeRotationY(0.35 * (c % 2 ? -1 : 1))));
+              for (const pr of SEATS.swivel.prims) {
+                if (pr[0] === "box") k.box(pr[1], pr[2][0], pr[2][1], pr[2][2], pr[3][0], pr[3][1], pr[3][2]);
+                else k.cyl(pr[1], pr[2][0], pr[2][1], pr[2][2], pr[3], pr[4]);
+              }
+              k.pop(); k.seats++;
+            }
+          }
+          k.pop();
+          s += w + 1;
+        }
+      } },
+  ];
+}
+
+/* --- 4.6 SUITES --- */
+function partsSuites() {
+  const names = ["Suite A", "Suite B", "Suite C"];
+  const edges = [-HALF, -HALF / 3, HALF / 3, HALF];
+  const parts = names.map((name, idx) => ({
+    id: "suite" + idx, name, offset: [78, 18, (idx - 1) * 6],
+    info: { type: "Private suite: lounge, bar, theater seats", cap: "", dims: "≈ 21 ft wide × 27 ft deep · 12 ft floor-to-floor" },
+    build(k) {
+      const a = edges[idx], b = edges[idx + 1], y = LV.suite, r0 = 236.2, r1 = 263.5;
+      k.ring("tint", r0, r1, y - 1, y, a, b);
+      k.ring("glass", r0, r0 + 0.3, y, y + 11, a, b);
+      k.ring("base", r1 - 0.5, r1, y, y + 11, a, b);
+      // partitions on suite edges (interior + exterior seating dividers)
+      for (const t of [a, b]) {
+        if (Math.abs(Math.abs(t) - HALF) < 1e-6) continue;
+        k.frame((r0 + r1) / 2, t, y); k.box("base", 0, 5.5, 0, r1 - r0, 11, 0.4); k.pop();
+        k.frame(232.7, t, SU[0].y); k.box("glass", 0, 2.5, 0, 7, 5, 0.15); k.pop();
+      }
+      // exterior theater seats: two 40 in rows
+      for (const row of SU) seatRow(k, SEATS.club, row.r + row.T - 1.1, row.y, { th0: a, th1: b, aisle: 1.2 });
+      k.glassGuard(229.3, SU[0].y, 2.17, a, b);
+      const mid = (a + b) / 2;
+      // interior lounge: L-sofa, coffee table
+      k.frame(247, mid, y);
+      k.box("accent", 0, 0.75, -3, 2.8, 1.5, 9); k.box("accent", 1.15, 1.6, -3, 0.5, 3.0, 9);
+      k.box("accent", -2.4, 0.75, -6.2, 2.6, 1.5, 2.8);
+      k.box("base", -3.2, 0.6, -2.4, 2.6, 1.2, 4.2);
+      k.box("dark", 6, 4.5, 8.8, 4, 2.4, 0.2);               // screen on partition side
+      k.pop();
+      // bar counter + stools
+      k.ring("base", 256.5, 259, y, y + 3.5, mid - 0.016, mid + 0.026);
+      k.ring("accent", 256.3, 259.2, y + 3.5, y + 3.75, mid - 0.017, mid + 0.027);
+      for (const s of [-1.5, 1.6, 4.7]) {
+        k.frame(254.9, mid + s / 255, y); k.cyl("dark", 0, 0, 0, 0.1, 2.5); k.cyl("accent", 0, 2.5, 0, 0.55, 0.22); k.pop();
+      }
+      k.ring("dark", 262.5, 263, y + 1, y + 7, mid - 0.02, mid + 0.03);   // back bar
+    },
+  }));
+  parts.push({ id: "suiteCorr", name: "Suite corridor", offset: [78, 18, 0],
+    info: { type: "Private suite-level corridor", cap: "Service and guest access", dims: "14 ft wide · links suites to core" },
+    build(k) { k.ring("tint", 263.5, 278, LV.suite - 1, LV.suite); k.ring("base", 277.6, 278, LV.suite, LV.suite + 3.5); } });
+  return parts;
+}
+
+/* --- 4.7 MEZZANINE --- */
+function partsMezz() {
+  return [
+    { id: "mezz", name: "Rail seats", offset: [0, 52, 0],
+      info: { type: "Rail seats for safe standing, flip-up seat per place", cap: "", dims: "5 rows · 30 in row depth · rail at 3 ft 6 in" },
+      build(k) {
+        for (const row of MZ) {
+          seatRow(k, SEATS.railSeat, row.r + row.T - 0.55, row.y, { aisle: 2.2 });
+          k.ring("dark", row.r + 0.32, row.r + 0.5, row.y + 3.35, row.y + 3.5);         // waist rail per row
+          const n = 10;
+          for (let i = 0; i <= n; i++) k.pbox("dark", row.r + 0.41, -HALF + 2 * HALF * i / n, row.y, 0.12, 3.4, 0.12);
+        }
+        k.glassGuard(266.4, MZ[0].y, 3.5);
+      } },
+    { id: "terrace", name: "Mezzanine terrace", offset: [0, 46, 0],
+      info: { type: "Open terrace on the suite roof with drink rail", cap: "≈ 180 standing", dims: "30 ft deep · glass guard 42 in" },
+      build(k) {
+        k.ring("tint", 236.2, 266.6, LV.upper - 1, LV.upper);
+        k.glassGuard(236.6, LV.upper, 3.5);
+        k.ring("base", 241.5, 242.7, LV.upper + 3.4, LV.upper + 3.6);
+        for (let i = 0; i <= 10; i++) k.pbox("dark", 242.1, -HALF + 2 * HALF * i / 10, LV.upper, 0.12, 3.4, 0.12);
+      } },
+  ];
+}
+
+/* --- 4.8 UPPER DECK --- */
+function partsUpper() {
+  return [
+    { id: "upper", name: "Upper deck seating", offset: [0, 72, 0],
+      info: { type: "Bench seats with individual backs, 34° rake", cap: "", dims: `22 rows · 32 in tread · ${PROFILE.upRake.toFixed(0)}° average rake · cross-aisle at row 9` },
+      build(k) {
+        for (const row of UP) {
+          const rs = row.r + row.T - 0.9;
+          k.ring("accent", rs - 0.6, rs + 0.6, row.y + 1.3, row.y + 1.5, -HALF + 2.2 / rs, HALF - 2.2 / rs);  // bench plank
+          seatRow(k, SEATS.benchBack, rs, row.y, { aisle: 2.2 });
+          for (let s = -HALF + 3 / rs; s < HALF - 2 / rs; s += 8 / rs) k.pbox("dark", rs, s, row.y, 0.9, 1.3, 0.2);
+        }
+        const x = UP[8];
+        k.rail("dark", x.r - 0.2, x.y, 1.4, -HALF, HALF, 8);              // rail on cross-aisle wall
+        k.rail("dark", UP[7].r + UP[7].T + 0.3, UP[7].y, 3.5, -HALF, HALF, 8); // front guard of cross-aisle
+      } },
+  ];
+}
+
+/* --- 4.9 ACCESSIBILITY --- */
+function wheelchairBays(k, r, y, sStart, bays, th) {
+  // each bay: 3 ft wide × 4 ft 6 in deep space + companion seat
+  let s = sStart, c = 0;
+  for (let i = 0; i < bays; i++) {
+    k.frame(r, s / r, y); k.box("tint", 0, 0.03, 0, 4.5, 0.06, 2.9);
+    k.box("accent", 0, 0.08, 0, 1.4, 0.04, 1.4); k.pop();  // ISA floor mark
+    s += 3.1;
+    placeSeat(k, SEATS.club, r + 0.6, (s + 0.95) / r, y); c++;
+    s += 2.0;
+  }
+  return c;
+}
+function partsAccess() {
+  return [
+    { id: "acc1", name: "Accessible platform, lower", offset: [0, 26, -20],
+      info: { type: "Wheelchair platform at the lower-bowl cross-aisle", cap: "3 wheelchair spaces + 3 companion seats", dims: "7 ft 6 in deep · level with concourse +1 ft 6 in" },
+      build(k) {
+        const y = LV.conc;
+        k.ring("tint", PROFILE.lbEnd, 230, y, y + 1.5, -HALF, -11.5 / 226);
+        k.beam("tint", -0.085, 230, y + 1.5, 236, y, 0.2, 4);      // ramp from concourse
+        k.rail("dark", PROFILE.lbEnd + 0.4, y + 1.5, 3.0, -HALF, -11.5 / 226, 4);
+        const prevSeats = k.seats;
+        wheelchairBays(k, 225.8, y + 1.5, -HALF * 225.8 + 2.4, 3);
+        k.seats = prevSeats + 3;
+        k.wc = 3;
+      } },
+    { id: "acc2", name: "Accessible platform, upper", offset: [0, 80, 20],
+      info: { type: "Wheelchair platform on the upper-deck cross-aisle", cap: "3 wheelchair spaces + 3 companion seats", dims: "6 ft cross-aisle + 2 ft bay extension" },
+      build(k) {
+        const a = UP[7], b = UP[8];
+        const r = a.r + a.T + 3, y = a.y;
+        const s0 = 14;
+        k.ring("tint", a.r + a.T, b.r, y, y + 0.25, s0 / r, HALF);
+        const prevSeats = k.seats;
+        wheelchairBays(k, r, y + 0.25, s0 + 1, 3);
+        k.seats = prevSeats + 3;
+        k.wc = 3;
+      } },
+  ];
+}
+
+/* --- 4.10 CONCOURSES --- */
+function concession(k, r, zc, y, depth, width) {
+  k.frame(r, thz(zc, r), y);
+  k.box("base", 0, 5.5, 0, depth, 11, width);
+  k.box("accent", -depth / 2 - 0.6, 1.75, 0, 1.2, 3.5, width - 1);       // counter
+  k.box("dark", -depth / 2 - 0.05, 7.6, 0, 0.1, 2.2, width - 2);          // menu board
+  k.box("accent", -depth / 2 - 0.8, 10.4, 0, 1.6, 1.2, width + 0.4);      // canopy band
+  k.pop();
+}
+function restrooms(k, r, zc, y, depth, width) {
+  k.frame(r, thz(zc, r), y);
+  k.box("base", 0, 5.5, 0, depth, 11, width);
+  for (const dz of [-width / 4, width / 4]) {
+    k.box("dark", -depth / 2 - 0.05, 3.5, dz, 0.1, 7, 3.2);               // door openings
+    k.box("accent", -depth / 2 - 0.1, 8.6, dz, 0.12, 1.4, 1.4);          // signage
+  }
+  k.box("accent", -depth / 2 - 0.06, 10.6, 0, 0.12, 0.8, width);
+  k.pop();
+}
+function partsConcourses() {
+  const upR0 = 290, upR1 = PROFILE.rFac(LV.upper) - 1, upC = upR1 - 7;
+  return [
+    { id: "mainConc", name: "Main concourse", offset: [36, 0, 0],
+      info: { type: "Open main concourse at grade", cap: "Holds ≈ 900 persons at peak", dims: `${Math.round(PROFILE.facade.r0 - 1 - PROFILE.lbEnd)} ft deep · 20 ft floor-to-floor` },
+      build(k) {
+        k.slabWithOpening("tint", PROFILE.lbEnd, PROFILE.facade.r0 - 1, LV.conc - 1, LV.conc, { r0: 236, r1: 262.5, z0: -VOM.half - 0.5, z1: VOM.half + 0.5 });
+        k.rail("dark", 236, LV.conc, 3.5, -thz(VOM.half + 0.5, 236), thz(VOM.half + 0.5, 236), 3);
+      } },
+    { id: "mainConcession", name: "Concession stand, main", offset: [44, 0, 0],
+      info: { type: "Concession stand, 6 points of sale", cap: "≈ 250 transactions / hour", dims: "12 ft × 16 ft · 11 ft high" },
+      build(k) { concession(k, 306, -17, LV.conc, 12, 16); } },
+    { id: "mainWC", name: "Restrooms, main", offset: [44, 0, 0],
+      info: { type: "Restroom block, two entries", cap: "14 fixtures", dims: "12 ft × 14 ft · 11 ft high" },
+      build(k) { restrooms(k, 306, 2, LV.conc, 12, 14); } },
+    { id: "upperConc", name: "Upper concourse", offset: [44, 44, 0],
+      info: { type: "Upper concourse under the upper-deck rake", cap: "Holds ≈ 450 persons at peak", dims: `${Math.round(upR1 - upR0)} ft deep · 25 ft+ to soffit` },
+      build(k) { k.ring("tint", upR0, upR1, LV.upper - 1, LV.upper); k.rail("dark", upR0 + 0.3, LV.upper, 3.5, -HALF, HALF, 6); } },
+    { id: "upperConcession", name: "Concession stand, upper", offset: [50, 44, 0],
+      info: { type: "Concession stand, 4 points of sale", cap: "≈ 160 transactions / hour", dims: "11 ft × 14 ft · 11 ft high" },
+      build(k) { concession(k, upC, -7, LV.upper, 11, 14); } },
+    { id: "upperWC", name: "Restrooms, upper", offset: [50, 44, 0],
+      info: { type: "Restroom block, two entries", cap: "10 fixtures", dims: "11 ft × 12 ft · 11 ft high" },
+      build(k) { restrooms(k, upC, 13, LV.upper, 11, 12); } },
+  ];
+}
+
+/* --- 4.11 STRUCTURE --- */
+function partsStructure() {
+  const upSoffit = (r) => tierYAt(UP, r) - 0.6 - 3.5;
+  return [
+    { id: "treads", name: "Precast tread & riser units", offset: [0, 0, 0],
+      info: { type: "Precast concrete L-units on raker beams", cap: `${LB.length + CL.length + SU.length + MZ.length + UP.length} tread lines`, dims: "33 in lower · 36 in club · 40 in suite · 30 in mezz · 32 in upper" },
+      build(k) {
+        treadUnits(k, LB, { firstRiser: 0.75, aisleSteps: true, ranges: (i, row) => {
+          if (!inVomRow(i)) return [[-HALF, HALF]];
+          const t = thz(VOM.half + 0.5, row.r);
+          return [[-HALF, -t], [t, HALF]];
+        } });
+        treadUnits(k, CL, { firstRiser: 2.5, aisleSteps: true });
+        treadUnits(k, SU, { firstRiser: 2 });
+        treadUnits(k, MZ, { firstRiser: 1.5, aisleSteps: true });
+        treadUnits(k, UP, { firstRiser: PROFILE.uRise, aisleSteps: true });
+      } },
+    { id: "rakers", name: "Raker beams", offset: [0, 0, 0],
+      info: { type: "Precast raker beams on frame lines at ±5.5°", cap: "8 rakers in this section", dims: "2 ft 6 in to 3 ft 6 in deep · 18 in wide" },
+      build(k) {
+        const run = (tier, depth, step = 3, ext = 0) => {
+          for (const th of [-FRAME_TH, FRAME_TH]) {
+            for (let i = 0; i < tier.length - 1; i += step) {
+              const a = tier[i], j = Math.min(tier.length - 1, i + step), b = tier[j];
+              k.beam("accent", th, a.r, a.y - 0.6, b.r + (j === tier.length - 1 ? b.T + ext : 0), b.y - 0.6, depth, 1.5);
+            }
+          }
+        };
+        run(LB, 2.5);
+        run(CL, 2.5, 2);
+        run(MZ.concat(UP), 3.5, 3, 4);
+      } },
+    { id: "columns", name: "Columns", offset: [0, 0, 0],
+      info: { type: "Cast-in-place concrete columns on frame lines", cap: "16 columns · 8 per frame", dims: "30 in × 30 in · up to 120 ft tall" },
+      build(k) {
+        const cols = [
+          [162, 0, tierYAt(LB, 162) - 3.2],
+          [195, 0, tierYAt(LB, 195) - 3.2],
+          [PROFILE.lbEnd, 0, LV.conc - 1],
+          [237.5, 0, LV.upper - 1],
+          [266, 0, LV.upper - 6.5],
+          [289.5, 0, upSoffit(289.5)],
+          [314, 0, upSoffit(314)],
+          [338, LV.upper, upSoffit(338)],
+        ];
+        for (const th of [-FRAME_TH, FRAME_TH]) {
+          for (const [r, y0, y1] of cols) {
+            k.pbox("accent", r, th, y0, 2.5, y1 - y0, 2.5);
+            if (y0 === 0) k.pbox("accent", r, th, -1.5, 6, 1.5, 6);     // footing
+          }
+          // floor beams under each slab
+          k.beam("accent", th, PROFILE.lbEnd, LV.conc - 1, PROFILE.facade.r0 - 1, LV.conc - 1, 2.5, 1.25);
+          k.beam("accent", th, 228.4, LV.club - 1, PROFILE.rFac(LV.club) - 1.2, LV.club - 1, 2.5, 1.25);
+          k.beam("accent", th, 236.2, LV.suite - 1, 278, LV.suite - 1, 2.2, 1.25);
+          k.beam("accent", th, 236.2, LV.upper - 1, 266.6, LV.upper - 1, 2.2, 1.25);
+          k.beam("accent", th, 290, LV.upper - 1, PROFILE.rFac(LV.upper) - 1, LV.upper - 1, 2.5, 1.25);
+        }
+      } },
+    { id: "girders", name: "Transfer girders", offset: [0, 0, 0],
+      info: { type: "Steel plate transfer girders spanning between frames", cap: "Picks up mezzanine and upper raker loads", dims: "6 ft deep · 3 ft 4 in flange · 2 lines" },
+      build(k) {
+        k.ring("accent", 264.2, 267.6, LV.upper - 7, LV.upper - 1, -HALF, HALF);
+        k.ring("accent", 312.5, 315.5, LV.upper - 7, LV.upper - 1, -HALF, HALF);
+      } },
+    { id: "slab", name: "Event-level slab & retaining wall", offset: [0, 0, 0],
+      info: { type: "Slab on grade at field level; perimeter retaining wall", cap: "Back-of-house service level", dims: `Retaining wall ${ft(LV.conc)} tall · 2 ft thick` },
+      build(k) {
+        const f = PROFILE.facade;
+        k.ring("tint", 162, f.r0 + 2, -0.8, 0);
+        k.ring("accent", f.r0, f.r0 + 2, 0, LV.conc - 1);
+      } },
+  ];
+}
+
+/* --- 4.12 VERTICAL CIRCULATION --- */
+function flights(k, levels, x0, x1, zA, zB, width) {
+  // switchback stair between successive levels; flights ≤ 6 ft rise, 7 in risers, 11 in treads
+  let y = levels[0];
+  let dir = 1, lane = 0;
+  const top = levels[levels.length - 1];
+  const riser = 0.6, tread = 11 / 12;
+  while (y < top - 0.01) {
+    const next = levels.find((l) => l > y + 0.01);
+    const rise = Math.min(6, next - y);
+    const n = Math.round(rise / riser), h = rise / n;
+    const z = lane ? zB : zA;
+    const xs = dir > 0 ? x0 : x1;
+    for (let i = 0; i < n; i++) {
+      const x = xs + dir * (i + 0.5) * tread;
+      k.box("tint", x, y + (i + 1) * h - 0.15, z, tread, 0.3, width);
+    }
+    const xe = xs + dir * n * tread;
+    k.beam("accent", 0, Math.min(xs, xe), dir > 0 ? y - 0.3 : y + rise - 0.3, Math.max(xs, xe), dir > 0 ? y + rise - 0.3 : y - 0.3, 0.9, 0.3);
+    k.box("dark", (xs + xe) / 2, y + rise / 2 + 3, z + (lane ? width / 2 : -width / 2), Math.abs(xe - xs), 0.12, 0.12, 0, Math.atan2(rise, (xe - xs)));
+    y += rise;
+    // landing
+    const lx = dir > 0 ? xe + 2 : xe - 2;
+    k.box("tint", lx, y - 0.25, (zA + zB) / 2, 4, 0.5, Math.abs(zB - zA) + width);
+    dir *= -1; lane = 1 - lane;
+  }
+}
+function partsCirculation() {
+  return [
+    { id: "stair", name: "Egress stair", offset: [0, 0, -54],
+      info: { type: "Switchback egress stair, main concourse to upper concourse", cap: "Serves 4 levels", dims: "2 × 4 ft flights · 7 in risers · 11 in treads" },
+      build(k) {
+        const r = 300, zc = -32.6;
+        k.frame(r, thz(zc, r), 0);
+        flights(k, [LV.conc, LV.club, LV.suite, LV.upper], -4.2, 4.2, -2.1, 2.1, 4);
+        k.pop();
+      } },
+    { id: "escalator", name: "Escalator", offset: [0, 10, 30],
+      info: { type: "Escalator, main concourse to club lounge", cap: "≈ 6,000 persons / hour", dims: `40 in step · 30° · ${ft(LV.club - LV.conc)} rise` },
+      build(k) {
+        const r0 = 258, r1 = r0 + (LV.club - LV.conc) / Math.tan(30 * DEG), zc = 12.6;
+        const rm = (r0 + r1) / 2;
+        k.frame(rm, thz(zc, rm), 0);
+        const L = (r1 - r0) / 2, ang = 30 * DEG, yc = (LV.conc + LV.club) / 2;
+        k.box("accent", 0, yc - 1.6, 0, 2 * L / Math.cos(ang) + 2, 3.2, 4.6, 0, ang);   // truss
+        const n = 34;
+        for (let i = 0; i < n; i++) {
+          const t = (i + 0.5) / n, x = -L + 2 * L * t, y = LV.conc + (LV.club - LV.conc) * t;
+          k.box("tint", x, y + 0.1, 0, 1.25, 0.25, 3.3);
+        }
+        for (const sgn of [-1, 1]) {
+          k.box("glass", 0, yc + 1.8, sgn * 2.1, 2 * L / Math.cos(ang), 3.2, 0.1, 0, ang);
+          k.box("dark", 0, yc + 3.5, sgn * 2.1, 2 * L / Math.cos(ang) + 1, 0.2, 0.25, 0, ang);
+        }
+        k.box("dark", -L - 2.2, LV.conc + 0.05, 0, 4.4, 0.1, 4.6);
+        k.box("dark", L + 2.2, LV.club + 0.05, 0, 4.4, 0.1, 4.6);
+        k.pop();
+      } },
+    { id: "elevator", name: "Elevator core", offset: [0, 0, 54],
+      info: { type: "Passenger elevator core, glass front", cap: "3,500 lb car · 4 stops", dims: "9 ft × 9 ft shaft · event level to upper concourse" },
+      build(k) {
+        const r = 307.5, zc = 21.4, top = LV.upper + 15;
+        k.frame(r, thz(zc, r), 0);
+        k.box("tint", 0, top / 2, -4.2, 9, top, 0.6);
+        k.box("tint", 0, top / 2, 4.2, 9, top, 0.6);
+        k.box("tint", 4.2, top / 2, 0, 0.6, top, 9);
+        k.box("glass", -4.4, top / 2, 0, 0.2, top, 8.2);
+        k.box("tint", 0, top + 0.5, 0, 9.4, 1, 9.4);
+        k.box("accent", 0, LV.club + 4.3, 0, 6.4, 8.5, 6.4);       // car
+        for (const y of [0, LV.conc, LV.club, LV.upper]) {
+          k.box("dark", -4.6, y + 3.6, 0, 0.12, 7.2, 3.6);            // landing doors
+          if (y > 0) k.box("tint", -6, y - 0.25, 0, 3, 0.5, 9);       // landing sill
+        }
+        k.pop();
+      } },
+  ];
+}
+
+/* --- 4.13 ENVELOPE & ROOF --- */
+function partsEnvelope() {
+  const f = PROFILE.facade, rFac = PROFILE.rFac;
+  const roofTop = PROFILE.roofTop, roofDepth = PROFILE.roofDepth;
+  const rr0 = 60, rr1 = f.r1 + 2;
+  return [
+    { id: "facade", name: "Facade panels", offset: [105, 0, 0],
+      info: { type: "Leaning rainscreen with glazed bands", cap: "48 panels in this section", dims: `${ft(f.y1 - f.y0)} tall · leans ${Math.round(Math.atan2(f.r1 - f.r0, f.y1 - f.y0) / DEG)}° outward` },
+      build(k) {
+        const nt = 6, nv = 8;
+        for (let j = 0; j < nv; j++) {
+          const ya = f.y0 + (f.y1 - f.y0) * j / nv + 0.3, yb = f.y0 + (f.y1 - f.y0) * (j + 1) / nv - 0.3;
+          const ra = rFac(ya), rb = rFac(yb);
+          const glazed = j === 0 || j === 1 || j === 4;
+          for (let i = 0; i < nt; i++) {
+            const a = -HALF + 2 * HALF * i / nt + 0.002, b = -HALF + 2 * HALF * (i + 1) / nt - 0.002;
+            const slot = glazed ? "glass" : ((i + j) % 3 === 0 ? "accent" : "base");
+            k.rev(slot, [[ra, ya], [rb, yb], [rb + 0.4, yb], [ra + 0.4, ya]], a, b, 2);
+          }
+        }
+        for (let i = 0; i <= nt; i++) {
+          const th = -HALF + 2 * HALF * i / nt;
+          k.beam("dark", th, f.r0 + 0.6, f.y0, f.r1 + 0.6, f.y1, 2.2, 0.5, "center");
+        }
+      } },
+    { id: "plaza", name: "Grade plaza", offset: [105, 0, 0],
+      info: { type: "Entry plaza at grade outside the facade", cap: "Gate approach", dims: `Grade ${ft(LV.conc)} above field` },
+      build(k) { k.ring("tint", PROFILE.facade.r0 + 2, PROFILE.facade.r0 + 46, LV.conc - 1.2, LV.conc - 0.1); } },
+    { id: "roof", name: "Canopy roof", offset: [0, 112, 0],
+      info: { type: "Translucent ETFE cushion canopy on steel trusses", cap: "≈ 70% light transmission", dims: `${Math.round(rr1 - rr0)} ft span in section · ${Math.round(roofTop(rr0) - PROFILE.roofEdge)} ft rise` },
+      build(k) {
+        const bays = 12;
+        const rAt = (i) => rr1 - (rr1 - rr0) * i / bays;
+        for (let i = 0; i < bays; i++) {
+          const ra = rAt(i) - 0.25, rb = rAt(i + 1) + 0.25;
+          const ya = roofTop(ra), yb = roofTop(rb), ym = roofTop((ra + rb) / 2) + 1.4;
+          const rm = (ra + rb) / 2;
+          k.rev("glass", [[ra, ya + 0.2], [rm, ym], [rb, yb + 0.2], [rb, yb + 0.5], [rm, ym + 0.3], [ra, ya + 0.5]], -HALF, HALF);
+        }
+        for (let i = 0; i <= bays; i++) {
+          const r = rAt(i), y = roofTop(r);
+          k.ring("base", r - 0.6, r + 0.6, y - 1.2, y + 0.2);                        // purlins
+        }
+        // trusses on frame lines
+        for (const th of [-FRAME_TH, FRAME_TH]) {
+          for (let i = 0; i < bays; i++) {
+            const ra = rAt(i), rb = rAt(i + 1);
+            k.beam("accent", th, ra, roofTop(ra), rb, roofTop(rb), 1.4, 1.2);
+            k.beam("accent", th, ra, roofTop(ra) - roofDepth(ra), rb, roofTop(rb) - roofDepth(rb), 1.2, 1.2, "center");
+            k.beam("accent", th, ra, roofTop(ra) - roofDepth(ra), ra, roofTop(ra) - 1.4, 0.6, 0.8, "center");
+            const diagUp = i % 2 === 0;
+            k.beam("accent", th, ra, diagUp ? roofTop(ra) - roofDepth(ra) : roofTop(ra) - 1.4, rb, diagUp ? roofTop(rb) - 1.4 : roofTop(rb) - roofDepth(rb), 0.6, 0.8, "center");
+          }
+        }
+        k.ring("accent", rr1 - 1, rr1 + 0.5, PROFILE.roofEdge - 3, PROFILE.roofEdge + 0.4);  // edge beam
+      } },
+    { id: "catwalk", name: "Catwalk & sports lighting", offset: [0, 84, 0],
+      info: { type: "Suspended maintenance catwalk with LED sports lights", cap: "7 fixtures · 1,500 W LED each", dims: "3 ft 6 in walkway · hung 8 ft below truss" },
+      build(k) {
+        const r0 = 168, r1 = 171.5, rc = (r0 + r1) / 2;
+        const yb = PROFILE.roofTop(rc) - PROFILE.roofDepth(rc), y = yb - 8;
+        k.ring("tint", r0, r1, y - 0.4, y);
+        k.rail("dark", r0 + 0.1, y, 3.5, -HALF, HALF, 6);
+        k.rail("dark", r1 - 0.1, y, 3.5, -HALF, HALF, 6);
+        for (const th of [-FRAME_TH, FRAME_TH]) { k.pbox("dark", r0, th, y, 0.15, yb - y, 0.15); k.pbox("dark", r1, th, y, 0.15, yb - y, 0.15); }
+        for (let i = 0; i < 7; i++) {
+          const th = -HALF + 2 * HALF * (i + 0.5) / 7;
+          k.frame(r0 - 0.9, th, y - 0.8);
+          k.box("dark", 0, 0, 0, 1.6, 1.2, 2.2, 0, -0.55);
+          k.box("glow", -0.45, -0.62, 0, 1.3, 0.06, 1.9, 0, -0.55);
+          k.pop();
+        }
+      } },
+  ];
+}
+
+/* --- 4.14 MEP --- */
+function partsMEP() {
+  const ductY = LV.club - 3.3;
+  return [
+    { id: "duct", name: "Supply air duct", offset: [0, 0, -48],
+      info: { type: "Galvanised supply duct with linear diffusers", cap: "≈ 18,000 cfm", dims: "48 in × 24 in main · 36 in × 18 in branch" },
+      build(k) {
+        const top = tierYAt(UP, 316) - 6;
+        k.ring("accent", 270, 274, ductY, ductY + 2);
+        k.frame(294.75, thz(-3, 294.75), 0);
+        k.box("accent", 0, ductY + 1, 0, 41.5, 1.5, 3);
+        k.box("accent", 20.75, (ductY + top) / 2, 0, 3, top - ductY, 4);    // vertical duct riser
+        k.pop();
+        for (let s = -24; s <= 24; s += 8) { k.frame(272, s / 272, ductY); k.box("tint", 0, -0.15, 0, 2, 0.3, 4); k.pop(); }
+      } },
+    { id: "sprinkler", name: "Sprinkler main", offset: [0, -6, -48],
+      info: { type: "Wet-pipe sprinkler main, branch lines and standpipe", cap: "Ordinary Hazard Group 1", dims: "6 in main · 1½ in branches at 10 ft" },
+      build(k) {
+        const y = LV.club - 1.6, oct = [];
+        for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; oct.push([262 + 0.25 * Math.cos(a), y + 0.25 * Math.sin(a)]); }
+        k.rev("accent", oct);
+        for (let s = -26; s <= 26; s += 10) {
+          k.frame(262, s / 262, y);
+          k.box("accent", 22, 0, 0, 44, 0.13, 0.13);
+          for (let x = 4; x <= 44; x += 10) k.cyl("accent", x, -0.6, 0, 0.12, 0.6);
+          k.pop();
+        }
+        k.frame(290.5, thz(-35, 290.5), 0); k.cyl("accent", 0, 0, 0, 0.33, LV.upper + 4); k.pop();   // standpipe at stair
+      } },
+    { id: "elec", name: "Electrical riser", offset: [0, 0, -60],
+      info: { type: "Bus duct riser, conduit bank, cable tray", cap: "2,000 A bus · feeds 4 panelboards", dims: "Event level to upper concourse · 24 in tray" },
+      build(k) {
+        const r = 315.8, zc = -25;
+        k.frame(r, thz(zc, r), 0);
+        const top = LV.upper + 12;
+        k.box("accent", 0, top / 2, 0, 1.6, top, 2);
+        for (const dz of [1.5, 2.2, 2.9]) k.cyl("accent", 0, 0, dz, 0.18, top);
+        for (const y of [LV.conc, LV.club, LV.upper]) k.box("tint", -1.2, y + 3.5, 0, 0.6, 5, 3);   // panelboards
+        k.pop();
+        k.ring("accent", 310, 312, LV.club - 4.6, LV.club - 4.3, thz(-25, 311), thz(18, 311));   // cable tray
+      } },
+  ];
+}
+
+/* =====================================================================
+   5. COMPONENT REGISTRY — 13 groups, each explodes on its own
+   ===================================================================== */
+const COMPONENTS = [
+  { key: "field", n: 1, name: "Field edge", cat: "premium", delay: 0.62, parts: partsFieldEdge, labelPart: "bunker", anchor: [148, HALF * 0.6, 5],
+    caption: "Bunker suite — glass frontage, 8 ft 3 in clear" },
+  { key: "lower", n: 2, name: "Lower bowl", cat: "seating", delay: 0.55, parts: partsLowerBowl, labelPart: "lbSeats", anchor: [196, -HALF * 0.75, 40],
+    caption: `Lower bowl — 30 rows, 33 in tread` },
+  { key: "club", n: 3, name: "Club seats", cat: "premium", delay: 0.45, parts: partsClub, labelPart: "clubSeats", anchor: [218, HALF * 0.85, 70],
+    caption: "Club seat — 22 in wide, 36 in row depth" },
+  { key: "loge", n: 4, name: "Loge boxes", cat: "premium", delay: 0.5, parts: partsLoges, labelPart: "loges", anchor: [228, HALF * 0.55, 56],
+    caption: "Loge box — 4 and 6 swivel seats, drink rail" },
+  { key: "suites", n: 5, name: "Suite level", cat: "premium", delay: 0.38, parts: partsSuites, labelPart: "suite2", anchor: [250, HALF * 0.8, LV.suite + 10],
+    caption: "Suite — 12 ft floor-to-floor, 40 in rows" },
+  { key: "mezz", n: 6, name: "Mezzanine", cat: "seating", delay: 0.32, parts: partsMezz, labelPart: "mezz", anchor: [272, -HALF * 0.8, MZ[2].y + 3],
+    caption: "Rail seats — safe standing, 30 in rows" },
+  { key: "upper", n: 7, name: "Upper deck", cat: "seating", delay: 0.24, parts: partsUpper, labelPart: "upper", anchor: [318, -HALF * 0.7, tierYAt(UP, 318) + 3],
+    caption: `Upper deck — ${PROFILE.upRake.toFixed(0)}° rake, 32 in tread` },
+  { key: "access", n: 8, name: "Accessibility", cat: "access", delay: 0.5, parts: partsAccess, labelPart: "acc1", anchor: [226, -HALF * 0.85, LV.conc + 2],
+    caption: "Wheelchair platform — 3 bays + companions, 2 levels" },
+  { key: "conc", n: 9, name: "Concourses", cat: "circulation", delay: 0.68, parts: partsConcourses, labelPart: "mainConcession", anchor: [306, -17 / 306, LV.conc + 11],
+    caption: "Main concourse — 20 ft floor-to-floor" },
+  { key: "structure", n: 10, name: "Structure", cat: "structure", delay: 0, parts: partsStructure, labelPart: "rakers", anchor: [180, -FRAME_TH, tierYAt(LB, 180) - 3],
+    caption: "Raker beam — precast, 2 ft 6 in deep" },
+  { key: "vcirc", n: 11, name: "Vertical circulation", cat: "circulation", delay: 0.75, parts: partsCirculation, labelPart: "elevator", anchor: [307.5, thz(21.4, 307.5), LV.upper + 16],
+    caption: "Elevator core — 3,500 lb car, 4 stops" },
+  { key: "envelope", n: 12, name: "Envelope & roof", cat: "envelope", delay: 0.08, parts: partsEnvelope, labelPart: "roof", anchor: [200, HALF * 0.5, PROFILE.roofTop(200)],
+    caption: "Canopy roof — ETFE, ≈ 70% light transmission" },
+  { key: "mep", n: 13, name: "MEP", cat: "mep", delay: 0.85, parts: partsMEP, labelPart: "duct", anchor: [272, -HALF * 0.7, LV.club - 2],
+    caption: "Supply duct — 48 × 24 in, 6 in sprinkler main" },
+];
+
+/* =====================================================================
+   6. MATERIALS (theme-driven from CSS tokens)
+   ===================================================================== */
+const rootEl = document.documentElement;
+const cssVar = (n) => getComputedStyle(rootEl).getPropertyValue(n).trim();
+const SLOTS = ["base", "tint", "accent", "dark", "glass", "turf", "white", "glow"];
+const MAT = {}, HL = {};
+const LINE = new THREE.LineBasicMaterial({ transparent: true });
+const LINE_GLASS = new THREE.LineBasicMaterial({ transparent: true });
+const LINE_HL = {};
+function makeLambert(opts = {}) {
+  return new THREE.MeshLambertMaterial(Object.assign({ vertexColors: true, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }, opts));
+}
+for (const cat in CATS) {
+  MAT[cat] = {}; HL[cat] = {};
+  for (const s of SLOTS) {
+    if (s === "glow") { MAT[cat][s] = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }); HL[cat][s] = MAT[cat][s]; continue; }
+    const glass = s === "glass";
+    MAT[cat][s] = makeLambert(glass ? { transparent: true, opacity: 0.3, depthWrite: false } : {});
+    HL[cat][s] = makeLambert(glass ? { transparent: true, opacity: 0.45, depthWrite: false } : {});
+  }
+  LINE_HL[cat] = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.95 });
+}
+const RAY_MAT = new THREE.LineDashedMaterial({ dashSize: 3, gapSize: 2.2, transparent: true, depthTest: false });
+const THEME = {};
+function applyTheme() {
+  const c = (n) => new THREE.Color(cssVar(n) || "#888");
+  THEME.bg = c("--bg");
+  const base = c("--m-base"), dark = c("--m-dark"), glass = c("--m-glass"), turf = c("--m-turf"), white = c("--m-white"), glow = c("--m-glow");
+  const lineCol = c("--m-line"), lineA = parseFloat(cssVar("--m-line-alpha")) || 0.5;
+  LINE.color.copy(lineCol); LINE.opacity = lineA;
+  LINE_GLASS.color.copy(lineCol); LINE_GLASS.opacity = lineA * 0.5;
+  RAY_MAT.color.copy(c("--m-ray"));
+  for (const cat in CATS) {
+    const acc = c(CATS[cat].css);
+    const tint = base.clone().lerp(acc, 0.3);
+    const set = { base, tint, accent: acc, dark, glass, turf, white, glow };
+    for (const s of SLOTS) MAT[cat][s].color.copy(set[s]);
+    const hb = base.clone().lerp(acc, 0.55);
+    const hset = { base: hb, tint: base.clone().lerp(acc, 0.7), accent: acc.clone().lerp(white, 0.25), dark: acc.clone().lerp(dark, 0.35), glass: glass.clone().lerp(acc, 0.6), turf: turf.clone().lerp(acc, 0.5), white: hb, glow };
+    for (const s of SLOTS) if (s !== "glow") HL[cat][s].color.copy(hset[s]);
+    LINE_HL[cat].color.copy(acc.clone().lerp(lineCol, 0.35));
+  }
+  if (renderer) renderer.setClearColor(THEME.bg, 1);
+  refreshLegendSwatches();
+}
+
+/* =====================================================================
+   7. SCENE, PARTS
+   ===================================================================== */
+const canvas = document.getElementById("gl");
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+} catch (err) {
+  const f = document.createElement("div"); f.id = "fail";
+  f.textContent = "WebGL is not available in this browser, so the 3D drawing cannot be shown.";
+  document.body.appendChild(f); return;
+}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+const scene = new THREE.Scene();
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 6000);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8f8a82, 0.78));
+const sun = new THREE.DirectionalLight(0xffffff, 0.5); sun.position.set(-0.55, 1, 0.35); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.16); fill.position.set(0.6, 0.3, -0.8); scene.add(fill);
+const root = new THREE.Group(); scene.add(root);
+
+const PARTS = [];
+const pickables = [];
+let SEAT_TOTAL = 0, WC_TOTAL = 0;
+for (const comp of COMPONENTS) {
+  comp.partObjs = [];
+  comp.parts().forEach((def, pi) => {
+    const k = new Kit();
+    def.build(k);
+    const group = new THREE.Group();
+    const meshes = [];
+    for (const slot of SLOTS) {
+      const B = k.bufs[slot];
+      if (!B || !B.p.length) continue;
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(B.p, 3));
+      geo.setAttribute("normal", new THREE.Float32BufferAttribute(B.n, 3));
+      geo.setAttribute("color", new THREE.Float32BufferAttribute(B.c, 3));
+      geo.computeBoundingSphere();
+      const mesh = new THREE.Mesh(geo, MAT[comp.cat][slot]);
+      mesh.userData.slot = slot;
+      if (slot === "glass") mesh.renderOrder = 2;
+      group.add(mesh); meshes.push(mesh);
+      if (slot !== "glow") {
+        const lines = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 31), slot === "glass" ? LINE_GLASS : LINE);
+        lines.userData.slot = slot; lines.userData.isLine = true;
+        if (slot === "glass") lines.renderOrder = 3;
+        group.add(lines); meshes.push(lines);
+      }
+    }
+    root.add(group);
+    const seats = k.seats;
+    SEAT_TOTAL += seats; WC_TOTAL += k.wc || 0;
+    const info = Object.assign({}, def.info);
+    if (!info.cap) info.cap = `${seats.toLocaleString("en-US")} seats`;
+    const part = { comp, id: def.id, name: def.name, info, group, meshes, seats,
+      offset: new THREE.Vector3().fromArray(def.offset || [0, 0, 0]),
+      delay: clamp(comp.delay + pi * 0.03, 0, 1), cat: comp.cat, hl: false };
+    for (const m of meshes) if (!m.userData.isLine) { m.userData.part = part; pickables.push(m); }
+    PARTS.push(part); comp.partObjs.push(part);
+  });
+  comp.labelPartObj = comp.partObjs.find((p) => p.id === comp.labelPart) || comp.partObjs[0];
+}
+// derived captions
+document.getElementById("tbSeats").textContent = `${SEAT_TOTAL.toLocaleString("en-US")} seats · ${WC_TOTAL} WC`;
+document.getElementById("tbGrade").textContent = ft(LV.conc);
+
+/* =====================================================================
+   8. TIMELINE
+   0–4 rotate · 4–10 explode · 10–22 orbit + labels · 22–26 sightlines · 26–30 reassemble
+   ===================================================================== */
+const PHASES = [
+  { t0: 0, t1: 4, name: "Assembled" },
+  { t0: 4, t1: 10, name: "Explode" },
+  { t0: 10, t1: 22, name: "Anatomy" },
+  { t0: 22, t1: 26, name: "Sightlines" },
+  { t0: 26, t1: 30, name: "Reassemble" },
+];
+function explodeAt(t, delay) {
+  if (t < 4) return 0;
+  if (t < 10) return ease(clamp((t - 4 - delay * 2.2) / 3.6));
+  if (t < 26) return 1;
+  return 1 - ease(clamp((t - 26 - (1 - delay) * 1.4) / 2.4));
+}
+const CAM_KEYS = [ // t, azimuth°, elevation°
+  [0, 135, 30], [4, 143, 30], [10, 152, 29], [22, 74, 24], [23.4, 90, 4], [26, 90, 4], [30, 135, 30],
+];
+function camAt(t) {
+  for (let i = 0; i < CAM_KEYS.length - 1; i++) {
+    const a = CAM_KEYS[i], b = CAM_KEYS[i + 1];
+    if (t >= a[0] && t <= b[0]) {
+      const u = (t - a[0]) / (b[0] - a[0]);
+      const e = i === 0 ? u : ease(u);
+      return { az: lerp(a[1], b[1], e), el: lerp(a[2], b[2], e) };
+    }
+  }
+  return { az: 135, el: 30 };
+}
+const state = { t: 0, playing: true, amount: 1, scrubbing: false };
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduceMotion) { state.t = 21; state.playing = false; }
+
+/* =====================================================================
+   9. CAMERA RIG (timeline path + user orbit/pan/zoom on top)
+   ===================================================================== */
+const user = { daz: 0, del: 0, zoom: 1, pan: new THREE.Vector3() };
+const TARGET_A = new THREE.Vector3(200, 96, 0), TARGET_B = new THREE.Vector3(222, 136, 0), TARGET_S = new THREE.Vector3(222, 80, 0);
+let viewH = 300;
+function updateCamera(t, eG) {
+  const c = camAt(t);
+  const az = (c.az + user.daz) * DEG;
+  const el = clamp(c.el + user.del, 2, 88) * DEG;
+  const sw = ease(clamp((t - 22) / 1.4)) * (1 - ease(clamp((t - 26) / 1.6)));   // sightline close-up
+  const target = TARGET_A.clone().lerp(TARGET_B, eG).lerp(TARGET_S, sw).add(user.pan);
+  const R = 2500;
+  camera.position.set(target.x + R * Math.cos(el) * Math.cos(az), target.y + R * Math.sin(el), target.z + R * Math.cos(el) * Math.sin(az));
+  camera.up.set(0, 1, 0);
+  camera.lookAt(target);
+  const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1, aspect = w / h;
+  // fit: assembled ≈ 330 ft tall, exploded ≈ 470 ft; widen on portrait screens
+  let base = lerp(lerp(340, 500, eG), 275, sw);
+  if (aspect < 1.25) base *= lerp(1.0, 1.5, clamp((1.25 - aspect) / 0.8));
+  viewH = base / user.zoom;
+  camera.top = viewH / 2; camera.bottom = -viewH / 2;
+  camera.left = -viewH * aspect / 2; camera.right = viewH * aspect / 2;
+  camera.updateProjectionMatrix();
+  camera.updateMatrixWorld();
+}
+
+/* =====================================================================
+   10. LABELS (billboarded HTML with SVG leader lines)
+   ===================================================================== */
+const labelsEl = document.getElementById("labels");
+const leadersEl = document.getElementById("leaders");
+const SVGNS = "http://www.w3.org/2000/svg";
+for (const comp of COMPONENTS) {
+  const d = document.createElement("div");
+  d.className = "lbl";
+  d.style.setProperty("--sw", `var(${CATS[comp.cat].css})`);
+  const [nm, spec] = comp.caption.split(" — ");
+  d.innerHTML = `<b>${comp.n}. ${nm}</b><span>${spec || ""}</span>`;
+  labelsEl.appendChild(d);
+  const g = document.createElementNS(SVGNS, "g");
+  const ln = document.createElementNS(SVGNS, "polyline");
+  ln.setAttribute("fill", "none"); ln.setAttribute("stroke-width", "1");
+  ln.style.stroke = "var(--ink)";
+  const dot = document.createElementNS(SVGNS, "circle");
+  dot.setAttribute("r", "2.6"); dot.style.fill = "var(--ink)";
+  g.appendChild(ln); g.appendChild(dot); leadersEl.appendChild(g);
+  comp.lbl = { el: d, g, ln, dot, w: 0, h: 0 };
+}
+const _p = new THREE.Vector3();
+function toScreen(v) {
+  _p.copy(v).project(camera);
+  return { x: (_p.x + 1) / 2 * canvas.clientWidth, y: (1 - _p.y) / 2 * canvas.clientHeight };
+}
+function labelWindow(i) { return 10.35 + i * 0.86; }
+function modelScreenBox() {
+  // screen-space bounds of every visible part (bounding spheres, offset by explode)
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  const pxPerFt = canvas.clientHeight / viewH;
+  const c = new THREE.Vector3();
+  for (const p of PARTS) {
+    if (!p.group.visible) continue;
+    for (const m of p.meshes) {
+      if (m.userData.isLine) continue;
+      const bs = m.geometry.boundingSphere;
+      c.copy(bs.center).add(p.group.position);
+      const s = toScreen(c), r = bs.radius * pxPerFt * 0.75;
+      x0 = Math.min(x0, s.x - r); x1 = Math.max(x1, s.x + r);
+      y0 = Math.min(y0, s.y - r); y1 = Math.max(y1, s.y + r);
+    }
+  }
+  return { x0, x1, y0, y1 };
+}
+function updateLabels(t) {
+  const W = canvas.clientWidth, H = canvas.clientHeight;
+  const items = [];
+  COMPONENTS.forEach((comp, i) => {
+    const L = comp.lbl;
+    const vis = catVisible[comp.cat] && t >= labelWindow(i) && t < 22.2;
+    L.el.classList.toggle("show", vis);
+    L.g.style.opacity = vis ? 1 : 0;
+    if (!vis) return;
+    if (!L.w) { L.w = L.el.offsetWidth; L.h = L.el.offsetHeight; }
+    const a = P(...comp.anchor);
+    const wp = new THREE.Vector3(a[0], a[1], a[2]).add(comp.labelPartObj.group.position);
+    const s = toScreen(wp);
+    items.push({ L, ax: s.x, ay: s.y });
+  });
+  if (!items.length) return;
+  // callout columns hugging the model's left and right silhouettes
+  const box = modelScreenBox();
+  const mid = (Math.min(box.x0, W) + Math.max(box.x1, 0)) / 2;
+  const top = 128, bottom = H - 210;
+  for (const side of ["left", "right"]) {
+    const col = items.filter((it) => (it.ax < mid) === (side === "left"));
+    col.sort((p, q) => p.ay - q.ay);
+    for (const it of col) {
+      it.right = side === "right";
+      const edge = side === "left" ? Math.max(8 + it.L.w, Math.min(box.x0 + 40, it.ax - 70)) : Math.min(W - 8 - it.L.w, Math.max(box.x1 - 40, it.ax + 70));
+      it.x = side === "left" ? edge - it.L.w : edge;
+      it.y = clamp(it.ay - it.L.h / 2, top, bottom);
+    }
+    // sweep down then up to remove overlaps
+    for (let i = 1; i < col.length; i++) col[i].y = Math.max(col[i].y, col[i - 1].y + col[i - 1].L.h + 6);
+    if (col.length) {
+      const last = col[col.length - 1];
+      if (last.y + last.L.h > bottom) last.y = bottom - last.L.h;
+      for (let i = col.length - 2; i >= 0; i--) col[i].y = Math.min(col[i].y, col[i + 1].y - col[i].L.h - 6);
+    }
+  }
+  for (const it of items) {
+    it.L.el.style.transform = `translate(${it.x.toFixed(1)}px, ${it.y.toFixed(1)}px)`;
+    const ex = it.right ? it.x : it.x + it.L.w, ey = it.y + it.L.h / 2;
+    const kx = ex + (it.right ? -14 : 14);
+    it.L.ln.setAttribute("points", `${it.ax.toFixed(1)},${it.ay.toFixed(1)} ${kx.toFixed(1)},${ey.toFixed(1)} ${ex.toFixed(1)},${ey.toFixed(1)}`);
+    it.L.dot.setAttribute("cx", it.ax.toFixed(1)); it.L.dot.setAttribute("cy", it.ay.toFixed(1));
+  }
+}
+
+/* =====================================================================
+   11. SIGHTLINES — rays from tread eye points (structure stays put) to the
+   touchline, drawn on the cut face nearest the camera
+   ===================================================================== */
+const RAY_TH = HALF + 0.4 * DEG;
+const RAYS = [];
+const raySpec = [
+  ["Lower R1", LB[0]], ["Lower R15", LB[14]], ["Lower R30", LB[29]],
+  ["Club R1", CL[0]], ["Club R6", CL[5]],
+  ["Suite R1", SU[0]], ["Suite R2", SU[1]],
+  ["Mezz R1", MZ[0]], ["Mezz R5", MZ[4]],
+  ["Upper R1", UP[0]], ["Upper R9", UP[8]], ["Upper R22", UP[21]],
+];
+const focusV = new THREE.Vector3(...P(FOCUS.r, RAY_TH, FOCUS.y));
+const rayGroup = new THREE.Group(); scene.add(rayGroup);
+raySpec.forEach(([name, row], i) => {
+  const eye = new THREE.Vector3(...P(row.eyeR, RAY_TH, row.eyeY));
+  const geo = new THREE.BufferGeometry().setFromPoints([eye.clone(), eye.clone()]);
+  const line = new THREE.Line(geo, RAY_MAT);
+  line.renderOrder = 10;
+  rayGroup.add(line);
+  const chip = document.createElement("div");
+  chip.className = "cval";
+  chip.innerHTML = `${name} · C ${(row.C * 12).toFixed(1)} in`;
+  labelsEl.appendChild(chip);
+  const g = document.createElementNS(SVGNS, "g");
+  const ln = document.createElementNS(SVGNS, "polyline");
+  ln.setAttribute("fill", "none"); ln.setAttribute("stroke-width", "0.8"); ln.style.stroke = "var(--muted)";
+  const dot = document.createElementNS(SVGNS, "circle"); dot.setAttribute("r", "3"); dot.style.fill = "var(--ink)";
+  g.appendChild(ln); g.appendChild(dot); leadersEl.appendChild(g);
+  RAYS.push({ eye, line, chip, row, i, g, ln, dot, w: 0, h: 0 });
+});
+const focusChip = document.createElement("div");
+focusChip.className = "cval focus"; focusChip.textContent = "● Touchline · point of focus";
+labelsEl.appendChild(focusChip);
+function updateSightlines(t) {
+  const on = t >= 22 && t < 26;
+  const fade = on ? clamp((t - 22) / 0.4) * clamp((26 - t) / 0.4) : 0;
+  RAY_MAT.opacity = 0.9 * fade;
+  rayGroup.visible = fade > 0.01;
+  focusChip.classList.toggle("show", on);
+  if (on) { const s = toScreen(focusV); focusChip.style.transform = `translate(${(s.x - 6).toFixed(1)}px, ${(s.y + 8).toFixed(1)}px)`; }
+  const shown = [];
+  for (const R of RAYS) {
+    const p = clamp((t - 22.4 - R.i * 0.12) / 0.9);
+    const pos = R.line.geometry.attributes.position;
+    const end = R.eye.clone().lerp(focusV, ease(p));
+    pos.setXYZ(1, end.x, end.y, end.z); pos.needsUpdate = true;
+    R.line.computeLineDistances();
+    const show = on && p > 0;
+    R.chip.classList.toggle("show", show);
+    R.g.style.opacity = show ? 1 : 0;
+    if (show) {
+      if (!R.w) { R.w = R.chip.offsetWidth; R.h = R.chip.offsetHeight; }
+      const s = toScreen(R.eye);
+      shown.push({ R, ax: s.x, ay: s.y, y: s.y - R.h / 2 });
+    }
+  }
+  if (!shown.length) return;
+  // chips form a schedule column to the right of the outermost eye point
+  const W = canvas.clientWidth;
+  const maxW = Math.max(...shown.map((c) => c.R.w));
+  const colX = Math.min(W - maxW - 12, Math.max(...shown.map((c) => c.ax)) + 40);
+  shown.sort((a, b) => b.ay - a.ay);                  // bottom-up
+  const floor = canvas.clientHeight - 200;
+  if (shown[0].y + shown[0].R.h > floor) shown[0].y = floor - shown[0].R.h;
+  for (let i = 1; i < shown.length; i++) {
+    const below = shown[i - 1];
+    if (shown[i].y + shown[i].R.h + 3 > below.y) shown[i].y = below.y - shown[i].R.h - 3;
+  }
+  for (const c of shown) {
+    c.R.chip.style.transform = `translate(${colX.toFixed(1)}px, ${c.y.toFixed(1)}px)`;
+    const cy = c.y + c.R.h / 2;
+    c.R.ln.setAttribute("points", `${c.ax.toFixed(1)},${c.ay.toFixed(1)} ${(colX - 14).toFixed(1)},${cy.toFixed(1)} ${colX.toFixed(1)},${cy.toFixed(1)}`);
+    c.R.dot.setAttribute("cx", c.ax.toFixed(1)); c.R.dot.setAttribute("cy", c.ay.toFixed(1));
+  }
+}
+
+/* =====================================================================
+   12. UI: controls, layer toggles, legend, hover card
+   ===================================================================== */
+const playBtn = document.getElementById("play");
+const scrub = document.getElementById("scrub");
+const timeOut = document.getElementById("time");
+const phaseOut = document.getElementById("phase");
+const explode = document.getElementById("explode");
+const explodeVal = document.getElementById("explodeVal");
+const phasesEl = document.getElementById("phases");
+for (const ph of PHASES) {
+  const s = document.createElement("span");
+  s.style.left = `${ph.t0 / LOOP * 100}%`;
+  s.textContent = ph.name;
+  phasesEl.appendChild(s);
+  ph.el = s;
+}
+function setPlaying(p) {
+  state.playing = p;
+  playBtn.querySelector("span").textContent = p ? "Pause" : "Play";
+  playBtn.setAttribute("aria-label", p ? "Pause animation" : "Play animation");
+  playBtn.querySelector("svg").innerHTML = p ? '<rect x="1" y="1" width="3" height="8"/><rect x="6" y="1" width="3" height="8"/>' : '<path d="M1.5 1 L9 5 L1.5 9 Z"/>';
+}
+setPlaying(state.playing);
+playBtn.addEventListener("click", () => setPlaying(!state.playing));
+let wasPlaying = false;
+scrub.addEventListener("pointerdown", () => { wasPlaying = state.playing; state.scrubbing = true; setPlaying(false); });
+scrub.addEventListener("input", () => { state.t = parseFloat(scrub.value); });
+const endScrub = () => { if (state.scrubbing) { state.scrubbing = false; if (wasPlaying) setPlaying(true); } };
+scrub.addEventListener("pointerup", endScrub);
+scrub.addEventListener("change", endScrub);
+explode.addEventListener("input", () => { state.amount = parseFloat(explode.value); explodeVal.textContent = `${Math.round(state.amount * 100)}%`; });
+document.getElementById("reset").addEventListener("click", () => { user.daz = 0; user.del = 0; user.zoom = 1; user.pan.set(0, 0, 0); });
+window.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "INPUT" && e.target.type !== "range") return;
+  if (e.code === "Space" && e.target === document.body) { e.preventDefault(); setPlaying(!state.playing); }
+});
+
+const catVisible = {};
+const layersEl = document.getElementById("layers");
+const legendList = document.getElementById("legendList");
+for (const cat in CATS) {
+  catVisible[cat] = true;
+  const b = document.createElement("button");
+  b.type = "button";
+  b.setAttribute("aria-pressed", "true");
+  b.style.setProperty("--sw", `var(${CATS[cat].css})`);
+  b.innerHTML = `<i></i>${CATS[cat].label}`;
+  b.title = "Click to show or hide. Double-click to isolate this layer.";
+  let clickTimer = null;
+  b.addEventListener("click", () => {
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(() => { catVisible[cat] = !catVisible[cat]; syncLayers(); }, 220);
+  });
+  b.addEventListener("dblclick", () => {
+    clearTimeout(clickTimer);
+    const solo = Object.keys(CATS).every((c) => catVisible[c] === (c === cat));
+    for (const c in CATS) catVisible[c] = solo ? true : c === cat;
+    syncLayers();
+  });
+  layersEl.appendChild(b);
+  CATS[cat].btn = b;
+  const li = document.createElement("li");
+  li.style.setProperty("--sw", `var(${CATS[cat].css})`);
+  li.innerHTML = `<i></i>${CATS[cat].label}`;
+  legendList.appendChild(li);
+}
+const allBtn = document.createElement("button");
+allBtn.type = "button"; allBtn.textContent = "Show all";
+allBtn.addEventListener("click", () => { for (const c in CATS) catVisible[c] = true; syncLayers(); });
+layersEl.appendChild(allBtn);
+const hint = document.createElement("span");
+hint.className = "hint"; hint.textContent = "Double-click a layer to isolate it";
+layersEl.appendChild(hint);
+function syncLayers() {
+  for (const c in CATS) CATS[c].btn.setAttribute("aria-pressed", String(catVisible[c]));
+  for (const p of PARTS) p.group.visible = catVisible[p.cat];
+  if (hovered && !catVisible[hovered.cat]) setHover(null);
+}
+function refreshLegendSwatches() { /* swatches read CSS vars directly; nothing to do */ }
+if (window.matchMedia("(max-width: 720px)").matches) document.getElementById("legend").removeAttribute("open");
+
+// hover card
+const card = document.getElementById("card");
+const ray = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+let hovered = null, mouse = null, needPick = false;
+function setHover(part) {
+  if (hovered === part) return;
+  if (hovered) for (const m of hovered.meshes) m.material = m.userData.isLine ? (m.userData.slot === "glass" ? LINE_GLASS : LINE) : MAT[hovered.cat][m.userData.slot];
+  hovered = part;
+  if (part) {
+    for (const m of part.meshes) m.material = m.userData.isLine ? LINE_HL[part.cat] : HL[part.cat][m.userData.slot];
+    card.style.setProperty("--sw", `var(${CATS[part.cat].css})`);
+    document.getElementById("cardCat").textContent = `${part.comp.n}. ${part.comp.name} · ${CATS[part.cat].label}`;
+    document.getElementById("cardName").textContent = part.name;
+    document.getElementById("cardType").textContent = part.info.type;
+    document.getElementById("cardCap").textContent = part.info.cap;
+    document.getElementById("cardDims").textContent = part.info.dims;
+    card.hidden = false;
+  } else card.hidden = true;
+}
+function pick() {
+  needPick = false;
+  if (!mouse) return setHover(null);
+  ndc.set(mouse.x / canvas.clientWidth * 2 - 1, -(mouse.y / canvas.clientHeight) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const list = pickables.filter((m) => m.userData.part.group.visible && m.userData.slot !== "glow");
+  const hit = ray.intersectObjects(list, false)[0];
+  setHover(hit ? hit.object.userData.part : null);
+  if (hovered) {
+    const cw = card.offsetWidth, ch = card.offsetHeight;
+    let x = mouse.x + 16, y = mouse.y + 16;
+    if (x + cw > window.innerWidth - 8) x = mouse.x - cw - 16;
+    if (y + ch > window.innerHeight - 8) y = mouse.y - ch - 16;
+    card.style.transform = `translate(${Math.max(8, x)}px, ${Math.max(8, y)}px)`;
+  }
+}
+
+// orbit / pan / zoom
+const pointers = new Map();
+let drag = null, pinch0 = 0;
+canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+canvas.addEventListener("pointerdown", (e) => {
+  canvas.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinch0 = Math.hypot(a.x - b.x, a.y - b.y); }
+  drag = { x: e.clientX, y: e.clientY, pan: e.button === 2 || e.shiftKey, moved: false };
+  canvas.classList.add("dragging");
+});
+canvas.addEventListener("pointermove", (e) => {
+  mouse = { x: e.clientX, y: e.clientY };
+  if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (drag && pointers.size === 2) {
+    const [a, b] = [...pointers.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y);
+    if (pinch0) user.zoom = clamp(user.zoom * d / pinch0, 0.4, 5);
+    pinch0 = d; return;
+  }
+  if (drag) {
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.x = e.clientX; drag.y = e.clientY;
+    if (Math.abs(dx) + Math.abs(dy) > 1) drag.moved = true;
+    if (drag.pan) {
+      const s = viewH / canvas.clientHeight;
+      const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0);
+      const up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+      user.pan.addScaledVector(right, -dx * s).addScaledVector(up, dy * s);
+    } else {
+      user.daz += dx * 0.3;
+      user.del += dy * 0.25;
+    }
+    setHover(null);
+  } else needPick = true;
+});
+const endDrag = (e) => {
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) pinch0 = 0;
+  if (pointers.size === 0) {
+    if (drag && !drag.moved && e.pointerType !== "mouse") { mouse = { x: e.clientX, y: e.clientY }; needPick = true; }
+    drag = null; canvas.classList.remove("dragging");
+  }
+};
+canvas.addEventListener("pointerup", endDrag);
+canvas.addEventListener("pointercancel", endDrag);
+canvas.addEventListener("pointerleave", () => { if (!drag) { mouse = null; setHover(null); } });
+canvas.addEventListener("wheel", (e) => { e.preventDefault(); user.zoom = clamp(user.zoom * Math.exp(-e.deltaY * 0.0012), 0.4, 5); }, { passive: false });
+
+/* =====================================================================
+   13. THEME WATCHERS, RESIZE, LOOP
+   ===================================================================== */
+const mq = window.matchMedia("(prefers-color-scheme: dark)");
+(mq.addEventListener ? mq.addEventListener("change", applyTheme) : mq.addListener(applyTheme));
+new MutationObserver(applyTheme).observe(rootEl, { attributes: true, attributeFilter: ["data-theme", "class", "style"] });
+applyTheme();
+
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  leadersEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  for (const c of COMPONENTS) c.lbl.w = 0;
+  for (const r of RAYS) r.w = 0;
+}
+window.addEventListener("resize", resize);
+resize();
+
+const scaleRule = document.getElementById("scaleRule"), scaleTxt = document.getElementById("scaleTxt");
+function updateScale() {
+  const pxPerFt = canvas.clientHeight / viewH;
+  const steps = [10, 20, 25, 50, 100, 200];
+  let len = steps.find((s) => s * pxPerFt >= 46) || 200;
+  scaleRule.style.width = `${(len * pxPerFt).toFixed(0)}px`;
+  scaleTxt.textContent = `${len} ft`;
+}
+
+let last = performance.now(), lastPhase = -1, frame = 0;
+function tick(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (state.playing && !state.scrubbing) state.t = (state.t + dt) % LOOP;
+  const t = state.t;
+  // explode every part with its own stagger
+  for (const p of PARTS) {
+    const e = explodeAt(t, p.delay) * state.amount;
+    p.group.position.copy(p.offset).multiplyScalar(e);
+  }
+  const eG = explodeAt(t, 0.5) * Math.min(1, state.amount) + Math.max(0, state.amount - 1) * explodeAt(t, 0.5) * 0.6;
+  updateCamera(t, eG);
+  updateLabels(t);
+  updateSightlines(t);
+  if (needPick && !drag) pick();
+  renderer.render(scene, camera);
+  // UI readouts
+  if (!state.scrubbing) scrub.value = t.toFixed(2);
+  timeOut.textContent = `${t.toFixed(1).padStart(4, "0")} / 30 s`;
+  const pi = PHASES.findIndex((ph) => t >= ph.t0 && t < ph.t1);
+  if (pi !== lastPhase) {
+    lastPhase = pi;
+    phaseOut.textContent = PHASES[pi] ? PHASES[pi].name : "";
+    PHASES.forEach((ph, i) => ph.el.classList.toggle("on", i === pi));
+  }
+  if ((frame++ & 7) === 0) updateScale();
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+// expose a tiny handle for debugging and refinement in the console
+window.MERIDIAN = { PROFILE, PARTS, COMPONENTS, state, user, renderer };
+})();
+</script>
+</body>
+</html>
