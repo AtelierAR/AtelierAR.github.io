@@ -3,41 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Meridian Field Section Anatomy</title>
+<title>Future Field Section Anatomy</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Animated exploded axonometric of one sideline seating section of Meridian Field, a fictional 50,000-seat stadium.">
+<meta name="description" content="Animated exploded axonometric of one sideline seating section of Future Field, a fictional 50,000-seat stadium.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: full-bleed WebGL drawing; HUD grid = control strip on top, legend + title block on the bottom edge like a drawing sheet. */
 :root {
-  --bg: #e4e7ea;
-  --panel: rgba(249, 250, 250, 0.88);
-  --panel-solid: #f9fafa;
-  --ink: #1b1f26;
-  --muted: #5b626c;
-  --rule: #c3c8ce;
+  --bg: #e9ecef;
+  --panel: rgba(250, 251, 252, 0.9);
+  --panel-solid: #fafbfc;
+  --ink: #18202b;
+  --muted: #5c6673;
+  --rule: #c8ced5;
   --chip: #ffffff;
-  --focus: #1b1f26;
+  --focus: #18202b;
+  --accent: #3e6597;
 
-  --c-seating: #2f6bd1;
-  --c-premium: #d08a0c;
-  --c-structure: #858b94;
-  --c-circulation: #23915d;
-  --c-mep: #d0423a;
-  --c-access: #7454d0;
-  --c-envelope: #a1896a;
+  /* program colours: white, grays and blues only, kept low in saturation */
+  --c-seating: #5b80b2;
+  --c-premium: #2e4466;
+  --c-structure: #8c939b;
+  --c-circulation: #a3bdd8;
+  --c-mep: #66788d;
+  --c-access: #8190c9;
+  --c-envelope: #c5cad0;
 
-  --m-base: #f7f7f4;
-  --m-dark: #4a4f58;
-  --m-line: #1f232a;
-  --m-line-alpha: 0.5;
-  --m-glass: #b4ccd9;
-  --m-turf: #c9d8c0;
+  /* sightline quality scale (C-value) */
+  --q-low: #c3c9d0;
+  --q-ok: #9cb3cf;
+  --q-good: #5f86b8;
+  --q-best: #2c4a74;
+
+  --m-base: #f6f7f8;
+  --m-dark: #4f5864;
+  --m-line: #1d2530;
+  --m-line-alpha: 0.46;
+  --m-glass: #c3d3e1;
+  --m-turf: #dde4ea;
   --m-white: #ffffff;
-  --m-glow: #ffe7a0;
-  --m-ray: #1b1f26;
+  --m-glow: #eef4ff;
+  --m-ray: #18202b;
 
   --font-ui: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
   --font-narrow: "Archivo Narrow", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
@@ -45,61 +53,72 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111418;
-    --panel: rgba(24, 28, 34, 0.88);
-    --panel-solid: #181c22;
-    --ink: #e7eaee;
-    --muted: #9aa2ad;
-    --rule: #38404a;
-    --chip: #20252c;
-    --focus: #e7eaee;
-    --c-seating: #5d95f2;
-    --c-premium: #f0b23a;
-    --c-structure: #9aa2ad;
-    --c-circulation: #3cc488;
-    --c-mep: #f0685d;
-    --c-access: #a185f2;
-    --c-envelope: #c2ab8a;
-    --m-base: #2c3139;
-    --m-dark: #a3aab4;
-    --m-line: #d6dae0;
-    --m-line-alpha: 0.36;
-    --m-glass: #5f7d90;
-    --m-turf: #2b4532;
-    --m-white: #c9ced5;
-    --m-glow: #ffe7a0;
-    --m-ray: #e7eaee;
+    --bg: #101318;
+    --panel: rgba(22, 26, 32, 0.9);
+    --panel-solid: #161a20;
+    --ink: #e6eaef;
+    --muted: #96a0ac;
+    --rule: #343c46;
+    --chip: #1e232a;
+    --focus: #e6eaef;
+    --accent: #8fb1e0;
+    --c-seating: #7da2d6;
+    --c-premium: #c5d3ea;
+    --c-structure: #959ca6;
+    --c-circulation: #4e7196;
+    --c-mep: #7c8da1;
+    --c-access: #a1acdf;
+    --c-envelope: #646c76;
+    --q-low: #4f5761;
+    --q-ok: #55708f;
+    --q-good: #7fa3d2;
+    --q-best: #c3d6f1;
+    --m-base: #2a3038;
+    --m-dark: #a6aeb8;
+    --m-line: #d3d9e0;
+    --m-line-alpha: 0.34;
+    --m-glass: #5c7189;
+    --m-turf: #262e37;
+    --m-white: #c5ccd4;
+    --m-glow: #e6eeff;
+    --m-ray: #e6eaef;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #111418;
-  --panel: rgba(24, 28, 34, 0.88);
-  --panel-solid: #181c22;
-  --ink: #e7eaee;
-  --muted: #9aa2ad;
-  --rule: #38404a;
-  --chip: #20252c;
-  --focus: #e7eaee;
-  --c-seating: #5d95f2;
-  --c-premium: #f0b23a;
-  --c-structure: #9aa2ad;
-  --c-circulation: #3cc488;
-  --c-mep: #f0685d;
-  --c-access: #a185f2;
-  --c-envelope: #c2ab8a;
-  --m-base: #2c3139;
-  --m-dark: #a3aab4;
-  --m-line: #d6dae0;
-  --m-line-alpha: 0.36;
-  --m-glass: #5f7d90;
-  --m-turf: #2b4532;
-  --m-white: #c9ced5;
-  --m-glow: #ffe7a0;
-  --m-ray: #e7eaee;
+  --bg: #101318;
+  --panel: rgba(22, 26, 32, 0.9);
+  --panel-solid: #161a20;
+  --ink: #e6eaef;
+  --muted: #96a0ac;
+  --rule: #343c46;
+  --chip: #1e232a;
+  --focus: #e6eaef;
+  --accent: #8fb1e0;
+  --c-seating: #7da2d6;
+  --c-premium: #c5d3ea;
+  --c-structure: #959ca6;
+  --c-circulation: #4e7196;
+  --c-mep: #7c8da1;
+  --c-access: #a1acdf;
+  --c-envelope: #646c76;
+  --q-low: #4f5761;
+  --q-ok: #55708f;
+  --q-good: #7fa3d2;
+  --q-best: #c3d6f1;
+  --m-base: #2a3038;
+  --m-dark: #a6aeb8;
+  --m-line: #d3d9e0;
+  --m-line-alpha: 0.34;
+  --m-glass: #5c7189;
+  --m-turf: #262e37;
+  --m-white: #c5ccd4;
+  --m-glow: #e6eeff;
+  --m-ray: #e6eaef;
   color-scheme: dark;
 }
 
+[hidden] { display: none !important; }
 html, body { height: 100%; }
 body {
   margin: 0;
@@ -156,7 +175,7 @@ button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px 
 .phases { position: absolute; left: 0; right: 0; bottom: 0; height: 12px; font: 500 9.5px/12px var(--font-narrow); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .phases span { position: absolute; top: 0; white-space: nowrap; transform: translateX(2px); }
 .phases span.on { color: var(--ink); }
-input[type="range"] { width: 100%; margin: 0; accent-color: var(--ink); height: 18px; }
+input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); height: 18px; }
 #scrub { display: block; }
 .tnum { font: 500 12px var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
 #phase { font: 600 11px var(--font-narrow); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-width: 84px; }
@@ -246,6 +265,123 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--ink); height: 
 #card dt { font: 600 9.5px/1.6 var(--font-narrow); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 #card dd { margin: 0; font-size: 12px; }
 
+
+/* intro: type-led title card, then a wipe up into the drawing */
+#intro {
+  position: fixed; inset: 0; z-index: 30;
+  display: grid; place-items: center;
+  background: var(--bg);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  cursor: pointer;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.95s cubic-bezier(0.76, 0, 0.24, 1) 0.32s;
+}
+#intro.out { clip-path: inset(0 0 100% 0); }
+.intro-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 56px 56px; background-position: center;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 15%, transparent 68%);
+  mask-image: radial-gradient(ellipse at center, #000 15%, transparent 68%);
+  opacity: 0;
+  animation: introFade 1.6s ease 0.1s forwards;
+}
+.intro-inner { position: relative; display: grid; justify-items: center; gap: 20px; text-align: center; }
+.intro-kicker, .intro-meta {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 22px;
+  font: 500 11px var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+  opacity: 0; animation: introUp 0.7s ease forwards;
+}
+.intro-kicker { animation-delay: 0.2s; }
+.intro-meta { animation-delay: 1.55s; }
+.intro-word {
+  margin: 0; font-family: var(--font-ui); font-weight: 400;
+  font-size: clamp(52px, 12.5vw, 170px); line-height: 0.95; letter-spacing: -0.025em;
+  color: var(--ink);
+  display: flex; flex-wrap: wrap; justify-content: center; column-gap: 0.24em;
+}
+.intro-word .w { display: inline-flex; overflow: hidden; padding: 0 0.02em 0.08em; }
+.intro-word .w + .w .ch { color: var(--accent); }
+.intro-word .ch {
+  display: inline-block; transform: translateY(108%);
+  font-variation-settings: "wdth" 62, "wght" 220;
+  animation: introRise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, introStretch 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: calc(var(--i) * 55ms + 0.3s), calc(var(--i) * 35ms + 0.95s);
+}
+#intro.out .ch {
+  font-variation-settings: "wdth" 112, "wght" 760;
+  animation: introExit 0.55s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+  animation-delay: calc(var(--i) * 22ms);
+}
+.intro-rule {
+  position: relative; width: min(560px, 72vw); height: 1px; background: var(--ink);
+  transform: scaleX(0); animation: introDraw 1s cubic-bezier(0.65, 0, 0.35, 1) 1.1s forwards;
+}
+.intro-rule::before, .intro-rule::after { content: ""; position: absolute; top: -5px; width: 1px; height: 11px; background: var(--ink); }
+.intro-rule::before { left: 0; }
+.intro-rule::after { right: 0; }
+.intro-skip { position: absolute; bottom: max(20px, env(safe-area-inset-bottom, 0px)); left: 0; right: 0; text-align: center; font: 500 10.5px var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); opacity: 0; animation: introFade 0.6s ease 1.8s forwards; }
+#intro.out .intro-kicker, #intro.out .intro-meta, #intro.out .intro-rule, #intro.out .intro-skip { transition: opacity 0.3s; opacity: 0; animation: none; }
+@keyframes introFade { to { opacity: 0.55; } }
+@keyframes introUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes introRise { to { transform: translateY(0); } }
+@keyframes introStretch { to { font-variation-settings: "wdth" 112, "wght" 760; } }
+@keyframes introExit { from { transform: translateY(0); } to { transform: translateY(-110%); } }
+@keyframes introDraw { to { transform: scaleX(1); } }
+
+/* sightline study drawer */
+#study {
+  position: fixed; z-index: 6;
+  top: var(--study-top, 128px);
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  width: min(540px, calc(100vw - 32px));
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 14px 16px 16px;
+  display: grid; gap: 14px; align-content: start;
+  background: var(--panel-solid);
+}
+.study-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.study-head .k, .study-fig figcaption { font: 600 9.5px var(--font-narrow); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.study-head h2 { margin: 2px 0 0; font: 700 21px/1.1 var(--font-narrow); text-wrap: balance; }
+.study-note { margin: 0; color: var(--muted); font-size: 12px; max-width: 64ch; }
+.study-fig { margin: 0; display: grid; gap: 6px; min-width: 0; }
+.study-fig svg { display: block; width: 100%; height: auto; overflow: visible; }
+.readout { font: 500 11.5px/1.4 var(--font-mono); font-variant-numeric: tabular-nums; min-height: 2.8em; color: var(--ink); }
+.readout.idle { color: var(--muted); }
+.qkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11px; color: var(--muted); }
+.qkey span { display: inline-flex; align-items: center; gap: 5px; }
+.qkey i { width: 10px; height: 10px; border-radius: 2px; background: var(--sw); }
+.tbl-wrap { overflow-x: auto; min-width: 0; }
+#studyTable { border-collapse: collapse; width: 100%; font-size: 11.5px; }
+#studyTable th { font: 600 9.5px var(--font-narrow); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--rule); white-space: nowrap; vertical-align: bottom; }
+#studyTable td { padding: 5px 6px; border-bottom: 1px solid var(--rule); text-align: right; font: 500 11.5px var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+#studyTable th:first-child, #studyTable td:first-child { text-align: left; font-family: var(--font-ui); padding-left: 0; }
+#studyTable tr:last-child td { border-bottom: 0; }
+#studyBtn[aria-expanded="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.pf-tier { fill: none; stroke: var(--ink); stroke-width: 1.3; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.pf-ground { stroke: var(--ink); stroke-width: 1.3; vector-effect: non-scaling-stroke; }
+.pf-grade { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
+.pf-ray { stroke-width: 0.8; opacity: 0.5; vector-effect: non-scaling-stroke; }
+.pf-ray.on { stroke-width: 2.2; opacity: 1; stroke: var(--accent); }
+.pf-eye { fill: var(--ink); }
+.pf-eye.on { fill: var(--accent); }
+.pf-txt { fill: var(--ink); font: 700 6.2px var(--font-narrow); letter-spacing: 0.05em; text-transform: uppercase; paint-order: stroke; stroke: var(--panel-solid); stroke-width: 2.4px; stroke-linejoin: round; }
+.pf-sub { fill: var(--muted); font: 500 5px var(--font-mono); paint-order: stroke; stroke: var(--panel-solid); stroke-width: 2px; }
+.q-low { stroke: var(--q-low); fill: var(--q-low); }
+.q-ok { stroke: var(--q-ok); fill: var(--q-ok); }
+.q-good { stroke: var(--q-good); fill: var(--q-good); }
+.q-best { stroke: var(--q-best); fill: var(--q-best); }
+line.q-low, line.q-ok, line.q-good, line.q-best { fill: none; }
+.ch-grid { stroke: var(--rule); stroke-width: 1; }
+.ch-ref { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.55; }
+.ch-txt { fill: var(--muted); font: 500 9px var(--font-mono); }
+.ch-tier { fill: var(--ink); font: 700 9px var(--font-narrow); letter-spacing: 0.06em; text-transform: uppercase; }
+.ch-bar { stroke: none; }
+.ch-bar.on { fill: var(--accent); }
+.ch-hit { fill: transparent; cursor: crosshair; }
+
 #fail { position: fixed; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); }
 
 @media (max-width: 720px) {
@@ -260,9 +396,15 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--ink); height: 
   #titleblock h1 { font-size: 14px; }
   #legend { max-width: 100%; }
   .lbl span { display: none; }
+  #study { top: auto; left: max(16px, env(safe-area-inset-left, 0px)); width: auto; height: min(72vh, 640px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .lbl, .cval { transition: none; }
+  #intro *, #intro *::before, #intro *::after { animation: none !important; transform: none !important; opacity: 1 !important; }
+  .intro-word .ch { font-variation-settings: "wdth" 112, "wght" 760 !important; }
+  .intro-grid { opacity: 0.55 !important; }
+  #intro { transition: opacity 0.4s ease; }
+  #intro.out { clip-path: inset(0 0 0 0); opacity: 0; }
 }
 </style>
 </head>
@@ -290,6 +432,7 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--ink); height: 
       <output id="explodeVal" class="tnum" for="explode">100%</output>
     </div>
     <div class="grp">
+      <button id="studyBtn" type="button" aria-expanded="false" aria-controls="study">Sightline study</button>
       <button id="reset" type="button">Reset view</button>
     </div>
   </header>
@@ -310,7 +453,7 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--ink); height: 
 
     <aside id="titleblock" class="panel" aria-label="Title block">
       <div class="name">
-        <h1>Meridian Field — Section Anatomy</h1>
+        <h1>Future Field — Section Anatomy</h1>
         <div class="sub">Sideline wedge, 15° of bowl, field to roof</div>
       </div>
       <div class="cell"><span class="k">Stadium capacity</span><span class="v">50,000</span></div>
@@ -321,6 +464,37 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--ink); height: 
       <div class="cell"><span class="k">Date</span><span class="v">2026-11-07</span></div>
     </aside>
   </div>
+</div>
+
+<section id="study" class="panel" hidden aria-labelledby="studyTitle">
+  <header class="study-head">
+    <div><span class="k">Analysis · drawing A-315</span><h2 id="studyTitle">Sightline study</h2></div>
+    <button id="studyClose" type="button">Close</button>
+  </header>
+  <p class="study-note">Every row is set out with the C-value formula, aimed at the near touchline at field level. Seated eye height is 3 ft 11 in. The mezzanine rail seats use a standing eye height of 5 ft 3 in.</p>
+  <figure class="study-fig">
+    <figcaption>Section profile · one ray per row</figcaption>
+    <div id="studyProfile"></div>
+  </figure>
+  <figure class="study-fig">
+    <figcaption>C-value by row, in inches</figcaption>
+    <div id="studyReadout" class="readout idle">Hover or tap a bar to trace that row’s sightline in the profile and the model.</div>
+    <div id="studyChart"></div>
+    <div class="qkey" id="studyKey"></div>
+  </figure>
+  <div class="tbl-wrap"><table id="studyTable"></table></div>
+  <p class="study-note">C-value is how far a spectator’s sightline passes above the eye of the person in the row in front. Reference values: 2.4 in (60 mm) minimum, 3.5 in (90 mm) good, 4.7 in (120 mm) excellent. Far-corner distance is measured from the back row to the opposite corner of the field, end zone included.</p>
+</section>
+
+<div id="intro" aria-hidden="true">
+  <div class="intro-grid"></div>
+  <div class="intro-inner">
+    <div class="intro-kicker"><span>Section anatomy</span><span>A-314</span></div>
+    <h2 class="intro-word" id="introWord"></h2>
+    <div class="intro-rule"></div>
+    <div class="intro-meta"><span>50,000 seats</span><span>15° sideline wedge</span><span>Field to roof</span></div>
+  </div>
+  <div class="intro-skip">Click or press any key to skip</div>
 </div>
 
 <div id="card" hidden>
@@ -1379,6 +1553,8 @@ for (const cat in CATS) {
   LINE_HL[cat] = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.95 });
 }
 const RAY_MAT = new THREE.LineDashedMaterial({ dashSize: 3, gapSize: 2.2, transparent: true, depthTest: false });
+const STUDY_RAY_MAT = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.22, depthTest: false });
+const STUDY_HL_MAT = new THREE.LineBasicMaterial({ transparent: true, opacity: 1, depthTest: false });
 const THEME = {};
 function applyTheme() {
   const c = (n) => new THREE.Color(cssVar(n) || "#888");
@@ -1388,9 +1564,11 @@ function applyTheme() {
   LINE.color.copy(lineCol); LINE.opacity = lineA;
   LINE_GLASS.color.copy(lineCol); LINE_GLASS.opacity = lineA * 0.5;
   RAY_MAT.color.copy(c("--m-ray"));
+  STUDY_RAY_MAT.color.copy(c("--m-ray"));
+  STUDY_HL_MAT.color.copy(c("--accent"));
   for (const cat in CATS) {
     const acc = c(CATS[cat].css);
-    const tint = base.clone().lerp(acc, 0.3);
+    const tint = base.clone().lerp(acc, 0.24);
     const set = { base, tint, accent: acc, dark, glass, turf, white, glow };
     for (const s of SLOTS) MAT[cat][s].color.copy(set[s]);
     const hb = base.clone().lerp(acc, 0.55);
@@ -1499,9 +1677,11 @@ function camAt(t) {
   }
   return { az: 135, el: 30 };
 }
-const state = { t: 0, playing: true, amount: 1, scrubbing: false };
+const state = { t: 0, playing: false, amount: 1, scrubbing: false };   // the loop starts when the intro ends
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-if (reduceMotion) { state.t = 21; state.playing = false; }
+if (reduceMotion) state.t = 21;
+const introCam = { start: null };            // camera pull-back that follows the intro wipe
+let studyOpen = false, studyShiftPx = 0;
 
 /* =====================================================================
    9. CAMERA RIG (timeline path + user orbit/pan/zoom on top)
@@ -1511,8 +1691,9 @@ const TARGET_A = new THREE.Vector3(200, 96, 0), TARGET_B = new THREE.Vector3(222
 let viewH = 300;
 function updateCamera(t, eG) {
   const c = camAt(t);
-  const az = (c.az + user.daz) * DEG;
-  const el = clamp(c.el + user.del, 2, 88) * DEG;
+  const iz = reduceMotion ? 1 : introCam.start === null ? 0 : ease(clamp((performance.now() - introCam.start - 200) / 1900));
+  const az = (c.az + user.daz - 32 * (1 - iz)) * DEG;
+  const el = clamp(c.el + user.del + 10 * (1 - iz), 2, 88) * DEG;
   const sw = ease(clamp((t - 22) / 1.4)) * (1 - ease(clamp((t - 26) / 1.6)));   // sightline close-up
   const target = TARGET_A.clone().lerp(TARGET_B, eG).lerp(TARGET_S, sw).add(user.pan);
   const R = 2500;
@@ -1523,9 +1704,14 @@ function updateCamera(t, eG) {
   // fit: assembled ≈ 330 ft tall, exploded ≈ 470 ft; widen on portrait screens
   let base = lerp(lerp(340, 500, eG), 275, sw);
   if (aspect < 1.25) base *= lerp(1.0, 1.5, clamp((1.25 - aspect) / 0.8));
-  viewH = base / user.zoom;
+  viewH = base * lerp(0.62, 1, iz) / user.zoom;
+  // slide the drawing left while the study drawer is open on wide screens
+  const study = document.getElementById("study");
+  const shiftTarget = studyOpen && w > 720 ? (study.offsetWidth + 16) / 2 : 0;
+  studyShiftPx += (shiftTarget - studyShiftPx) * 0.12;
+  const shiftW = studyShiftPx * viewH / h;
   camera.top = viewH / 2; camera.bottom = -viewH / 2;
-  camera.left = -viewH * aspect / 2; camera.right = viewH * aspect / 2;
+  camera.left = -viewH * aspect / 2 + shiftW; camera.right = viewH * aspect / 2 + shiftW;
   camera.updateProjectionMatrix();
   camera.updateMatrixWorld();
 }
@@ -1684,7 +1870,8 @@ function updateSightlines(t) {
   // chips form a schedule column to the right of the outermost eye point
   const W = canvas.clientWidth;
   const maxW = Math.max(...shown.map((c) => c.R.w));
-  const colX = Math.min(W - maxW - 12, Math.max(...shown.map((c) => c.ax)) + 40);
+  const drawer = studyOpen && W > 720 ? document.getElementById("study").offsetWidth + 16 : 0;
+  const colX = Math.min(W - drawer - maxW - 12, Math.max(...shown.map((c) => c.ax)) + 40);
   shown.sort((a, b) => b.ay - a.ay);                  // bottom-up
   const floor = canvas.clientHeight - 200;
   if (shown[0].y + shown[0].R.h > floor) shown[0].y = floor - shown[0].R.h;
@@ -1868,6 +2055,193 @@ canvas.addEventListener("pointercancel", endDrag);
 canvas.addEventListener("pointerleave", () => { if (!drag) { mouse = null; setHover(null); } });
 canvas.addEventListener("wheel", (e) => { e.preventDefault(); user.zoom = clamp(user.zoom * Math.exp(-e.deltaY * 0.0012), 0.4, 5); }, { passive: false });
 
+
+/* =====================================================================
+   12b. SIGHTLINE STUDY — profile, C-value chart and tier schedule
+   ===================================================================== */
+const FIELD_W = 160, HALF_LEN = 180;           // 53⅓ yd field width; half of 120 yd incl. end zones
+const TIERS = [
+  { name: "Lower bowl", short: "Lower", rows: LB, eyeH: 3.9 },
+  { name: "Club", short: "Club", rows: CL, eyeH: 3.9 },
+  { name: "Suite exterior", short: "Suite", rows: SU, eyeH: 3.9 },
+  { name: "Mezzanine rail seats", short: "Mezz", rows: MZ, eyeH: 5.25, standing: true },
+  { name: "Upper deck", short: "Upper", rows: UP, eyeH: 3.9, cross: 8 },
+];
+const STUDY = [];
+for (const tr of TIERS) for (const row of tr.rows) {
+  const D = row.eyeR - FOCUS.r, E = row.eyeY - FOCUS.y;
+  STUDY.push({ tier: tr, row, label: `${tr.short} R${row.i + 1}`, D, E, cIn: row.C * 12,
+    rake: row.i > 0 && row.i !== tr.cross ? Math.atan(row.riser / row.T) / DEG : null,
+    dep: Math.atan(E / D) / DEG, far: Math.hypot(D + FIELD_W, HALF_LEN, E) });
+}
+const qClass = (cIn) => (cIn < 2.4 ? "q-low" : cIn < 3.5 ? "q-ok" : cIn < 4.7 ? "q-good" : "q-best");
+
+// 3D: faint ray from every row, plus one highlighted ray
+const studyRays = (() => {
+  const pts = [];
+  for (const st of STUDY) { pts.push(new THREE.Vector3(...P(st.row.eyeR, RAY_TH, st.row.eyeY)), focusV.clone()); }
+  const ls = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), STUDY_RAY_MAT);
+  ls.renderOrder = 11; ls.visible = false; scene.add(ls);
+  return ls;
+})();
+const studyHL = new THREE.Line(new THREE.BufferGeometry().setFromPoints([focusV.clone(), focusV.clone()]), STUDY_HL_MAT);
+studyHL.renderOrder = 12; studyHL.visible = false; scene.add(studyHL);
+
+function buildProfileSVG() {
+  const last = UP[UP.length - 1];
+  const rMin = 92, rMax = PROFILE.upEnd + 30, yTop = last.eyeY + 12, yBot = -9;
+  const X = (r) => (r - rMin).toFixed(2), Y = (y) => (yTop - y).toFixed(2);
+  const W = rMax - rMin, H = yTop - yBot;
+  let o = `<svg viewBox="0 0 ${W.toFixed(1)} ${H.toFixed(1)}" role="img" aria-label="Section profile with a sightline from every row to the touchline">`;
+  o += `<line class="pf-ground" x1="0" y1="${Y(0)}" x2="${X(140)}" y2="${Y(0)}"/>`;
+  o += `<line class="pf-grade" x1="${X(PROFILE.lbEnd)}" y1="${Y(LV.conc)}" x2="${X(rMax)}" y2="${Y(LV.conc)}"/>`;
+  o += `<text class="pf-sub" x="${X(rMax) - 1}" y="${(yTop - LV.conc - 2).toFixed(1)}" text-anchor="end">grade +${ft(LV.conc)}</text>`;
+  STUDY.forEach((st, i) => {
+    o += `<line class="pf-ray ${qClass(st.cIn)}" data-i="${i}" x1="${X(st.row.eyeR)}" y1="${Y(st.row.eyeY)}" x2="${X(FOCUS.r)}" y2="${Y(FOCUS.y)}"/>`;
+  });
+  for (const tr of TIERS) {
+    let d = "";
+    tr.rows.forEach((row, i) => {
+      const next = i < tr.rows.length - 1 ? tr.rows[i + 1].r : row.r + row.T;
+      const yPrev = i ? tr.rows[i - 1].y : row.y - 1.5;
+      d += `${i ? "L" : "M"}${X(row.r)} ${Y(yPrev)} L${X(row.r)} ${Y(row.y)} L${X(next)} ${Y(row.y)} `;
+    });
+    o += `<path class="pf-tier" d="${d}"/>`;
+    const lr = tr.rows[tr.rows.length - 1];
+    o += `<text class="pf-txt" x="${(lr.r + lr.T - rMin + 2).toFixed(1)}" y="${(yTop - lr.y + 2).toFixed(1)}">${tr.short}</text>`;
+  }
+  STUDY.forEach((st, i) => { o += `<circle class="pf-eye" data-i="${i}" cx="${X(st.row.eyeR)}" cy="${Y(st.row.eyeY)}" r="0.9"/>`; });
+  o += `<circle cx="${X(FOCUS.r)}" cy="${Y(0)}" r="2" fill="var(--accent)"/>`;
+  o += `<text class="pf-txt" x="${X(FOCUS.r) - 2}" y="${(yTop + 7).toFixed(1)}">Touchline</text>`;
+  return o + "</svg>";
+}
+
+function buildChartSVG() {
+  const W = 520, H = 196, x0 = 30, x1 = W - 76, yT = 10, yB = 150, cMax = 12;
+  const n = STUDY.length, bw = (x1 - x0) / n;
+  const Y = (c) => (yB - clamp(c, 0, cMax) / cMax * (yB - yT)).toFixed(1);
+  let o = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar chart of C-value for every row">`;
+  for (let c = 0; c <= cMax; c += 3) {
+    o += `<line class="ch-grid" x1="${x0}" x2="${x1}" y1="${Y(c)}" y2="${Y(c)}"/><text class="ch-txt" x="${x0 - 5}" y="${(+Y(c) + 3).toFixed(1)}" text-anchor="end">${c}</text>`;
+  }
+  STUDY.forEach((st, i) => {
+    const x = x0 + i * bw;
+    o += `<rect class="ch-bar ${qClass(st.cIn)}" data-i="${i}" x="${(x + 0.6).toFixed(1)}" y="${Y(st.cIn)}" width="${Math.max(1, bw - 1.2).toFixed(1)}" height="${(yB - +Y(st.cIn)).toFixed(1)}"/>`;
+  });
+  for (const [v, name] of [[2.4, "min"], [3.5, "good"], [4.7, "excellent"]]) {
+    o += `<line class="ch-ref" x1="${x0}" x2="${x1}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ch-txt" x="${x1 + 4}" y="${(+Y(v) + 3).toFixed(1)}">${v} ${name}</text>`;
+  }
+  let k = 0, alt = 0;
+  for (const tr of TIERS) {
+    const a = x0 + k * bw, b = a + tr.rows.length * bw;
+    if (k) o += `<line class="ch-grid" x1="${a.toFixed(1)}" x2="${a.toFixed(1)}" y1="${yT}" y2="${yB + 6}"/>`;
+    const small = tr.rows.length < 7;
+    o += `<text class="ch-tier" x="${((a + b) / 2).toFixed(1)}" y="${yB + 16 + (small ? 12 * (alt++ % 2) : 0)}" text-anchor="middle">${tr.short}</text>`;
+    k += tr.rows.length;
+  }
+  STUDY.forEach((st, i) => { o += `<rect class="ch-hit" data-i="${i}" x="${(x0 + i * bw).toFixed(1)}" y="${yT}" width="${bw.toFixed(2)}" height="${yB - yT}"/>`; });
+  return o + "</svg>";
+}
+
+function buildStudyTable() {
+  let o = "<thead><tr><th>Tier</th><th>Rows</th><th>Tread</th><th>Rake</th><th>C min</th><th>C avg</th><th>Back row to<br>touchline</th><th>Back row to<br>far corner</th></tr></thead><tbody>";
+  for (const tr of TIERS) {
+    const sts = STUDY.filter((s) => s.tier === tr);
+    const rk = sts.map((s) => s.rake).filter((v) => v !== null);
+    const cs = sts.map((s) => s.cIn);
+    const back = sts[sts.length - 1];
+    const rake = rk.length ? (Math.round(Math.min(...rk)) === Math.round(Math.max(...rk)) ? `${Math.round(Math.min(...rk))}°` : `${Math.round(Math.min(...rk))}–${Math.round(Math.max(...rk))}°`) : "—";
+    o += `<tr><td>${tr.name}</td><td>${tr.rows.length}</td><td>${Math.round(tr.rows[0].T * 12)} in</td><td>${rake}</td>` +
+      `<td>${Math.min(...cs).toFixed(1)} in</td><td>${(cs.reduce((a, b) => a + b, 0) / cs.length).toFixed(1)} in</td>` +
+      `<td>${Math.round(back.D)} ft</td><td>${Math.round(back.far)} ft</td></tr>`;
+  }
+  return o + "</tbody>";
+}
+
+const studyEl = document.getElementById("study");
+const studyBtn = document.getElementById("studyBtn");
+const readout = document.getElementById("studyReadout");
+document.getElementById("studyProfile").innerHTML = buildProfileSVG();
+document.getElementById("studyChart").innerHTML = buildChartSVG();
+document.getElementById("studyTable").innerHTML = buildStudyTable();
+document.getElementById("studyKey").innerHTML = [["q-low", "< 2.4 in"], ["q-ok", "2.4–3.5 in"], ["q-good", "3.5–4.7 in"], ["q-best", "≥ 4.7 in"]]
+  .map(([q, t]) => `<span><i style="--sw: var(--${q.replace("q-", "q-")})"></i>${t}</span>`).join("");
+const defaultReadout = readout.textContent;
+let studySel = -1;
+function selectStudyRow(i) {
+  if (i === studySel) return;
+  studyEl.querySelectorAll(".on").forEach((el) => el.classList.remove("on"));
+  studySel = i;
+  if (i < 0) { readout.textContent = defaultReadout; readout.classList.add("idle"); studyHL.visible = false; return; }
+  studyEl.querySelectorAll(`[data-i="${i}"]`).forEach((el) => el.classList.add("on"));
+  const ray = studyEl.querySelector(`.pf-ray[data-i="${i}"]`);
+  if (ray) ray.parentNode.appendChild(ray);       // bring to front
+  const st = STUDY[i];
+  readout.classList.remove("idle");
+  readout.textContent = `${st.label} · C ${st.cIn.toFixed(1)} in · ${st.tier.standing ? "standing" : "seated"} eye ${ft(st.tier.eyeH)} · ` +
+    `${Math.round(st.D)} ft to touchline, ${st.dep.toFixed(1)}° down` + (st.rake !== null ? ` · riser ${inch(st.row.riser)}, ${st.rake.toFixed(1)}° rake` : "");
+  const pos = studyHL.geometry.attributes.position;
+  const eye = P(st.row.eyeR, RAY_TH, st.row.eyeY);
+  pos.setXYZ(0, eye[0], eye[1], eye[2]); pos.needsUpdate = true;
+  studyHL.visible = studyOpen;
+}
+const chartEl = document.getElementById("studyChart");
+chartEl.addEventListener("pointermove", (e) => { const i = e.target.dataset && e.target.dataset.i; if (i !== undefined) selectStudyRow(+i); });
+chartEl.addEventListener("pointerdown", (e) => { const i = e.target.dataset && e.target.dataset.i; if (i !== undefined) selectStudyRow(+i); });
+chartEl.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") selectStudyRow(-1); });
+
+function placeStudy() {
+  const bottomOfLayers = document.getElementById("layers").getBoundingClientRect().bottom;
+  rootEl.style.setProperty("--study-top", `${Math.round(bottomOfLayers + 8)}px`);
+}
+function setStudy(open) {
+  studyOpen = open;
+  studyEl.hidden = !open;
+  studyBtn.setAttribute("aria-expanded", String(open));
+  studyRays.visible = open;
+  if (open) {
+    placeStudy();
+    setPlaying(false);
+    state.t = 25.0;                               // hold on the sightline phase
+    studyEl.scrollTop = 0;
+  } else selectStudyRow(-1);
+  studyHL.visible = open && studySel >= 0;
+}
+studyBtn.addEventListener("click", () => setStudy(!studyOpen));
+document.getElementById("studyClose").addEventListener("click", () => { setStudy(false); studyBtn.focus(); });
+window.addEventListener("keydown", (e) => { if (e.key === "Escape" && studyOpen) setStudy(false); });
+
+/* =====================================================================
+   12c. INTRO — "Future Field" title card, then a wipe into the drawing
+   ===================================================================== */
+const introEl = document.getElementById("intro");
+(() => {
+  const word = document.getElementById("introWord");
+  let k = 0;
+  for (const w of "Future Field".split(" ")) {
+    const span = document.createElement("span");
+    span.className = "w";
+    for (const ch of w) {
+      const c = document.createElement("span");
+      c.className = "ch"; c.textContent = ch; c.style.setProperty("--i", k++);
+      span.appendChild(c);
+    }
+    word.appendChild(span);
+  }
+})();
+function endIntro() {
+  if (introEl.classList.contains("out")) return;
+  introEl.classList.add("out");
+  introCam.start = performance.now();
+  if (!reduceMotion) setPlaying(true);
+  setTimeout(() => { introEl.hidden = true; }, reduceMotion ? 450 : 1400);
+}
+introEl.addEventListener("click", endIntro);
+window.addEventListener("keydown", (e) => {
+  if (!introEl.hidden && !introEl.classList.contains("out")) { e.preventDefault(); e.stopImmediatePropagation(); endIntro(); }
+}, true);
+setTimeout(endIntro, reduceMotion ? 1000 : 3500);
+
 /* =====================================================================
    13. THEME WATCHERS, RESIZE, LOOP
    ===================================================================== */
@@ -1882,6 +2256,7 @@ function resize() {
   leadersEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
   for (const c of COMPONENTS) c.lbl.w = 0;
   for (const r of RAYS) r.w = 0;
+  if (studyOpen) placeStudy();
 }
 window.addEventListener("resize", resize);
 resize();
@@ -1926,7 +2301,7 @@ function tick(now) {
 requestAnimationFrame(tick);
 
 // expose a tiny handle for debugging and refinement in the console
-window.MERIDIAN = { PROFILE, PARTS, COMPONENTS, state, user, renderer };
+window.FUTURE_FIELD = { PROFILE, PARTS, COMPONENTS, state, user, renderer };
 })();
 </script>
 </body>
