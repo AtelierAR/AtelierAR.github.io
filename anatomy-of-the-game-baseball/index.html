@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anatomy of the Game: Baseball</title>
-<meta name="description" content="A 90-second anatomical animation of baseball: the ball, the pitch, the swing, Moneyball, the ballpark and the pace-of-play rules, dissected to reveal the data inside.">
+<meta name="description" content="A 118-second vertical (4:5) anatomical animation of baseball: the ball, the pitch, the swing, Moneyball, the ballpark, acoustics, premium seating and the pace-of-play rules, dissected to reveal the data inside.">
 <style>
   :root{
     --white:#FFFFFF; --light:#EEF1F4; --mid:#9AA3AE; --graphite:#3A4048; --blue:#1E5BFF; --cyan:#6EC8FF;
@@ -14,7 +14,7 @@
   html,body{background:var(--white);color:var(--graphite);font-family:var(--font);font-weight:300;min-height:100%}
   body{display:flex;flex-direction:column;min-height:100vh}
   .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px 8px}
-  .frame{position:relative;width:min(100%, calc((100vh - 150px) * 16 / 9));aspect-ratio:16/9;background:var(--white);
+  .frame{position:relative;width:min(100%, calc((100vh - 150px) * 4 / 5));aspect-ratio:4/5;background:var(--white);
     box-shadow:0 0 0 1px var(--light), 0 40px 90px -50px rgba(58,64,72,.35)}
   canvas{display:block;width:100%;height:100%}
   .start{position:absolute;inset:0;border:0;background:rgba(255,255,255,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
@@ -25,7 +25,7 @@
   .start .p{margin-top:1.4em;display:inline-flex;align-items:center;gap:.7em;font-weight:300;font-size:clamp(12px,1.1vw,16px);letter-spacing:.2em;text-transform:uppercase;color:var(--blue)}
   .start .p i{display:inline-block;width:0;height:0;border-left:11px solid var(--blue);border-top:7px solid transparent;border-bottom:7px solid transparent}
   .start.hidden{display:none}
-  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 16px 6px;width:min(100%, calc((100vh - 150px) * 16 / 9 + 32px));margin:0 auto}
+  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 16px 6px;width:min(100%, calc((100vh - 150px) * 4 / 5 + 32px));margin:0 auto}
   .bar button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.16em;text-transform:uppercase;background:none;border:0;color:var(--graphite);cursor:pointer;padding:6px 0}
   .bar button:hover,.bar button.on{color:var(--blue)}
   .scrub{position:relative;flex:1 1 260px;height:28px;display:flex;align-items:center}
@@ -37,31 +37,31 @@
   .ticks{position:absolute;left:0;right:0;top:50%;height:0;z-index:1;pointer-events:none}
   .ticks span{position:absolute;top:-5px;width:1px;height:10px;background:var(--mid)}
   .tc{font-size:12px;letter-spacing:.14em;color:var(--mid);font-variant-numeric:tabular-nums;min-width:110px}
-  .chapters{display:flex;flex-wrap:wrap;gap:4px 18px;padding:0 16px 22px;width:min(100%, calc((100vh - 150px) * 16 / 9 + 32px));margin:0 auto}
+  .chapters{display:flex;flex-wrap:wrap;gap:4px 18px;padding:0 16px 22px;width:min(100%, calc((100vh - 150px) * 4 / 5 + 32px));margin:0 auto}
   .chapters button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.04em;color:var(--mid);background:none;border:0;cursor:pointer;padding:2px 0}
   .chapters button b{font-weight:700;color:var(--graphite);margin-right:6px}
   .chapters button.on{color:var(--blue)} .chapters button.on b{color:var(--blue)}
   body.export .bar, body.export .chapters, body.export .start{display:none}
-  body.export .stage{padding:0} body.export .frame{width:1920px;height:1080px;box-shadow:none}
+  body.export .stage{padding:0} body.export .frame{width:1080px;height:1350px;box-shadow:none}
   @media (max-width:640px){ body{min-height:0} .stage{flex:none;padding:16px 16px 4px} .bar,.chapters{width:100%} }
 </style>
 </head>
 <body>
 <main class="stage">
   <div class="frame" id="frame">
-    <canvas id="cv" width="1920" height="1080" aria-label="Anatomy of the Game animation"></canvas>
+    <canvas id="cv" width="1080" height="1350" aria-label="Anatomy of the Game animation"></canvas>
     <button class="start" id="start" type="button">
       <span class="k">Vol. III · Baseball</span>
       <span class="t">Anatomy of the Game</span>
-      <span class="s">90 seconds · best with sound</span>
+      <span class="s">118 seconds · best with sound</span>
       <span class="p"><i></i>Play film</span>
     </button>
   </div>
 </main>
 <div class="bar">
   <button id="pp" type="button">Play</button>
-  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="90" step="0.01" value="0" aria-label="Timeline"></div>
-  <span class="tc" id="tc">00:00 / 01:30</span>
+  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="118" step="0.01" value="0" aria-label="Timeline"></div>
+  <span class="tc" id="tc">00:00 / 01:58</span>
   <button id="snd" type="button" class="on">Sound on</button>
   <button id="rec" type="button">Export WebM</button>
   <button id="fs" type="button">Fullscreen</button>
@@ -75,7 +75,7 @@
    Every frame is a pure function of time t (seconds), so the film can be
    played, scrubbed, or rendered frame-by-frame to video.
    ===================================================================== */
-const W = 1920, H = 1080, DUR = 90, TAU = Math.PI * 2, BEAT = 60 / 70;
+const W = 1080, H = 1350, DUR = 118, TAU = Math.PI * 2, BEAT = 60 / 70;
 const RGB = { white:[255,255,255], light:[238,241,244], mid:[154,163,174], graphite:[58,64,72], blue:[30,91,255], cyan:[110,200,255] };
 const rgba = (k, a) => `rgba(${RGB[k][0]},${RGB[k][1]},${RGB[k][2]},${Math.max(0, Math.min(1, a))})`;
 const FONT = '"Helvetica Neue","HelveticaNeue",Helvetica,Inter,Arial,sans-serif';
@@ -566,21 +566,29 @@ function pathAt(pts, cum, s) { let k = 1; while (k < cum.length - 1 && cum[k] < 
 
 
 /* =====================================================================
-   SCENE 01 — BALL TO DIAMOND  (0 – 10.6)
+   LAYOUT (4:5) + helpers
+   ===================================================================== */
+const MX = 72, HY = 1190;
+const head = (c, segs, p, a, size = 52) => headline(c, segs, MX, HY, p, { size, maxW: W - 2 * MX, a });
+const lab = (c, ax, ay, tx, ty, p, title, a) => leader(c, ax, ay, tx, ty, p, title, null, { a, tsize: 24 });
+function stat(c, k, v, x, y, p, a) { kicker(c, k, x, y, seg(p, 0, .5), a); txt(c, v, x - 2, y + 62, { w: 700, size: 60, color: 'blue', a: a * smooth(seg(p, .2, .6)) }); }
+
+/* =====================================================================
+   01 — BALL TO DIAMOND  (0 – 10.6)
    ===================================================================== */
 const SA = .6, SB = .4, SCZ = 2 * Math.sqrt(SA * SB);
-const seam = t => [SA * Math.cos(t) + SB * Math.cos(3 * t), SA * Math.sin(t) - SB * Math.sin(3 * t), SCZ * Math.sin(2 * t)];  // lies on the unit sphere
+const seam = t => [SA * Math.cos(t) + SB * Math.cos(3 * t), SA * Math.sin(t) - SB * Math.sin(3 * t), SCZ * Math.sin(2 * t)];
 const sphere = (u, v) => [Math.sin(v) * Math.cos(u), Math.cos(v), Math.sin(v) * Math.sin(u)];
 function diamondAt(f) { const P = [HOME, B1, B2, B3, HOME], s = clamp(f) * 4, k = Math.min(3, Math.floor(s)); return lerp3(P[k], P[k + 1], s - k); }
 const B1KEYS = [
-  { t: 0, yaw: 1.2, pitch: .42, dist: 220, f: 1000, tx: 45, ty: 18, tz: 0, cx: 960, cy: 470 },
-  { t: 3.4, yaw: 1.3, pitch: .45, dist: 215, f: 1000, tx: 45, ty: 18, tz: 0, cx: 960, cy: 470 },
-  { t: 7.4, yaw: Math.PI / 2, pitch: .62, dist: 210, f: 1000, tx: 55, ty: 0, tz: 0, cx: 960, cy: 520 },
-  { t: 10.6, yaw: Math.PI / 2, pitch: .78, dist: 200, f: 1000, tx: 55, ty: 0, tz: 0, cx: 960, cy: 520 },
+  { t: 0, yaw: 1.2, pitch: .42, dist: 150, f: 1000, tx: 45, ty: 18, tz: 0, cx: 540, cy: 560 },
+  { t: 3.4, yaw: 1.3, pitch: .45, dist: 160, f: 1000, tx: 45, ty: 18, tz: 0, cx: 540, cy: 560 },
+  { t: 7.4, yaw: Math.PI / 2, pitch: .66, dist: 220, f: 1000, tx: 55, ty: 0, tz: 0, cx: 540, cy: 620 },
+  { t: 10.6, yaw: Math.PI / 2, pitch: .8, dist: 210, f: 1000, tx: 55, ty: 0, tz: 0, cx: 540, cy: 620 },
 ];
 function sBall(c, t) {
   const cm = cam(camKeys(B1KEYS, t));
-  const m = ease(seg(t, 3.6, 6.8)), S = 22, ctr = [45, 18, 0], intro = smooth(seg(t, .2, 1.6));
+  const m = ease(seg(t, 3.6, 6.8)), S = 28, ctr = [45, 18, 0], intro = smooth(seg(t, .2, 1.6));
   const spin = 2.2 * (t < 6.8 ? t : 6.8), cs = Math.cos(spin), sn = Math.sin(spin), tl = .45, ct = Math.cos(tl), st = Math.sin(tl);
   const world = (q, tgt) => { let x = q[0] * cs - q[2] * sn, z = q[0] * sn + q[2] * cs, y = q[1]; const y2 = y * ct - x * st; x = y * st + x * ct; const b = [ctr[0] + x * S, ctr[1] + y2 * S, ctr[2] + z * S]; return tgt ? lerp3(b, tgt, m) : b; };
   const fa = smooth(seg(t, 6.0, 7.6));
@@ -591,17 +599,14 @@ function sBall(c, t) {
     c.save(); c.translate(sh[0], sh[1]); c.scale(1, .3); c.translate(-sh[0], -sh[1]); c.fillStyle = g; c.beginPath(); c.arc(sh[0], sh[1], r, 0, TAU); c.fill(); c.restore();
   }
   const dRef = cm.p(...ctr)[2], backA = lerp(.18, 1, m);
-  // latitude rings -> outfield distance arcs
   for (let k = 1; k <= 11; k++) {
     const v = k / 12 * Math.PI, d = lerp(30, 118, (k - 1) / 10), pts = [];
     for (let i = 0; i <= 48; i++) { const u = i / 48 * TAU, th = -Q + Math.abs(((u / Math.PI) % 2) - 1) * 2 * Q; pts.push(world(sphere(u, v), fp(th, Math.min(d, fenceD(th) - 1)))); }
     const col = m < .5 ? 'mid' : 'graphite', al = (m < .5 ? .7 : .4) * intro * (1 - .6 * smooth(seg(t, 7.6, 8.6)));
     c.setLineDash(m > .5 ? [3, 5] : []); strokeDepth(c, proj(cm, pts), dRef, rgba(col, al), 1, rgba(col, al * backA), .8); c.setLineDash([]);
   }
-  // the seam -> the diamond
-  const sp = []; for (let i = 0; i <= 160; i++) { const tt = i / 160 * TAU; sp.push(world(seam(tt), diamondAt(i / 160))); }
+  const sp = []; for (let i = 0; i <= 160; i++) sp.push(world(seam(i / 160 * TAU), diamondAt(i / 160)));
   strokeDepth(c, proj(cm, sp), dRef, rgba('blue', intro), 2, rgba('blue', intro * lerp(.25, 1, m)), 1.2);
-  // 108 double stitches
   const sa = intro * (1 - smooth(seg(t, 3.6, 4.6)));
   if (sa > 0) {
     c.beginPath();
@@ -611,99 +616,57 @@ function sBall(c, t) {
     }
     c.strokeStyle = rgba('blue', .8 * sa); c.lineWidth = 1; c.stroke();
   }
-  const ba = 1 - smooth(seg(t, 3.6, 4.1)), sq = cm.p(...world(seam(.3))), eq = cm.p(...world([0, 1, 0]));
-  leader(c, sq[0], sq[1], 1420, 360, seg(t, 1.2, 2.6), '108 double stitches', 'Red waxed thread, hand-sewn', { a: ba });
-  leader(c, eq[0], eq[1], 1420, 560, seg(t, 1.8, 3.2), 'The ball', '9 in around · 5 oz', { a: ba });
-  const fl = env(t, 8.0, 8.4, 9.8, 10.4), b2 = cm.p(...B2);
-  leader(c, b2[0], b2[1], 120, 300, seg(t, 8.0, 9.4), 'The diamond', '90 ft between bases · 60 ft 6 in to the mound', { a: fl });
-  const ha = 1 - smooth(seg(t, 9.6, 10.4));
-  kicker(c, 'FIG. 01 — FROM BALL TO DIAMOND', 120, 852, seg(t, 4.0, 5.0), ha);
-  headline(c, [['Every pitch has an ', 'graphite'], ['anatomy.', 'blue']], 120, 930, seg(t, 4.6, 6.0), { size: 66, a: ha });
+  const sq = cm.p(...world(seam(.3)));
+  lab(c, sq[0], sq[1], 760, 300, seg(t, 1.2, 2.6), '108 stitches', 1 - smooth(seg(t, 3.6, 4.1)));
+  head(c, [['Every pitch has an ', 'graphite'], ['anatomy.', 'blue']], seg(t, 4.6, 6.0), 1 - smooth(seg(t, 9.6, 10.4)), 62);
 }
 
 /* =====================================================================
-   SCENE 02 — THE PITCH  (10 – 24.6)
+   02 — THE PITCH  (10 – 22.6)
    ===================================================================== */
-const MPH = .44704, PLATE_X = .3;
-const RELEASE = [MOUND - 6.5 * FT, 1.8, .45];
+const MPH = .44704, PLATE_X = .3, RELEASE = [MOUND - 6.5 * FT, 1.8, .45];
 const PITCHES = [
-  { name: 'FOUR-SEAM FASTBALL', mph: 96, rpm: 2400, ivb: 16, hb: 8, loc: [.1, .98], t0: 11.2 },
-  { name: 'SWEEPER', mph: 85, rpm: 2600, ivb: 1, hb: -16, loc: [-.2, .62], t0: 15.4 },
-  { name: 'CHANGEUP', mph: 87, rpm: 1750, ivb: 6, hb: 14, loc: [.14, .55], t0: 19.6 },
-].map(p => { const end = [PLATE_X, p.loc[1], p.loc[0]], B = [0, p.ivb * .0254, p.hb * .0254 * .7], noB = [end[0], end[1] - B[1], end[2] - B[2]]; return Object.assign(p, { end, B, noB, ttp: (RELEASE[0] - PLATE_X) / (p.mph * MPH * .95) }); });
-const FLIGHT = 1.7;   // on-screen seconds per pitch (slow motion)
+  { name: 'FOUR-SEAM', mph: 96, ivb: 16, hb: 8, loc: [.1, .98], t0: 11.2 },
+  { name: 'SWEEPER', mph: 85, ivb: 1, hb: -16, loc: [-.2, .62], t0: 15.4 },
+  { name: 'CHANGEUP', mph: 87, ivb: 6, hb: 14, loc: [.14, .55], t0: 19.6 },
+].map(p => { const end = [PLATE_X, p.loc[1], p.loc[0]], B = [0, p.ivb * .0254, p.hb * .0254 * .7], noB = [end[0], end[1] - B[1], end[2] - B[2]]; return Object.assign(p, { end, B, noB }); });
+const FLIGHT = 1.7;
 const pitchPos = (p, u) => { const b = lerp3(RELEASE, p.noB, u); return [b[0], b[1] + p.B[1] * u * u, b[2] + p.B[2] * u * u]; };
 const ghostPos = (p, u) => { const b = lerp3(RELEASE, p.noB, u); return [b[0], b[1] - .25 * u * u, b[2]]; };
 function sPitch(c, t) {
-  const cm = cam({ yaw: .2 + .03 * (t - 10), pitch: .2, dist: 21, f: 1000, tx: 9.2, ty: 1.0, tz: 0, cx: 800, cy: 540 }), P = q => cm.p(q[0], q[1], q[2]);
-  const ia = smooth(seg(t, 10.0, 10.8)), ov = 1 - smooth(seg(t, 23.4, 24.2));
-  c.save(); c.globalAlpha = ia;
-  // ground, mound, plate
-  c.beginPath(); for (const [a, b] of [[[-3, 0, -4], [24, 0, -4]], [[-3, 0, 4], [24, 0, 4]]]) { const p = P(a), q = P(b); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('light', 1); c.lineWidth = 1; c.stroke();
-  c.beginPath(); for (let i = 0; i <= 32; i++) { const ph = i / 32 * TAU, q = P([MOUND + 2.74 * Math.cos(ph), 0, 2.74 * Math.sin(ph)]); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.fillStyle = rgba('light', 1); c.fill(); c.strokeStyle = rgba('mid', .8); c.stroke();
-  c.beginPath(); { const a = P([MOUND, .25, -.3]), b = P([MOUND, .25, .3]), g0 = P([MOUND - 2.74, 0, 0]), g1 = P([MOUND, .254, 0]), g2 = P([MOUND + 2.74, 0, 0]); c.moveTo(g0[0], g0[1]); c.quadraticCurveTo(g1[0], g1[1] - 6, g2[0], g2[1]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
-  c.strokeStyle = rgba('graphite', .8); c.lineWidth = 2; c.stroke();
+  const cm = cam({ yaw: .2 + .03 * (t - 10), pitch: .34, dist: 21, f: 1000, tx: 9.2, ty: 1.0, tz: 0, cx: 580, cy: 660 }), P = q => cm.p(q[0], q[1], q[2]);
+  const ia = smooth(seg(t, 10.0, 10.8)), ov = 1 - smooth(seg(t, 22.0, 22.6));
+  c.save(); c.globalAlpha = ia * ov;
+  c.beginPath(); for (let i = 0; i <= 32; i++) { const ph = i / 32 * TAU, q = P([MOUND + 2.74 * Math.cos(ph), 0, 2.74 * Math.sin(ph)]); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.fillStyle = rgba('light', 1); c.fill(); c.strokeStyle = rgba('mid', .8); c.lineWidth = 1; c.stroke();
+  c.beginPath(); { const a = P([MOUND, .25, -.3]), b = P([MOUND, .25, .3]), g0 = P([MOUND - 2.74, 0, 0]), g1 = P([MOUND, .254, 0]), g2 = P([MOUND + 2.74, 0, 0]); c.moveTo(g0[0], g0[1]); c.quadraticCurveTo(g1[0], g1[1] - 6, g2[0], g2[1]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } c.strokeStyle = rgba('graphite', .8); c.lineWidth = 2; c.stroke();
   c.beginPath(); [[0, 0, 0], [.22, 0, -.22], [.43, 0, -.22], [.43, 0, .22], [.22, 0, .22]].forEach((q, i) => { const p = P(q); i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }); c.closePath(); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('graphite', .9); c.lineWidth = 1.2; c.stroke();
-  // strike zone at the plate
-  const zx = PLATE_X, zt = 1.07, zb = .46, zw = .216;
-  c.beginPath(); [[zx, zb, -zw], [zx, zb, zw], [zx, zt, zw], [zx, zt, -zw]].forEach((q, i) => { const p = P(q); i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }); c.closePath(); c.strokeStyle = rgba('blue', .6); c.lineWidth = 1.2; c.stroke();
-  // 60 ft 6 in dimension
-  const d0 = P([0, 0, 2.6]), d1 = P([MOUND, 0, 2.6]);
-  c.beginPath(); c.moveTo(d0[0], d0[1]); c.lineTo(d1[0], d1[1]); c.moveTo(d0[0], d0[1] - 6); c.lineTo(d0[0], d0[1] + 6); c.moveTo(d1[0], d1[1] - 6); c.lineTo(d1[0], d1[1] + 6); c.strokeStyle = rgba('blue', 1); c.lineWidth = 1.4; c.stroke();
-  txt(c, '60 ft 6 in', (d0[0] + d1[0]) / 2, d0[1] + 26, { w: 700, size: 17, color: 'blue', align: 'center' });
+  c.beginPath(); [[PLATE_X, .46, -.216], [PLATE_X, .46, .216], [PLATE_X, 1.07, .216], [PLATE_X, 1.07, -.216]].forEach((q, i) => { const p = P(q); i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }); c.closePath(); c.strokeStyle = rgba('blue', .6); c.lineWidth = 1.2; c.stroke();
   c.restore();
-  // pitches
   const cur = PITCHES.reduce((a, p) => t >= p.t0 - .4 ? p : a, PITCHES[0]);
   for (const p of PITCHES) {
-    const u = seg(t, p.t0, p.t0 + FLIGHT), fade = p === cur ? 1 : .25 * (1 - smooth(seg(t, p.t0 + FLIGHT + 2, p.t0 + FLIGHT + 4)));
+    const u = seg(t, p.t0, p.t0 + FLIGHT), fade = (p === cur ? 1 : .25 * (1 - smooth(seg(t, p.t0 + FLIGHT + 2, p.t0 + FLIGHT + 4)))) * ov;
     if (u <= 0 || fade <= 0) continue;
     const pts = [], gh = []; for (let k = 0; k <= 40 * u; k++) { pts.push(P(pitchPos(p, k / 40))); gh.push(P(ghostPos(p, k / 40))); }
-    if (p === cur) { c.setLineDash([4, 6]); c.beginPath(); gh.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('mid', .8 * ia); c.lineWidth = 1.2; c.stroke(); c.setLineDash([]); }
-    c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, p === cur ? 'blue' : 'mid', fade * ia, p === cur ? 2.2 : 1.2, p === cur ? 8 : 0);
-    if (p === cur && u < 1) {
-      const b = P(pitchPos(p, u)), r = .037 * b[3] + 3, ang = t * 40;
-      c.beginPath(); c.arc(b[0], b[1], r, 0, TAU); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('graphite', 1); c.lineWidth = 1.2; c.stroke();
-      c.beginPath(); c.ellipse(b[0], b[1], r + 7, (r + 7) * .4, ang % Math.PI, 0, TAU); c.strokeStyle = rgba('cyan', .9); c.lineWidth = 1.2; c.stroke();
-    }
+    if (p === cur) { c.setLineDash([4, 6]); c.beginPath(); gh.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('mid', .8 * ia * ov); c.lineWidth = 1.2; c.stroke(); c.setLineDash([]); }
+    c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, p === cur ? 'blue' : 'mid', fade * ia, p === cur ? 2.4 : 1.2, p === cur ? 8 : 0);
+    if (p === cur && u < 1) { const b = P(pitchPos(p, u)), r = .037 * b[3] + 3; c.beginPath(); c.arc(b[0], b[1], r, 0, TAU); c.fillStyle = rgba('white', ov); c.fill(); c.strokeStyle = rgba('graphite', ov); c.lineWidth = 1.2; c.stroke(); c.beginPath(); c.ellipse(b[0], b[1], r + 7, (r + 7) * .4, (t * 40) % Math.PI, 0, TAU); c.strokeStyle = rgba('cyan', .9 * ov); c.stroke(); }
     if (p === cur && u >= 1 && t < p.t0 + FLIGHT + .6) { const e = P(p.end), rr = (t - p.t0 - FLIGHT) / .6; c.beginPath(); c.arc(e[0], e[1], 6 + 30 * rr, 0, TAU); c.strokeStyle = rgba('cyan', 1 - rr); c.lineWidth = 2; c.stroke(); }
   }
-  // release & break labels
-  const la = env(t, 11.0, 11.4, 23.2, 23.8), rq = P(RELEASE);
-  c.beginPath(); c.arc(rq[0], rq[1], 4, 0, TAU); c.fillStyle = rgba('blue', la); c.fill();
-  leader(c, rq[0], rq[1], 1100, 250, seg(t, 11.2, 12.6), 'Release point', '6.5 ft of extension off the rubber', { a: la });
-  const gq = P(ghostPos(PITCHES[0], .9)); leader(c, gq[0], gq[1], 120, 760, seg(t, 12.6, 14.0), 'No-spin path', 'Where gravity alone would take it', { a: la });
-  // right column: pitch card + catcher's-view strike zone
-  const X = 1440, ca = env(t, 11.0, 11.5, 23.4, 24.0);
-  if (ca > 0) {
-    const k = smooth(seg(t, cur.t0 - .4, cur.t0));
-    kicker(c, `PITCH ${PITCHES.indexOf(cur) + 1} / 3 · ${cur.name}`, X, 250, seg(t, cur.t0 - .4, cur.t0 + .4), ca, 'blue');
-    const pu = easeOut(seg(t, cur.t0, cur.t0 + FLIGHT));
-    [['VELOCITY', fmt(cur.mph * pu, 0) + ' mph'], ['SPIN RATE', fmt(Math.round(cur.rpm * pu / 10) * 10) + ' rpm'], ['INDUCED VERTICAL BREAK', fmt(cur.ivb * pu, 0) + ' in'], ['TIME TO PLATE', fmt(cur.ttp * pu, 2) + ' s']].forEach(([n, v], i) => {
-      const y = 300 + i * 80; kicker(c, n, X, y, 1, ca * k); txt(c, v, X - 2, y + 38, { w: 700, size: 30, color: i === 3 ? 'blue' : 'graphite', a: ca * k });
-    });
-    // catcher's view
-    const zx0 = X, zy0 = 640, zW = 130, zH = 170;
-    kicker(c, 'STRIKE ZONE · CATCHER VIEW', zx0, zy0 - 16, 1, ca);
-    c.strokeStyle = rgba('mid', ca); c.lineWidth = 1; c.strokeRect(zx0, zy0, zW, zH);
-    c.beginPath(); for (let i = 1; i < 3; i++) { c.moveTo(zx0 + zW * i / 3, zy0); c.lineTo(zx0 + zW * i / 3, zy0 + zH); c.moveTo(zx0, zy0 + zH * i / 3); c.lineTo(zx0 + zW, zy0 + zH * i / 3); } c.strokeStyle = rgba('light', ca); c.stroke();
-    for (const p of PITCHES) { if (t < p.t0 + FLIGHT) continue; const px = zx0 + zW / 2 - p.loc[0] / zw * zW / 2, py = zy0 + zH - (p.loc[1] - zb) / (zt - zb) * zH; c.beginPath(); c.arc(px, py, 7, 0, TAU); c.fillStyle = rgba(p === cur ? 'blue' : 'mid', ca); c.fill(); }
-    txt(c, 'Pitch values illustrative', X + zW + 24, zy0 + zH, { size: 13, color: 'mid', a: ca });
-  }
-  kicker(c, 'FIG. 02 — THE PITCH, TRACKED', 120, 862, seg(t, 10.6, 11.6), ov);
-  headline(c, [['Statcast:', 'blue'], [' since 2015, every pitch, swing and catch in the majors has been tracked.', 'graphite']], 120, 925, seg(t, 11.4, 13.8), { size: 42, maxW: 1240, a: ov });
+  stat(c, cur.name, fmt(cur.mph * easeOut(seg(t, cur.t0, cur.t0 + FLIGHT)), 0) + ' mph', MX, 220, seg(t, cur.t0 - .4, cur.t0 + .6), env(t, 11.0, 11.4, 22.0, 22.6));
+  const la = env(t, 11.0, 11.4, 22.0, 22.6), rq = P(RELEASE), gq = P(ghostPos(PITCHES[0], .9));
+  lab(c, rq[0], rq[1], 700, 420, seg(t, 11.2, 12.4), 'Release', la);
+  lab(c, gq[0], gq[1], MX, 900, seg(t, 12.6, 13.8), 'No-spin path', la);
+  head(c, [['Statcast', 'blue'], [' tracks every pitch.', 'graphite']], seg(t, 11.4, 12.8), ov);
 }
 
 /* =====================================================================
-   SCENE 03 — THE SWING  (24 – 40.6)
+   03 — THE SWING + THE SHIFT  (22 – 38.6)
    ===================================================================== */
 const GRAV = 9.81;
 const BATTED = (() => {
   const r = rng(31), out = [];
-  for (let i = 0; i < 34; i++) {
-    const ev = 72 + r() * 40, la = -14 + r() * 66, th = (r() - .5) * 1.35, t0 = 24.9 + i * .17;
-    out.push({ ev, la, th, t0 });
-  }
-  out.push({ ev: 108, la: 28, th: -.25, t0: 31.0, hero: true });
+  for (let i = 0; i < 34; i++) out.push({ ev: 72 + r() * 40, la: -14 + r() * 66, th: (r() - .5) * 1.35, t0: 22.9 + i * .17 });
+  out.push({ ev: 108, la: 28, th: -.25, t0: 29.0, hero: true });
   return out.map(b => {
     const v = b.ev * MPH, a = b.la * Math.PI / 180;
     const D = a > .05 ? Math.min(v * v * Math.sin(2 * a) / GRAV * .65, fenceD(b.th) + (b.hero ? 10 : -2)) : v * (.8 + .2 * hash(b.t0));
@@ -712,13 +675,13 @@ const BATTED = (() => {
   });
 })();
 const ballAtB = (b, u) => { const p = fp(b.th, b.D * u); return [p[0], 1 + b.h * 4 * u * (1 - u), p[2]]; };
-const SHIFT = [[[26, 0, -21], [26, 0, -21]], [[50, 0, -20], [37, 0, -12]], [[42, 0, -5], [37, 0, 12]], [[36, 0, 6], [25, 0, 21]]];  // 1B, 2B, SS, 3B: shifted -> legal
+const SHIFT = [[[26, 0, -21], [26, 0, -21]], [[50, 0, -20], [37, 0, -12]], [[42, 0, -5], [37, 0, 12]], [[36, 0, 6], [25, 0, 21]]];
 function sSwing(c, t) {
-  const k1 = ease(seg(t, 32.0, 33.6));
-  const cm = cam({ yaw: Math.PI / 2 + .06 * Math.sin(t * .2), pitch: lerp(.66, 1.0, k1), dist: lerp(225, 125, k1), f: 1000, tx: lerp(52, 32, k1), ty: 0, tz: 0, cx: lerp(820, 800, k1), cy: lerp(520, 540, k1) });
-  const ia = smooth(seg(t, 24.0, 24.8));
+  const k1 = ease(seg(t, 30.0, 31.6));
+  const cm = cam({ yaw: Math.PI / 2 + .06 * Math.sin(t * .2), pitch: lerp(.66, 1.0, k1), dist: lerp(250, 155, k1), f: 1000, tx: lerp(52, 32, k1), ty: 0, tz: 0, cx: 540, cy: lerp(640, 660, k1) });
+  const ia = smooth(seg(t, 22.0, 22.8));
   drawBallpark(c, cm, { a: ia, stands: 1 - k1, fill: .6 });
-  const ba = 1 - smooth(seg(t, 31.8, 32.6));
+  const ba = 1 - smooth(seg(t, 30.0, 30.8));
   if (ba > 0) for (const b of BATTED) {
     const u = seg(t, b.t0, b.t0 + b.dur); if (u <= 0) continue;
     const pts = []; for (let k = 0; k <= 30 * u; k++) pts.push(cm.p(...ballAtB(b, k / 30)));
@@ -727,243 +690,238 @@ function sSwing(c, t) {
     if (u < 1) { const q = pts[pts.length - 1]; c.beginPath(); c.arc(q[0], q[1], b.hero ? 5 : 3, 0, TAU); c.fillStyle = rgba('white', ba); c.fill(); c.strokeStyle = rgba('graphite', ba); c.lineWidth = 1; c.stroke(); }
   }
   const hero = BATTED[BATTED.length - 1], hu = seg(t, hero.t0, hero.t0 + hero.dur);
-  if (hu > 0 && ba > 0) {
-    const q = cm.p(...ballAtB(hero, Math.min(hu, .5)));
-    leader(c, q[0], q[1], 120, 330, seg(t, hero.t0 + .3, hero.t0 + 1.6), `Home run · ${Math.round(hero.ft * easeOut(hu))} ft`, `${hero.ev} mph off the bat · ${hero.la}° launch`, { a: ba });
-  }
-  // EV × LA chart with the barrel zone
-  const X0 = 1440, Y0 = 600, CW = 360, CH = 300, ca = env(t, 24.8, 25.4, 31.8, 32.4);
-  if (ca > 0) {
-    const mx = la => X0 + (la + 20) / 80 * CW, my = ev => Y0 - (ev - 70) / 46 * CH;
-    kicker(c, 'EXIT VELOCITY × LAUNCH ANGLE', X0, Y0 - CH - 40, seg(t, 24.8, 25.4), ca);
-    c.strokeStyle = rgba('mid', ca); c.lineWidth = 1; c.beginPath(); c.moveTo(X0, Y0 - CH); c.lineTo(X0, Y0); c.lineTo(X0 + CW, Y0); c.stroke();
-    c.beginPath(); [[26, 98], [30, 98], [50, 116], [8, 116]].forEach((q, i) => i ? c.lineTo(mx(q[0]), my(q[1])) : c.moveTo(mx(q[0]), my(q[1]))); c.closePath(); c.fillStyle = rgba('cyan', .3 * ca); c.fill(); c.strokeStyle = rgba('blue', ca); c.stroke();
-    txt(c, 'BARREL', mx(29), my(108), { w: 700, size: 13, ls: 2, color: 'blue', a: ca, align: 'center' });
-    for (const b of BATTED) { if (t < b.t0) continue; c.beginPath(); c.arc(mx(b.la), my(b.ev), b.hero ? 6 : 3.4, 0, TAU); c.fillStyle = rgba(b.barrel || b.hero ? 'blue' : 'mid', ca); c.fill(); }
-    txt(c, 'Launch angle →', X0 + CW, Y0 + 22, { size: 13, color: 'mid', a: ca, align: 'right' });
-    txt(c, 'Exit velo ↑', X0, Y0 - CH - 12, { size: 13, color: 'mid', a: ca });
-    txt(c, 'Batted balls illustrative', X0, Y0 + 48, { size: 13, color: 'mid', a: ca });
-  }
-  // the shift, then the 2023 rule
-  const sa = env(t, 32.6, 33.2, 39.8, 40.4);
+  if (hu > 0 && ba > 0) { const q = cm.p(...ballAtB(hero, Math.min(hu, .5))); lab(c, q[0], q[1], MX, 260, seg(t, hero.t0 + .3, hero.t0 + 1.6), `${Math.round(hero.ft * easeOut(hu))} ft home run`, ba); }
+  const sa = env(t, 30.6, 31.2, 38.0, 38.6);
   if (sa > 0) {
-    const mv = ease(seg(t, 35.0, 36.6));
-    const m2 = cm.p(...B2), m2b = cm.p(B2[0] + 30, 0, 0), m2a = cm.p(5, 0, 0);
+    const mv = ease(seg(t, 33.0, 34.6)), m2b = cm.p(B2[0] + 30, 0, 0), m2a = cm.p(5, 0, 0);
     c.setLineDash([6, 6]); c.beginPath(); c.moveTo(m2a[0], m2a[1]); c.lineTo(m2b[0], m2b[1]); c.strokeStyle = rgba('blue', .8 * sa); c.lineWidth = 1.4; c.stroke(); c.setLineDash([]);
     const arc = []; for (let i = 0; i <= 30; i++) { const ph = lerp(-1.25, 1.25, i / 30); arc.push(cm.p(RUBBER[0] + 95 * FT * Math.cos(ph), 0, 95 * FT * Math.sin(ph))); }
-    c.beginPath(); arc.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', sa * smooth(seg(t, 36.4, 37.0))); c.lineWidth = 2.2; c.stroke();
-    SHIFT.forEach(([a, b], i) => {
+    c.beginPath(); arc.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', sa * smooth(seg(t, 34.4, 35.0))); c.lineWidth = 2.2; c.stroke();
+    SHIFT.forEach(([a, b]) => {
       const p = cm.p(...lerp3(a, b, mv)), pa = cm.p(...a);
       if (mv > 0 && mv < 1) { c.beginPath(); c.moveTo(pa[0], pa[1]); c.lineTo(p[0], p[1]); c.strokeStyle = rgba('mid', sa); c.lineWidth = 1; c.stroke(); }
-      c.beginPath(); c.arc(p[0], p[1], 8, 0, TAU); c.fillStyle = rgba('blue', sa); c.fill();
-      txt(c, ['1B', '2B', 'SS', '3B'][i], p[0] + 12, p[1] - 10, { w: 700, size: 13, color: 'graphite', a: sa });
+      c.beginPath(); c.arc(p[0], p[1], 9, 0, TAU); c.fillStyle = rgba('blue', sa); c.fill();
     });
     const cnt = mv < .5 ? ['1', '3'] : ['2', '2'], lq = cm.p(B2[0] - 4, 0, 26), rq = cm.p(B2[0] - 4, 0, -26);
-    txt(c, cnt[0], lq[0], lq[1], { w: 700, size: 40, color: 'blue', a: sa, align: 'center' }); txt(c, cnt[1], rq[0], rq[1], { w: 700, size: 40, color: 'blue', a: sa, align: 'center' });
-    void m2;
-    kicker(c, mv < .5 ? 'BEFORE · THE INFIELD SHIFT' : '2023 RULE · 2 PER SIDE, ON DIRT', 1440, 300, 1, sa, 'blue');
+    txt(c, cnt[0], lq[0], lq[1], { w: 700, size: 48, color: 'blue', a: sa, align: 'center' }); txt(c, cnt[1], rq[0], rq[1], { w: 700, size: 48, color: 'blue', a: sa, align: 'center' });
   }
-  kicker(c, 'FIG. 03 — EVERY BATTED BALL, MEASURED', 120, 902, seg(t, 24.6, 25.4), ia * (1 - smooth(seg(t, 39.6, 40.3))));
-  headline(c, [['Exit velocity', 'blue'], [' and ', 'graphite'], ['launch angle', 'blue'], [' rewrote hitting.', 'graphite']], 120, 962, seg(t, 25.0, 26.6), { size: 44, a: 1 - smooth(seg(t, 31.8, 32.4)) });
-  headline(c, [['2023:', 'blue'], [' the shift was banned — two infielders on each side of second base.', 'graphite']], 120, 940, seg(t, 33.0, 35.0), { size: 42, maxW: 1300, a: 1 - smooth(seg(t, 39.6, 40.3)) });
+  head(c, [['Launch angle', 'blue'], [' rewrote hitting.', 'graphite']], seg(t, 23.0, 24.4), 1 - smooth(seg(t, 30.0, 30.6)));
+  head(c, [['2023:', 'blue'], [' the shift is banned.', 'graphite']], seg(t, 31.4, 32.8), 1 - smooth(seg(t, 38.0, 38.6)));
 }
 
 /* =====================================================================
-   SCENE 04 — MONEYBALL  (40 – 56.6)
+   04 — MONEYBALL  (38 – 56.6)
    ===================================================================== */
-const TIMELINE = [
-  ['2002', 'Athletics win 103', 'on a ~$40M payroll'],
-  ['2003', 'Moneyball', 'Michael Lewis’s book'],
-  ['2004', 'Red Sox, with Bill James,', 'win first title since 1918'],
-  ['2011', 'Moneyball', 'the film'],
-  ['2015', 'Statcast', 'in every big-league park'],
-  ['TODAY', 'Every club', 'runs an analytics department'],
-];
+const TIMELINE = [['2002', 'Athletics win 103 on ~$40M'], ['2003', 'Moneyball, the book'], ['2004', 'Red Sox, with Bill James, win it all'], ['2011', 'Moneyball, the film'], ['2015', 'Statcast in every park'], ['TODAY', 'Every club runs analytics']];
 function sMoneyball(c, t) {
-  const A = env(t, 40.2, 40.8, 49.2, 49.8);
+  // A — payroll vs wins
+  const A = env(t, 38.2, 38.8, 43.4, 44.0);
   if (A > 0) {
-    kicker(c, 'CASE STUDY — MONEYBALL', 120, 196, seg(t, 40.4, 41.2), A, 'blue');
-    txt(c, typed('2002 Oakland Athletics', seg(t, 40.6, 41.6)), 120, 262, { w: 700, size: 40, a: A });
-    txt(c, typed('vs. the New York Yankees — opening-day payroll', seg(t, 41.0, 42.0)), 120, 296, { size: 20, color: 'mid', a: A });
-    const pw = 480 / 126;
+    txt(c, typed('2002', seg(t, 38.4, 38.9)), MX, 280, { w: 700, size: 96, color: 'blue', a: A });
+    kicker(c, 'OPENING-DAY PAYROLL', MX, 360, seg(t, 38.8, 39.4), A);
+    const pw = 600 / 126;
     [['Athletics', 40, 'blue'], ['Yankees', 126, 'mid']].forEach(([n, v, col], i) => {
-      const y = 350 + i * 74, p = easeOut(seg(t, 41.4 + i * .3, 42.8 + i * .3));
-      txt(c, n, 120, y, { size: 18, a: A }); c.fillStyle = rgba('light', A); c.fillRect(260, y - 18, 480, 22); c.fillStyle = rgba(col, A); c.fillRect(260, y - 18, v * pw * p, 22);
-      txt(c, '~$' + Math.round(v * p) + 'M', 260 + v * pw * p + 12, y, { w: 700, size: 20, color: col === 'blue' ? 'blue' : 'graphite', a: A });
-      txt(c, Math.round(103 * easeOut(seg(t, 43.0, 44.2))) + ' wins', 1010, y, { w: 700, size: 20, a: A * smooth(seg(t, 43.0, 43.4)), align: 'right' });
+      const y = 440 + i * 130, p = easeOut(seg(t, 39.2 + i * .3, 40.6 + i * .3));
+      txt(c, n, MX, y, { w: 700, size: 28, a: A });
+      c.fillStyle = rgba('light', A); c.fillRect(MX, y + 20, 600, 30); c.fillStyle = rgba(col, A); c.fillRect(MX, y + 20, v * pw * p, 30);
+      txt(c, '~$' + Math.round(v * p) + 'M', MX + v * pw * p + 16, y + 46, { w: 700, size: 26, color: col === 'blue' ? 'blue' : 'graphite', a: A });
     });
-    headline(c, [['Same 103 wins — ', 'graphite'], ['at about a third of the payroll.', 'blue']], 120, 520, seg(t, 44.0, 45.2), { size: 28, maxW: 900, a: A });
-    txt(c, typed('≈ $0.39M per win  vs.  ≈ $1.22M per win', seg(t, 44.8, 45.8)), 120, 556, { size: 18, color: 'mid', a: A });
-    // the insight
-    const ia = A * smooth(seg(t, 45.6, 46.2));
-    kicker(c, 'THE INSIGHT', 120, 640, seg(t, 45.6, 46.2), ia);
-    txt(c, typed('OBP = (H + BB + HBP) ÷ (AB + BB + HBP + SF)', seg(t, 45.8, 47.0)), 120, 690, { w: 700, size: 30, color: 'blue', a: ia });
-    txt(c, typed('On-base percentage counts walks. The market paid for batting average.', seg(t, 46.6, 47.8)), 120, 728, { size: 20, a: ia });
-    // season grid + streak
-    const X = 1180, wins = Math.round(103 * easeOut(seg(t, 42.0, 44.4)));
-    kicker(c, '162 GAMES · 103 WINS', X, 330, seg(t, 41.8, 42.4), A);
-    for (let i = 0; i < 162; i++) { const col = i % 27, row = Math.floor(i / 27), x = X + 4 + col * 22, y = 360 + row * 22; c.beginPath(); c.arc(x, y, 6, 0, TAU); if (i < wins) { c.fillStyle = rgba('blue', A); c.fill(); } else { c.strokeStyle = rgba('mid', .7 * A); c.lineWidth = 1; c.stroke(); } }
-    const sa = A * smooth(seg(t, 46.4, 46.9)), sn = Math.round(20 * easeOut(seg(t, 46.6, 48.0)));
-    kicker(c, 'WINNING STREAK', X, 640, 1, sa);
-    for (let i = 0; i < 20; i++) { c.fillStyle = rgba(i < sn ? 'cyan' : 'light', sa); c.fillRect(X + i * 29, 662, 24, 24); }
-    txt(c, sn + ' straight wins', X, 730, { w: 700, size: 30, color: 'blue', a: sa });
-    txt(c, 'an American League record at the time', X, 762, { size: 18, color: 'mid', a: sa });
+    txt(c, Math.round(103 * easeOut(seg(t, 40.8, 42.0))) + ' wins each', MX, 800, { w: 700, size: 64, color: 'graphite', a: A * smooth(seg(t, 40.8, 41.2)) });
   }
-  // impact timeline
-  const B = env(t, 49.6, 50.2, 56.0, 56.6);
-  if (B > 0) {
-    kicker(c, 'THE MONEYBALL EFFECT', 120, 196, seg(t, 49.6, 50.4), B, 'blue');
-    const x0 = 160, x1 = 1520, y = 500, lp = easeOut(seg(t, 50.0, 52.0));
-    c.strokeStyle = rgba('mid', B); c.lineWidth = 1.4; c.beginPath(); c.moveTo(x0, y); c.lineTo(lerp(x0, x1, lp), y); c.stroke();
-    TIMELINE.forEach(([yr, a, b], i) => {
-      const x = lerp(x0, x1, i / (TIMELINE.length - 1)), p = seg(t, 50.2 + i * .45, 51.0 + i * .45); if (p <= 0) return;
-      const up = i % 2 === 0, last = i === TIMELINE.length - 1;
-      c.beginPath(); c.arc(x, y, 8 * easeOut(p), 0, TAU); c.fillStyle = rgba(last ? 'cyan' : 'blue', B); c.fill();
-      c.beginPath(); c.moveTo(x, y + (up ? -14 : 14)); c.lineTo(x, y + (up ? -60 : 60) * easeOut(p)); c.strokeStyle = rgba('mid', B); c.lineWidth = 1; c.stroke();
-      const ty = up ? y - 150 : y + 100, tx = x - 6;
-      txt(c, typed(yr, seg(p, .2, .5)), tx, ty, { w: 700, size: 34, color: last ? 'blue' : 'graphite', a: B });
-      txt(c, typed(a, seg(p, .4, .8)), tx, ty + 30, { w: 700, size: 18, a: B });
-      txt(c, typed(b, seg(p, .6, 1)), tx, ty + 54, { size: 16, color: 'mid', a: B });
+  // B — the insight and the season
+  const Bv = env(t, 43.6, 44.2, 47.6, 48.2);
+  if (Bv > 0) {
+    txt(c, typed('OBP', seg(t, 43.8, 44.2)), MX, 300, { w: 700, size: 96, color: 'blue', a: Bv });
+    txt(c, typed('(H + BB + HBP) ÷ (AB + BB + HBP + SF)', seg(t, 44.0, 45.0)), MX, 350, { size: 26, a: Bv });
+    const wins = Math.round(103 * easeOut(seg(t, 44.4, 46.2)));
+    for (let i = 0; i < 162; i++) { const col = i % 18, row = Math.floor(i / 18), x = MX + 10 + col * 52, y = 440 + row * 40; c.beginPath(); c.arc(x, y, 12, 0, TAU); if (i < wins) { c.fillStyle = rgba('blue', Bv); c.fill(); } else { c.strokeStyle = rgba('mid', .7 * Bv); c.lineWidth = 1.4; c.stroke(); } }
+    const sn = Math.round(20 * easeOut(seg(t, 46.0, 47.2)));
+    for (let i = 0; i < 20; i++) { c.fillStyle = rgba(i < sn ? 'cyan' : 'light', Bv * smooth(seg(t, 45.8, 46.2))); c.fillRect(MX + i * 47, 830, 40, 40); }
+    txt(c, sn + ' straight wins', MX, 940, { w: 700, size: 48, color: 'blue', a: Bv * smooth(seg(t, 45.8, 46.2)) });
+  }
+  // C — the impact
+  const C = env(t, 47.8, 48.4, 56.0, 56.6);
+  if (C > 0) {
+    const x0 = 120, y0 = 230, y1 = 1050, lp = easeOut(seg(t, 48.0, 50.0));
+    c.strokeStyle = rgba('mid', C); c.lineWidth = 1.6; c.beginPath(); c.moveTo(x0, y0); c.lineTo(x0, lerp(y0, y1, lp)); c.stroke();
+    TIMELINE.forEach(([yr, a], i) => {
+      const y = lerp(y0 + 30, y1 - 40, i / (TIMELINE.length - 1)), p = seg(t, 48.2 + i * .5, 49.0 + i * .5); if (p <= 0) return;
+      const last = i === TIMELINE.length - 1;
+      c.beginPath(); c.arc(x0, y, 10 * easeOut(p), 0, TAU); c.fillStyle = rgba(last ? 'cyan' : 'blue', C); c.fill();
+      txt(c, typed(yr, seg(p, .1, .5)), x0 + 44, y + 4, { w: 700, size: 44, color: last ? 'blue' : 'graphite', a: C });
+      txt(c, typed(a, seg(p, .4, 1)), x0 + 44, y + 40, { size: 24, color: 'mid', a: C });
     });
   }
-  const ha = 1 - smooth(seg(t, 49.2, 49.8));
-  headline(c, [['Moneyball:', 'blue'], [' on-base percentage was cheap — and it won games.', 'graphite']], 120, 920, seg(t, 41.4, 43.4), { size: 42, maxW: 1400, a: ha * smooth(seg(t, 40.2, 40.8)) });
-  headline(c, [['The impact:', 'blue'], [' today every MLB club runs an analytics department.', 'graphite']], 120, 920, seg(t, 50.4, 52.4), { size: 42, maxW: 1400, a: B });
+  head(c, [['Moneyball:', 'blue'], [' wins on a budget.', 'graphite']], seg(t, 38.6, 40.4), env(t, 38.2, 38.8, 47.6, 48.2));
+  head(c, [['Today,', 'blue'], [' every MLB club runs analytics.', 'graphite']], seg(t, 48.6, 50.2), C);
 }
 
 /* =====================================================================
-   SCENE 05 — THE BALLPARK  (56 – 68.6)
+   05 — THE BALLPARK  (56 – 64.6)   06 — ALTITUDE  (64 – 72.6)
    ===================================================================== */
 function sPark(c, t) {
-  const cm = cam({ yaw: Math.PI / 2 + .15 + .04 * (t - 56), pitch: .78, dist: 320, f: 1000, tx: 50, ty: 6, tz: 0, cx: 860, cy: 520 });
+  const cm = cam({ yaw: Math.PI / 2 + .15 + .04 * (t - 56), pitch: .78, dist: 330, f: 1000, tx: 48, ty: 6, tz: 0, cx: 540, cy: 660 });
   const ia = smooth(seg(t, 56.0, 56.7)), mon = smooth(seg(t, 59.2, 59.8)) * (.6 + .4 * Math.sin(t * 3));
   drawBallpark(c, cm, { a: ia, stands: 1, monster: mon });
-  // other parks' fences, cycling
   const ga = env(t, 56.8, 57.2, 59.4, 59.9);
   if (ga > 0) {
     const ph = seg(t, 57.0, 59.4) * FENCE_ALT.length, i0 = Math.min(FENCE_ALT.length - 1, Math.floor(ph)), u = smooth(ph - i0);
-    for (let j = 0; j <= i0; j++) { const prof = FENCE_ALT[j], pts = fencePts(prof).map(q => cm.p(...q)); c.setLineDash([5, 5]); c.beginPath(); pts.forEach((q, k) => k ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', (j === i0 ? u : .55) * ga); c.lineWidth = 1.6; c.stroke(); c.setLineDash([]); }
+    for (let j = 0; j <= i0; j++) { const pts = fencePts(FENCE_ALT[j]).map(q => cm.p(...q)); c.setLineDash([5, 5]); c.beginPath(); pts.forEach((q, k) => k ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', (j === i0 ? u : .55) * ga); c.lineWidth = 1.8; c.stroke(); c.setLineDash([]); }
   }
-  // a fly ball off the wall
   const fu = seg(t, 59.8, 61.4);
   if (fu > 0) {
-    const th = -.62, D = fenceD(th), pts = [];
-    for (let k = 0; k <= 40 * fu; k++) { const u = k / 40; pts.push(cm.p(...fp(th, D * u, 1 + 30 * u * (1 - u) * 1.15 + 7.5 * u))); }
-    c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'blue', ia, 2, 8);
+    const th = -.62, D = fenceD(th), pts = []; for (let k = 0; k <= 40 * fu; k++) { const u = k / 40; pts.push(cm.p(...fp(th, D * u, 1 + 30 * u * (1 - u) * 1.15 + 7.5 * u))); }
+    c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'blue', ia, 2.2, 8);
     if (fu >= 1) { const w = cm.p(...fp(th, D, 8.5)); c.beginPath(); c.arc(w[0], w[1], 10 + 30 * seg(t, 61.4, 62.0), 0, TAU); c.strokeStyle = rgba('cyan', 1 - seg(t, 61.4, 62.0)); c.lineWidth = 2; c.stroke(); }
   }
-  const la = env(t, 57.2, 57.6, 62.0, 62.6), lf = cm.p(...fp(-.6, fenceD(-.6), 11.3));
-  leader(c, lf[0], lf[1], 120, 380, seg(t, 59.4, 60.8), 'Green Monster', 'A 37-ft wall in left field', { a: la });
-  const fc = cm.p(...fp(.3, fenceD(.3))); leader(c, fc[0], fc[1], 120, 560, seg(t, 57.2, 58.6), 'Every park draws its own fence', 'Distances and heights vary', { a: la });
-  const ca = env(t, 59.4, 59.9, 62.0, 62.6), Xr = 1490;
-  if (ca > 0) { kicker(c, 'LEFT-FIELD WALL', Xr, 300, 1, ca); txt(c, Math.round(37 * easeOut(seg(t, 59.4, 60.6))) + ' ft', Xr - 3, 370, { w: 700, size: 62, color: 'blue', a: ca }); kicker(c, 'TYPICAL OUTFIELD WALL', Xr, 450, 1, ca); txt(c, '~8 ft', Xr - 2, 500, { w: 700, size: 40, a: ca }); }
-  const ha = 1 - smooth(seg(t, 62.0, 62.6));
-  vignetteTag(c, '01', 'GEOMETRY', t, 56.4, ha, '02');
-  headline(c, [['No two outfields are alike', 'blue'], [' — Fenway’s Green Monster stands 37 feet tall.', 'graphite']], 120, 920, seg(t, 57.0, 59.0), { size: 42, maxW: 1300, a: ha });
+  stat(c, 'GREEN MONSTER', Math.round(37 * easeOut(seg(t, 59.4, 60.6))) + ' ft', MX, 220, seg(t, 59.2, 60.4), env(t, 59.2, 59.6, 64.0, 64.6));
+  head(c, [['No two outfields', 'blue'], [' are alike.', 'graphite']], seg(t, 56.8, 58.2), 1 - smooth(seg(t, 64.0, 64.6)));
 }
 function sAltitude(c, t) {
-  const O = [260, 760], k = 9, X = m => O[0] + m * k, Y = m => O[1] - m * k;
-  const ia = smooth(seg(t, 62.0, 62.7));
+  const O = [100, 860], k = 6.2, X = m => O[0] + m * k, Y = m => O[1] - m * k, ia = smooth(seg(t, 64.0, 64.7));
   c.save(); c.globalAlpha = ia;
-  c.beginPath(); for (let i = 0; i <= 60; i++) { const x = i / 60 * 1800, y = 300 + 70 * Math.sin(i * .37) * Math.sin(i * .11) - 40 * Math.sin(i * .9); i ? c.lineTo(x + 60, y) : c.moveTo(x + 60, y); } c.strokeStyle = rgba('light', 1); c.lineWidth = 1.4; c.stroke();
+  c.beginPath(); for (let i = 0; i <= 40; i++) { const x = i / 40 * W, y = 470 + 60 * Math.sin(i * .37) * Math.sin(i * .11) - 30 * Math.sin(i * .9); i ? c.lineTo(x, y) : c.moveTo(x, y); } c.strokeStyle = rgba('light', 1); c.lineWidth = 1.4; c.stroke();
   c.beginPath(); c.moveTo(X(-5), Y(0)); c.lineTo(X(150), Y(0)); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
-  for (let ft = 0; ft <= 450; ft += 50) { const x = X(ft * FT); c.beginPath(); c.moveTo(x, Y(0)); c.lineTo(x, Y(0) + 6); c.strokeStyle = rgba('mid', 1); c.stroke(); txt(c, String(ft), x, Y(0) + 24, { size: 12, color: 'mid', align: 'center' }); }
-  txt(c, 'FEET FROM HOME PLATE', X(0), Y(0) + 48, { size: 12, ls: 2, color: 'mid' });
   c.restore();
-  const traj = (D, H) => u => [D * u, 1 + H * 4 * u * (1 - u) - 1 * u];
-  const runs = [[400 * FT, 34, 'mid', 'Sea level', 62.8], [440 * FT, 38, 'blue', 'Denver · 5,200 ft', 63.4]];
-  runs.forEach(([D, H, col, name, t0]) => {
-    const f = traj(D, H), u = easeOut(seg(t, t0, t0 + 2.2)); if (u <= 0) return;
+  const traj = (D, H) => u => [D * u, 1 + H * 4 * u * (1 - u) - u];
+  [[400 * FT, 34, 'mid', 'Sea level', 64.8], [440 * FT, 38, 'blue', 'Denver', 65.4]].forEach(([D, Hh, col, name, t0]) => {
+    const f = traj(D, Hh), u = easeOut(seg(t, t0, t0 + 2.2)); if (u <= 0) return;
     c.beginPath(); for (let i = 0; i <= 60 * u; i++) { const q = f(i / 60); i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1])); }
-    col === 'blue' ? glowStroke(c, 'blue', ia, 2.2, 8) : (c.strokeStyle = rgba('mid', ia), c.lineWidth = 1.8, c.stroke());
-    if (u >= 1) { const e = f(.5); txt(c, name, X(e[0]), Y(e[1]) + (col === 'blue' ? -18 : 28), { w: 700, size: 16, color: col === 'blue' ? 'blue' : 'graphite', a: ia, align: 'center' }); }
+    if (col === 'blue') glowStroke(c, 'blue', ia, 2.4, 8); else { c.strokeStyle = rgba('mid', ia); c.lineWidth = 2; c.stroke(); }
+    if (u >= 1) { const e = f(.5); txt(c, name, X(e[0]), Y(e[1]) + (col === 'blue' ? -20 : 34), { w: 700, size: 24, color: col === 'blue' ? 'blue' : 'graphite', a: ia, align: 'center' }); }
   });
-  const da = smooth(seg(t, 65.6, 66.0)); if (da > 0) { const a = X(400 * FT), b = X(440 * FT); c.beginPath(); c.moveTo(a, Y(0) - 20); c.lineTo(b, Y(0) - 20); c.strokeStyle = rgba('cyan', da); c.lineWidth = 2; c.stroke(); txt(c, 'farther in thin air', b + 12, Y(0) - 14, { size: 13, color: 'blue', a: da }); }
-  // humidor
-  const hA = env(t, 64.2, 64.7, 68.0, 68.6), hx = 1490, hy = 330;
+  const hA = env(t, 66.4, 66.9, 72.0, 72.6), hx = 700, hy = 220;
   if (hA > 0) {
-    kicker(c, 'HUMIDOR · SINCE 2002', hx, hy - 30, seg(t, 64.2, 64.8), hA);
-    c.strokeStyle = rgba('graphite', hA); c.lineWidth = 1.4; c.strokeRect(hx, hy, 200, 130);
-    for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) { c.beginPath(); c.arc(hx + 30 + i * 46, hy + 30 + j * 36, 12, 0, TAU); c.strokeStyle = rgba('blue', hA); c.stroke(); }
-    headline(c, [['Baseballs are stored at controlled humidity before games.', 'mid']], hx, hy + 170, seg(t, 64.6, 65.8), { size: 15, w: 300, maxW: 290, lh: 1.4, a: hA });
+    kicker(c, 'HUMIDOR', hx, hy - 16, seg(t, 66.4, 67.0), hA);
+    c.strokeStyle = rgba('graphite', hA); c.lineWidth = 1.4; c.strokeRect(hx, hy, 300, 170);
+    for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++) { c.beginPath(); c.arc(hx + 40 + i * 55, hy + 40 + j * 46, 16, 0, TAU); c.strokeStyle = rgba('blue', hA); c.stroke(); }
   }
-  txt(c, 'Trajectories illustrative', 120, 820, { size: 13, color: 'mid', a: ia });
-  const ha = 1 - smooth(seg(t, 68.0, 68.6));
-  vignetteTag(c, '02', 'ALTITUDE', t, 62.4, ha, '02');
-  headline(c, [['Denver, 5,200 ft:', 'blue'], [' thin air carries the ball — so baseballs are kept in a humidor.', 'graphite']], 120, 920, seg(t, 62.8, 64.8), { size: 42, maxW: 1300, a: ha });
+  head(c, [['Denver:', 'blue'], [' thin air carries the ball.', 'graphite']], seg(t, 64.8, 66.2), 1 - smooth(seg(t, 72.0, 72.6)));
 }
 
 /* =====================================================================
-   SCENE 06 — PACE BY DESIGN  (68 – 80.6)
+   07 — ACOUSTICS (grandstand section)  (72 – 84.6)
+   ===================================================================== */
+function standSection(c, X, Y, O, a) {
+  const path = (pts, close) => { c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); if (close) c.closePath(); };
+  const hatchFill = pts => { path(pts, true); c.fillStyle = rgba('light', 1); c.fill(); c.save(); c.clip(); c.beginPath(); for (let h = -900; h < 1200; h += 10) { c.moveTo(O[0] + h, Y(0)); c.lineTo(O[0] + h + 600, Y(0) - 600); } c.strokeStyle = rgba('mid', .25); c.lineWidth = 1; c.stroke(); c.restore(); path(pts, true); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1; c.stroke(); };
+  c.save(); c.globalAlpha = a;
+  c.beginPath(); c.moveTo(X(-40), Y(0)); c.lineTo(X(62), Y(0)); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
+  const low = [[2, 0], [2, 1.2]]; for (let i = 0; i < 22; i++) { low.push([3 + i * .9, 1.2 + i * .45]); low.push([3.9 + i * .9, 1.2 + i * .45]); } low.push([23, 11], [23, 0]); hatchFill(low);
+  const up = [[20, 13], [20, 14.4]]; for (let i = 0; i < 26; i++) { up.push([21 + i * .9, 14.4 + i * .58]); up.push([21.9 + i * .9, 14.4 + i * .58]); } up.push([46, 29], [46, 27.4], [30, 13]); hatchFill(up);
+  path([[48, 0], [48, 35]], false); c.strokeStyle = rgba('graphite', .8); c.lineWidth = 2; c.stroke();
+  path([[50, 35], [8, 33.4], [8, 32.4], [50, 34]], true); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('blue', .9); c.lineWidth = 1.2; c.stroke();
+  c.restore();
+}
+function sAcoustic(c, t) {
+  const O = [300, 920], k = 15, X = m => O[0] + m * k, Y = m => O[1] - m * k, ia = smooth(seg(t, 72.0, 72.7)), lvl = ease(seg(t, 73.0, 77.0));
+  standSection(c, X, Y, O, ia);
+  c.fillStyle = rgba('blue', .6 * ia);
+  for (let i = 0; i < 22; i += 2) { c.beginPath(); c.arc(X(3.5 + i * .9), Y(1.2 + i * .45 + .9 + (.1 + .3 * lvl) * Math.max(0, Math.sin(t * 9 + i))), 3, 0, TAU); c.fill(); }
+  for (let i = 0; i < 26; i += 2) { c.beginPath(); c.arc(X(21.5 + i * .9), Y(14.4 + i * .58 + .9 + (.1 + .3 * lvl) * Math.max(0, Math.sin(t * 9 + i * 1.3))), 3, 0, TAU); c.fill(); }
+  // crowd waves toward the field and their reflections off the canopy
+  const wa = smooth(seg(t, 72.8, 73.6)) * (1 - smooth(seg(t, 84.0, 84.6)));
+  if (wa > 0) {
+    c.save(); c.beginPath(); c.rect(X(-40), Y(32.4), X(48) - X(-40), Y(0) - Y(32.4)); c.clip();
+    const per = lerp(.9, .5, lvl), spd = 22, yr = 32.6;
+    for (const [sx, sy] of [[8, 4.5], [16, 8.5], [30, 20], [40, 26]]) for (let e = 0; e < 6; e++) {
+      const te = Math.floor((t - 72.8) / per) * per + 72.8 - e * per, r = (t - te) * spd; if (r <= 0 || te < 72.7) continue;
+      const al = (1 - r / (spd * per * 6)) * wa * (.4 + .6 * lvl); if (al <= 0) continue;
+      c.beginPath(); c.arc(X(sx), Y(sy), r * k, Math.PI / 2, Math.PI * 1.5); c.strokeStyle = rgba('blue', .45 * al); c.lineWidth = 1.2; c.stroke();
+      if (r > yr - sy) { c.beginPath(); c.arc(X(sx), Y(2 * yr - sy), r * k, Math.PI / 2, Math.PI); c.strokeStyle = rgba('cyan', .8 * al); c.lineWidth = 1.4; c.stroke(); }
+    }
+    c.restore();
+  }
+  // distributed speakers under the canopy
+  const sa = smooth(seg(t, 76.6, 77.4)) * ia;
+  if (sa > 0) for (const x of [14, 24, 34, 44]) { const y = 32.2 - (50 - x) * .0; c.fillStyle = rgba('graphite', sa); c.fillRect(X(x) - 6, Y(y), 12, 10); c.beginPath(); c.moveTo(X(x), Y(y - .8)); c.lineTo(X(x - 4), Y(y - 9)); c.lineTo(X(x + 4), Y(y - 9)); c.closePath(); c.fillStyle = rgba('cyan', (.15 + .1 * Math.sin(t * 5 + x)) * sa); c.fill(); }
+  // the outfield side stays open
+  const oa = smooth(seg(t, 79.0, 79.8)) * ia;
+  if (oa > 0) for (const y of [8, 16, 24]) { const x = -6 - ((t * 8 + y) % 12); c.beginPath(); c.moveTo(X(x + 8), Y(y)); c.lineTo(X(x), Y(y)); c.lineTo(X(x + 1.6), Y(y + 1.2)); c.moveTo(X(x), Y(y)); c.lineTo(X(x + 1.6), Y(y - 1.2)); c.strokeStyle = rgba('mid', oa); c.lineWidth = 1.6; c.stroke(); }
+  const la = env(t, 74.0, 74.4, 84.0, 84.6);
+  lab(c, X(20), Y(33.6), MX, 330, seg(t, 74.2, 75.4), 'Canopy', la);
+  lab(c, X(34), Y(32.2), MX, 400, seg(t, 77.0, 78.2), 'Distributed speakers', la);
+  lab(c, X(-10), Y(16), MX, 470, seg(t, 79.2, 80.4), 'Open outfield', la);
+  head(c, [['Acoustics:', 'blue'], [' the roof holds the roar.', 'graphite']], seg(t, 73.0, 74.6), 1 - smooth(seg(t, 84.0, 84.6)));
+}
+
+/* =====================================================================
+   08 — PREMIUM (behind home plate)  (84 – 96.6)
+   ===================================================================== */
+function sPremium(c, t) {
+  const cm = cam({ yaw: -Math.PI / 2 + .25 * Math.sin((t - 84) * .25), pitch: .42, dist: 175, f: 1000, tx: 0, ty: 8, tz: 0, cx: 540, cy: 650 }), P = q => cm.p(...q);
+  const ia = smooth(seg(t, 84.0, 84.7));
+  drawBallpark(c, cm, { a: ia, stands: 1, fill: .7 });
+  const mid = [12, 30], quad = (a, b, c2, d, col, al) => { const q = [a, b, c2, d].map(P); c.beginPath(); q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = rgba(col, al); c.fill(); };
+  // home-plate club: first rows behind the plate
+  const ha = smooth(seg(t, 85.4, 86.2)) * ia, T0 = tierPts(0), T2 = tierPts(2);
+  if (ha > 0) for (let i = mid[0]; i < mid[1]; i++) quad(T0[i], T0[i + 1], T2[i + 1], T2[i], 'cyan', .55 * ha);
+  // suites band
+  const sa = smooth(seg(t, 87.8, 88.6)) * ia, T5 = tierPts(5), T7 = tierPts(7);
+  if (sa > 0) { for (let i = mid[0] - 4; i < mid[1] + 4; i++) quad(T5[i], T5[i + 1], T7[i + 1], T7[i], 'blue', .3 * sa); c.beginPath(); for (let i = mid[0] - 4; i <= mid[1] + 4; i++) { const a = P(T5[i]), b = P(T7[i]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } c.strokeStyle = rgba('blue', .8 * sa); c.lineWidth = 1; c.stroke(); }
+  // field-level lounge
+  const fa = smooth(seg(t, 90.2, 91.0)) * ia;
+  if (fa > 0) for (let i = mid[0] + 3; i < mid[1] - 3; i++) { const a = T0[i], b = T0[i + 1]; quad([a[0], 0, a[2]], [b[0], 0, b[2]], [b[0], 1.2, b[2]], [a[0], 1.2, a[2]], 'cyan', .7 * fa); }
+  // sightline from the club seats to the plate
+  const sl = smooth(seg(t, 91.6, 92.4)) * ia;
+  if (sl > 0) { const h = P([0.2, .8, 0]); c.beginPath(); for (const i of [14, 21, 28]) { const s = P(T0[i]); c.moveTo(s[0], s[1]); c.lineTo(h[0], h[1]); } c.strokeStyle = rgba('blue', .7 * sl); c.lineWidth = 1.2; c.stroke(); }
+  const la = env(t, 85.8, 86.2, 96.0, 96.6), cq = P(T2[21]), sq = P(T7[16]), fq = P([T0[24][0], 1.2, T0[24][2]]);
+  lab(c, cq[0], cq[1], MX, 230, seg(t, 86.0, 87.2), 'Home-plate club', la);
+  lab(c, sq[0], sq[1], MX, 300, seg(t, 88.2, 89.4), 'Suites', la);
+  lab(c, fq[0], fq[1], MX, 370, seg(t, 90.6, 91.8), 'Field-level lounge', la);
+  head(c, [['Premium:', 'blue'], [' eye level with the pitch.', 'graphite']], seg(t, 85.0, 86.6), 1 - smooth(seg(t, 96.0, 96.6)));
+}
+
+/* =====================================================================
+   09 — PACE  (96 – 108.6)
    ===================================================================== */
 function sPace(c, t) {
-  const cm = cam({ yaw: Math.PI / 2 + .1, pitch: 1.0, dist: 125, f: 1000, tx: 30, ty: 0, tz: 0, cx: 740, cy: 540 });
-  const ia = smooth(seg(t, 68.0, 68.7));
+  const cm = cam({ yaw: Math.PI / 2 + .1, pitch: 1.0, dist: 120, f: 1000, tx: 26, ty: 0, tz: 0, cx: 540, cy: 560 });
+  const ia = smooth(seg(t, 96.0, 96.7));
   drawBallpark(c, cm, { a: ia, fill: .5 });
-  // pitch-clock ring around the mound
-  const m = cm.p(...RUBBER), R = 70, cyc = 15, ct = Math.max(0, t - 69.4), left = cyc - (ct * 3 % cyc), ra = env(t, 69.2, 69.6, 79.8, 80.4);
+  const m = cm.p(...RUBBER), R = 74, cyc = 15, left = cyc - (Math.max(0, t - 97.4) * 3 % cyc), ra = env(t, 97.2, 97.6, 108.0, 108.6);
   if (ra > 0) {
-    c.beginPath(); c.arc(m[0], m[1], R, 0, TAU); c.strokeStyle = rgba('light', ra); c.lineWidth = 8; c.stroke();
-    c.beginPath(); c.arc(m[0], m[1], R, -Math.PI / 2, -Math.PI / 2 + TAU * left / cyc); c.strokeStyle = rgba('blue', ra); c.lineWidth = 8; c.stroke();
-    txt(c, String(Math.ceil(left)), m[0], m[1] + 16, { w: 700, size: 44, color: 'blue', a: ra, align: 'center' });
-    txt(c, 'SEC', m[0], m[1] + 38, { size: 12, ls: 2, color: 'mid', a: ra, align: 'center' });
+    c.beginPath(); c.arc(m[0], m[1], R, 0, TAU); c.strokeStyle = rgba('light', ra); c.lineWidth = 9; c.stroke();
+    c.beginPath(); c.arc(m[0], m[1], R, -Math.PI / 2, -Math.PI / 2 + TAU * left / cyc); c.strokeStyle = rgba('blue', ra); c.lineWidth = 9; c.stroke();
+    txt(c, String(Math.ceil(left)), m[0], m[1] + 17, { w: 700, size: 48, color: 'blue', a: ra, align: 'center' });
   }
-  // bigger bases: 15 in -> 18 in
-  const bq = cm.p(...B1), ba = env(t, 71.4, 71.9, 79.8, 80.4);
-  if (ba > 0) {
-    const g = ease(seg(t, 72.2, 73.4)), bx = 1180, by = 300, s = 6;
-    c.beginPath(); c.moveTo(bq[0] + 6, bq[1]); c.lineTo(bx - 10, by + 60); c.strokeStyle = rgba('mid', ba); c.lineWidth = 1; c.stroke();
-    kicker(c, 'BASES', bx, by - 16, 1, ba);
-    c.strokeStyle = rgba('mid', ba); c.lineWidth = 1.2; c.setLineDash([4, 4]); c.strokeRect(bx, by, 15 * s, 15 * s); c.setLineDash([]);
-    const sz = lerp(15, 18, g) * s; c.fillStyle = rgba('white', ba); c.fillRect(bx, by, sz, sz); c.strokeStyle = rgba('blue', ba); c.lineWidth = 2; c.strokeRect(bx, by, sz, sz);
-    txt(c, Math.round(lerp(15, 18, g)) + ' in', bx + sz + 14, by + sz / 2 + 8, { w: 700, size: 22, color: 'blue', a: ba });
-  }
-  // average game time
-  const X = 1490, ga = env(t, 70.0, 70.5, 79.8, 80.4);
-  if (ga > 0) {
-    kicker(c, 'AVERAGE GAME TIME', X, 300, seg(t, 70.0, 70.6), ga);
-    [['2022', 183, 'mid', '3:03'], ['2023', 160, 'blue', '2:40']].forEach(([yr, mins, col, lab], i) => {
-      const y = 350 + i * 90, p = easeOut(seg(t, 70.4 + i * 1.2, 71.6 + i * 1.2));
-      txt(c, yr, X, y, { size: 16, a: ga }); c.fillStyle = rgba('light', ga); c.fillRect(X, y + 12, 300, 18); c.fillStyle = rgba(col, ga); c.fillRect(X, y + 12, 300 * mins / 190 * p, 18);
-      txt(c, lab, X + 300, y, { w: 700, size: 20, color: col === 'blue' ? 'blue' : 'graphite', a: ga * smooth(seg(p, .6, 1)), align: 'right' });
-    });
-    txt(c, typed('≈ 24 minutes shorter', seg(t, 73.0, 74.0)), X, 560, { w: 700, size: 28, color: 'blue', a: ga });
-    txt(c, typed('15-second clock with the bases empty', seg(t, 73.6, 74.8)), X, 596, { size: 16, color: 'mid', a: ga });
-  }
-  const ha = 1 - smooth(seg(t, 79.8, 80.4));
-  kicker(c, 'FIG. 06 — PACE BY DESIGN', 120, 862, seg(t, 68.4, 69.2), ha);
-  headline(c, [['2023 pitch clock:', 'blue'], [' games got about 24 minutes shorter — and the bases got bigger.', 'graphite']], 120, 925, seg(t, 69.6, 71.8), { size: 42, maxW: 1300, a: ha });
+  const ga = env(t, 99.0, 99.5, 108.0, 108.6);
+  if (ga > 0) [['2022', 183, 'mid', '3:03'], ['2023', 160, 'blue', '2:40']].forEach(([yr, mins, col, lab2], i) => {
+    const y = 900 + i * 80, p = easeOut(seg(t, 99.2 + i * 1.2, 100.4 + i * 1.2));
+    txt(c, yr, MX, y, { w: 700, size: 24, a: ga }); c.fillStyle = rgba('light', ga); c.fillRect(MX + 90, y - 22, 700, 26); c.fillStyle = rgba(col, ga); c.fillRect(MX + 90, y - 22, 700 * mins / 190 * p, 26);
+    txt(c, lab2, MX + 90 + 700 * mins / 190 * p + 14, y, { w: 700, size: 26, color: col === 'blue' ? 'blue' : 'graphite', a: ga * smooth(seg(p, .6, 1)) });
+  });
+  head(c, [['Pitch clock:', 'blue'], [' 23 minutes saved.', 'graphite']], seg(t, 97.6, 99.2), 1 - smooth(seg(t, 108.0, 108.6)));
 }
 
 /* =====================================================================
-   SCENE 07 — CLOSING  (80 – 90)
+   10 — CLOSING  (108 – 118)
    ===================================================================== */
 const B7KEYS = [
-  { t: 80.0, yaw: Math.PI / 2 + .5, pitch: .7, dist: 300, f: 1000, tx: 50, ty: 4, tz: 0, cx: 960, cy: 520 },
-  { t: 84.0, yaw: Math.PI / 2 + .15, pitch: .55, dist: 320, f: 1000, tx: 55, ty: 8, tz: 0, cx: 960, cy: 500 },
-  { t: 90, yaw: Math.PI / 2 - .2, pitch: .6, dist: 520, f: 1000, tx: 55, ty: 8, tz: 0, cx: 960, cy: 470 },
+  { t: 108.0, yaw: Math.PI / 2 + .5, pitch: .7, dist: 330, f: 1000, tx: 50, ty: 4, tz: 0, cx: 540, cy: 640 },
+  { t: 112.0, yaw: Math.PI / 2 + .15, pitch: .55, dist: 300, f: 1000, tx: 55, ty: 8, tz: 0, cx: 540, cy: 620 },
+  { t: 118, yaw: Math.PI / 2 - .2, pitch: .6, dist: 400, f: 1000, tx: 55, ty: 8, tz: 0, cx: 540, cy: 600 },
 ];
 function sFinal(c, t) {
   const cm = cam(camKeys(B7KEYS, t));
-  const pulse = heartPulse(t, 84.0, 88.3), g = smooth(seg(t, 83.4, 84.2)) * (.35 + .65 * pulse);
-  if (t > 84) {
-    const n = Math.floor((t - 84) / BEAT);
-    for (let k = Math.max(0, n - 2); k <= n; k++) { const bt = 84 + k * BEAT; if (bt > 88.3) continue; const r = (t - bt) / 2.2; if (r > 1) continue; const pts = fencePts().map(q => cm.p(q[0] * (1 + r * .6), 0, q[2] * (1 + r * .6))); c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', .6 * (1 - r)); c.lineWidth = 1.4; c.stroke(); }
+  const pulse = heartPulse(t, 112.0, 116.3), g = smooth(seg(t, 111.4, 112.2)) * (.35 + .65 * pulse);
+  if (t > 112) {
+    const n = Math.floor((t - 112) / BEAT);
+    for (let k = Math.max(0, n - 2); k <= n; k++) { const bt = 112 + k * BEAT; if (bt > 116.3) continue; const r = (t - bt) / 2.2; if (r > 1) continue; const pts = fencePts().map(q => cm.p(q[0] * (1 + r * .6), 0, q[2] * (1 + r * .6))); c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', .6 * (1 - r)); c.lineWidth = 1.4; c.stroke(); }
   }
-  drawBallpark(c, cm, { a: 1, stands: easeOut(seg(t, 80.2, 83.4)), fill: lerp(1, 1.4, smooth(seg(t, 82, 84))), glow: g });
-  const ta = 1 - smooth(seg(t, 88.2, 89.2));
-  kicker(c, 'FIG. 07 — ASSEMBLY', 120, 862, seg(t, 84.0, 84.8), ta);
-  headline(c, [['Every pitch is ', 'graphite'], ['designed by data.', 'blue']], 120, 940, seg(t, 84.5, 86.3), { size: 76, maxW: 1600, a: ta });
+  drawBallpark(c, cm, { a: 1, stands: easeOut(seg(t, 108.2, 111.4)), fill: lerp(1, 1.4, smooth(seg(t, 110, 112))), glow: g });
+  head(c, [['Every pitch is ', 'graphite'], ['designed by data.', 'blue']], seg(t, 112.5, 114.3), 1 - smooth(seg(t, 116.2, 117.2)), 54);
 }
 
 /* =====================================================================
    TIMELINE, CHROME, COMPOSITING
    ===================================================================== */
 const SCENES = [
-  { a: 0, b: 10.6, f: sBall }, { a: 10.0, b: 24.6, f: sPitch }, { a: 24.0, b: 40.6, f: sSwing }, { a: 40.0, b: 56.6, f: sMoneyball },
-  { a: 56.0, b: 62.6, f: sPark }, { a: 62.0, b: 68.6, f: sAltitude }, { a: 68.0, b: 80.6, f: sPace }, { a: 80.0, b: 90.01, f: sFinal },
+  { a: 0, b: 10.6, f: sBall }, { a: 10.0, b: 22.6, f: sPitch }, { a: 22.0, b: 38.6, f: sSwing }, { a: 38.0, b: 56.6, f: sMoneyball },
+  { a: 56.0, b: 64.6, f: sPark }, { a: 64.0, b: 72.6, f: sAltitude }, { a: 72.0, b: 84.6, f: sAcoustic }, { a: 84.0, b: 96.6, f: sPremium },
+  { a: 96.0, b: 108.6, f: sPace }, { a: 108.0, b: 118.01, f: sFinal },
 ];
-const CHAPTERS = [{ t: 0, n: '01', name: 'Ball to Diamond' }, { t: 10, n: '02', name: 'The Pitch' }, { t: 24, n: '03', name: 'The Swing' }, { t: 40, n: '04', name: 'Moneyball' }, { t: 56, n: '05', name: 'The Ballpark' }, { t: 68, n: '06', name: 'Pace by Design' }, { t: 80, n: '07', name: 'Closing' }];
+const CHAPTERS = [{ t: 0, n: '01', name: 'Ball to Diamond' }, { t: 10, n: '02', name: 'The Pitch' }, { t: 22, n: '03', name: 'The Swing' }, { t: 38, n: '04', name: 'Moneyball' }, { t: 56, n: '05', name: 'The Ballpark' }, { t: 72, n: '06', name: 'Acoustics' }, { t: 84, n: '07', name: 'Premium' }, { t: 96, n: '08', name: 'Pace by Design' }, { t: 108, n: '09', name: 'Closing' }];
 const chapterAt = t => { let ch = CHAPTERS[0]; for (const c of CHAPTERS) if (t >= c.t) ch = c; return ch; };
 const tc = t => { const s = Math.floor(t), f = Math.floor((t - s) * 25); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f).padStart(2, '0')}`; };
 
@@ -976,9 +934,9 @@ const EXPORT = new URLSearchParams(location.search).has('export');
 let forceFull = EXPORT;
 function resize() {
   let pw;
-  if (forceFull) pw = 1920;
+  if (forceFull) pw = W;
   else { const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1); pw = Math.min(2880, Math.max(640, Math.round(r.width * dpr))); }
-  const ph = Math.round(pw * 9 / 16);
+  const ph = Math.round(pw * H / W);
   for (const k of [cv, layer, sil, bg]) { k.width = pw; k.height = ph; }
   SC = pw / W;
   bgCtx.setTransform(SC, 0, 0, SC, 0, 0);
@@ -988,12 +946,13 @@ function resize() {
 }
 function drawBackground(c, t) {
   c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
-  const g = c.createRadialGradient(960, 520, 240, 960, 520, 1250); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(238,241,244,1)');
+  const g = c.createRadialGradient(W / 2, H * .45, 200, W / 2, H * .45, 1000); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(238,241,244,1)');
   c.fillStyle = g; c.fillRect(0, 0, W, H);
-  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 87, 89)));
+  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 115, 117)));
   if (reveal > 0) { c.save(); c.beginPath(); c.rect(0, 0, W * reveal, H); c.clip(); c.globalAlpha = ga; c.drawImage(bg, 0, 0, W, H); c.restore(); }
 }
 function drawChrome(c, t) {
+  return;  // no header or footer in this cut
   const a = env(t, .6, 2.0, 87.4, 88.8); if (a <= 0) return;
   c.save(); c.globalAlpha = a;
   txt(c, 'ANATOMY OF THE GAME', 120, 92, { w: 700, size: 15, ls: 4 });
@@ -1021,7 +980,7 @@ function draw(t) {
   }
   ctx.setTransform(SC, 0, 0, SC, 0, 0);
   drawChrome(ctx, t);
-  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 88.0, 89.7)));
+  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 116.0, 117.7)));
   if (white > 0) { ctx.fillStyle = `rgba(255,255,255,${white})`; ctx.fillRect(0, 0, W, H); }
 }
 
@@ -1029,9 +988,9 @@ function draw(t) {
    SOUND — generative score (Web Audio), shared by live playback,
    WebM export and offline WAV rendering
    ===================================================================== */
-const PINGS = [1.2, 1.8, 4.6, 8.0, 11.2, 12.6, 13.4, 15.4, 19.6, 25.0, 31.3, 33.0, 36.4, 40.6, 41.4, 43.0, 44.0, 45.8, 46.6, 50.2, 50.65, 51.1, 51.55, 52.0, 52.45, 57.2, 59.4, 62.8, 64.2, 69.6, 70.4, 72.2, 73.0, 84.5];
-const WHOOSH = [[3.4, 3.4], [22.8, 1.6], [31.0, 2.4], [32.0, 1.6], [35.0, 1.6], [39.8, .9], [49.2, 1.0], [55.9, .9], [61.9, .9], [67.9, .9], [79.9, 3.0]];
-const CHORDS = [[0, [110, 164.81, 246.94, 277.18]], [10, [92.5, 138.59, 220, 329.63]], [24, [73.42, 110, 185, 277.18]], [40, [98, 146.83, 220, 293.66]], [50, [82.41, 123.47, 207.65, 311.13]], [56, [87.31, 130.81, 196, 329.63]], [68, [73.42, 110, 164.81, 277.18]], [80, [110, 164.81, 207.65, 277.18]]];
+const PINGS = [1.2, 1.8, 4.6, 8.0, 11.2, 12.4, 13.8, 15.4, 19.6, 23.0, 29.3, 31.4, 33.0, 34.4, 38.6, 39.4, 41.0, 43.8, 44.2, 46.0, 48.2, 48.7, 49.2, 49.7, 50.2, 50.7, 57.0, 59.4, 64.8, 66.4, 73.0, 74.2, 77.0, 79.2, 85.0, 86.0, 88.2, 90.6, 91.6, 97.6, 99.2, 100.4, 112.5];
+const WHOOSH = [[3.4, 3.4], [21.6, 1.0], [29.6, 1.2], [30.6, 1.6], [33.0, 1.6], [37.6, .9], [43.2, .8], [47.4, .9], [55.6, .9], [63.6, .9], [71.6, .9], [83.6, .9], [95.6, .9], [107.4, 3.0]];
+const CHORDS = [[0, [110, 164.81, 246.94, 277.18]], [10, [92.5, 138.59, 220, 329.63]], [22, [73.42, 110, 185, 277.18]], [38, [98, 146.83, 220, 293.66]], [48, [82.41, 123.47, 207.65, 311.13]], [56, [87.31, 130.81, 196, 329.63]], [72, [82.41, 123.47, 185, 277.18]], [84, [98, 146.83, 246.94, 293.66]], [96, [73.42, 110, 164.81, 277.18]], [108, [110, 164.81, 207.65, 277.18]]];
 const PING_NOTES = [1318.5, 1479.98, 1760, 1661.22, 2217.46];
 function noiseBuffer(ac, secs, seed) { const r = rng(seed), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); let p = 0; for (let i = 0; i < d.length; i++) { const w = r() * 2 - 1; p = .97 * p + .03 * w; d[i] = w * .5 + p * 3; } } return b; }
 function impulse(ac, secs) { const r = rng(99), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / d.length, 3.2); } return b; }
@@ -1039,14 +998,14 @@ function buildScore(ac, out, offset, offline) {
   const now = ac.currentTime + (offline ? 0 : .06), T = x => now + (x - offset), nodes = [];
   const valAt = (keys, x) => { if (x <= keys[0][0]) return keys[0][1]; for (let i = 1; i < keys.length; i++) if (x <= keys[i][0]) return lerp(keys[i - 1][1], keys[i][1], (x - keys[i - 1][0]) / (keys[i][0] - keys[i - 1][0])); return keys[keys.length - 1][1]; };
   const auto = (param, keys) => { param.setValueAtTime(valAt(keys, offset), now); for (const [k, v] of keys) if (k > offset) param.linearRampToValueAtTime(v, T(k)); };
-  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [88, .9], [89.9, 0]]);
+  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [116, .9], [117.9, 0]]);
   const comp = ac.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 3; comp.connect(master);
   const rev = ac.createConvolver(); rev.buffer = impulse(ac, 3.2); const revG = ac.createGain(); revG.gain.value = .45; rev.connect(revG); revG.connect(comp);
   const dry = ac.createGain(); dry.connect(comp);
   const send = ac.createGain(); send.gain.value = 1; send.connect(rev);
   // pad
-  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [10, 900], [24, 1300], [40, 900], [56, 1200], [68, 1400], [80, 1600], [90, 700]]);
-  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [84, .1], [89.5, 0]]);
+  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [10, 900], [22, 1300], [38, 900], [56, 1200], [72, 1000], [84, 1300], [96, 1400], [108, 1600], [118, 700]]);
+  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [112, .1], [117.5, 0]]);
   padLP.connect(padG); padG.connect(dry); padG.connect(send);
   const lfo = ac.createOscillator(); lfo.frequency.value = .07; const lfoG = ac.createGain(); lfoG.gain.value = 160; lfo.connect(lfoG); lfoG.connect(padLP.frequency); lfo.start(now); nodes.push(lfo);
   let ci = 0; for (let i = 0; i < CHORDS.length; i++) if (CHORDS[i][0] <= offset) ci = i;
@@ -1058,13 +1017,13 @@ function buildScore(ac, out, offset, offline) {
   // heart / data pulse
   const pulse = (time, gain, f = 56) => { if (time < offset) return; const t0 = T(time), o = ac.createOscillator(), g = ac.createGain(), lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220; o.frequency.setValueAtTime(f * 2.2, t0); o.frequency.exponentialRampToValueAtTime(f, t0 + .09); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + .006); g.gain.exponentialRampToValueAtTime(.0001, t0 + .5); o.connect(lp); lp.connect(g); g.connect(dry); o.start(t0); o.stop(t0 + .55); };
   for (const p of PITCHES) pulse(p.t0 + FLIGHT, .45, 70);
-  for (const [bt, gn, f] of [[31.0, .6, 120], [61.4, .35, 60]]) pulse(bt, gn, f);
-  for (let k = 0; ; k++) { const bt = 84.0 + k * BEAT; if (bt > 88.3) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
+  for (const [bt, gn, f] of [[29.0, .6, 120], [61.4, .35, 60]]) pulse(bt, gn, f);
+  for (let k = 0; ; k++) { const bt = 112.0 + k * BEAT; if (bt > 116.3) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
   // reveal pings (with a soft pulse underneath)
   PINGS.forEach((pt, i) => {
     if (pt < offset) return; const t0 = T(pt), f = PING_NOTES[i % PING_NOTES.length];
     for (const [mul, gv] of [[1, .045], [2, .012]]) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f * mul; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gv, t0 + .004); g.gain.exponentialRampToValueAtTime(.0001, t0 + .9); o.connect(g); g.connect(dry); g.connect(send); o.start(t0); o.stop(t0 + 1); }
-    if (pt > 10 && pt < 84) pulse(pt, .12, 70);
+    if (pt > 10 && pt < 112) pulse(pt, .12, 70);
   });
   // whooshes on layer peels / transitions
   const nb = noiseBuffer(ac, 4, 5);
@@ -1079,7 +1038,7 @@ function buildScore(ac, out, offset, offline) {
   const crowd = ac.createBufferSource(); crowd.buffer = noiseBuffer(ac, 6, 21); crowd.loop = true;
   const cb = ac.createBiquadFilter(); cb.type = 'bandpass'; cb.frequency.value = 850; cb.Q.value = .5;
   const cl = ac.createBiquadFilter(); cl.type = 'lowshelf'; cl.frequency.value = 300; cl.gain.value = 6;
-  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [30.8, 0], [31.4, .1], [33.2, .14], [35, .02], [56, .02], [61.4, .03], [62, .07], [63, .02], [80, .03], [84, .06], [87, .11], [88.6, .12], [89.9, 0]]);
+  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [28.8, 0], [29.4, .1], [31.2, .14], [33, .02], [56, .02], [61.4, .03], [62, .07], [63, .02], [72, .02], [73.2, .05], [77, .13], [83, .12], [84.6, .03], [108, .03], [112, .06], [115, .11], [116.6, .12], [117.9, 0]]);
   const am = ac.createOscillator(); am.frequency.value = .31; const amG = ac.createGain(); amG.gain.value = .012; am.connect(amG); amG.connect(cg.gain);
   crowd.connect(cb); cb.connect(cl); cl.connect(cg); cg.connect(dry); cg.connect(send); crowd.start(now); am.start(now); nodes.push(crowd, am);
   return { now, stop() { try { master.gain.cancelScheduledValues(ac.currentTime); master.gain.setTargetAtTime(0, ac.currentTime, .03); } catch (e) {} setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) {} }); master.disconnect(); }, 200); } };
@@ -1122,7 +1081,7 @@ function loop() {
   if (Math.abs(t - lastUi) > .03) {
     lastUi = t; $('sc').value = t.toFixed(2);
     const f = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-    $('tc').textContent = `${f(t)} / 01:30`;
+    $('tc').textContent = `${f(t)} / 01:58`;
     const ch = chapterAt(t); document.querySelectorAll('.chapters button').forEach(b => b.classList.toggle('on', b.dataset.n === ch.n));
   }
   requestAnimationFrame(loop);
@@ -1135,7 +1094,7 @@ if (EXPORT) {
   resize(); window.__ready = true;
 } else {
   CHAPTERS.forEach(ch => { const b = document.createElement('button'); b.type = 'button'; b.dataset.n = ch.n; b.innerHTML = `<b>${ch.n}</b>${ch.name}`; b.onclick = () => { $('start').classList.add('hidden'); seek(ch.t + .01); if (!playing) play(); }; $('chapters').appendChild(b); const tk = document.createElement('span'); tk.style.left = (ch.t / DUR * 100) + '%'; $('ticks').appendChild(tk); });
-  tHold = 48.0;
+  tHold = 86.0;
   resize(); window.addEventListener('resize', resize);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw(curT()));
   $('start').onclick = () => { $('start').classList.add('hidden'); tHold = 0; play(); };

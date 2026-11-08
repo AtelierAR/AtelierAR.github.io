@@ -36,7 +36,7 @@ Menú de Ejercicios:
 <br>
 [Anatomy of the Game Vol. II — Fútbol americano](Anatomy-NFL.md)
 <br>
-[Anatomy of the Game Vol. III — Béisbol](Anatomy-Baseball.md)
+[Anatomy of the Game Vol. III — Béisbol (4:5)](Anatomy-Baseball.md)
 <br>
 [Anatomy of the Game Vol. IV — Estadios de fútbol (4:5)](Anatomy-Stadia.md)
 <br>

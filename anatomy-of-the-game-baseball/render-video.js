@@ -14,11 +14,11 @@ const path = require('path');
 
 (async () => {
   const out = path.resolve(process.argv[2] || path.join(__dirname, 'anatomy-of-the-game-baseball.mp4'));
-  const fps = Number(process.argv[3] || 30), DUR = 90, N = Math.round(DUR * fps);
+  const fps = Number(process.argv[3] || 30), DUR = 118, N = Math.round(DUR * fps);
   const wav = out.replace(/\.mp4$/, '') + '.score.wav';
 
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: 1080, height: 1350 }, deviceScaleFactor: 1 });
   page.on('pageerror', e => console.error('page error:', e.message));
   await page.goto('file://' + path.join(__dirname, 'index.html') + '?export=1');
   await page.waitForFunction(() => window.__ready);
