@@ -34,6 +34,11 @@
   --l8: #6fae8d;
   --l9: #2f8f46;
   --l-exist: #a5acaf;
+  --l-main: #6f8c86;
+  --q-low: #c4cccb;
+  --q-ok: #9cc7b3;
+  --q-good: #4f9a78;
+  --q-best: #0f5a4a;
   --l-build: #8b9396;
 
   --m-base: #ffffff;
@@ -76,6 +81,11 @@
     --l8: #9ccdb2;
     --l9: #5cc46b;
     --l-exist: #8d9699;
+    --l-main: #8fa9a3;
+    --q-low: #4b5554;
+    --q-ok: #4f7a6a;
+    --q-good: #6cbb9b;
+    --q-best: #b7e3cf;
     --l-build: #6f797c;
     --m-base: #273133;
     --m-dark: #a5b1b2;
@@ -114,6 +124,11 @@
   --l8: #9ccdb2;
   --l9: #5cc46b;
   --l-exist: #8d9699;
+  --l-main: #8fa9a3;
+  --q-low: #4b5554;
+  --q-ok: #4f7a6a;
+  --q-good: #6cbb9b;
+  --q-best: #b7e3cf;
   --l-build: #6f797c;
   --m-base: #273133;
   --m-dark: #a5b1b2;
@@ -244,6 +259,61 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
 @keyframes introExit { from { transform: translateY(0); } to { transform: translateY(-110%); } }
 @keyframes introDraw { to { transform: scaleX(1); } }
 
+/* sightline study drawer */
+#study {
+  position: fixed; z-index: 6;
+  top: var(--study-top, 128px);
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  width: min(540px, calc(100vw - 32px));
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 14px 16px 16px;
+  display: grid; gap: 14px; align-content: start;
+  background: var(--panel-solid);
+}
+.study-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.study-head .k, .study-fig figcaption { font: 600 9.5px var(--font-narrow); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.study-head h2 { margin: 2px 0 0; font: 700 21px/1.1 var(--font-narrow); text-wrap: balance; }
+.study-note { margin: 0; color: var(--muted); font-size: 12px; max-width: 64ch; }
+.study-fig { margin: 0; display: grid; gap: 6px; min-width: 0; }
+.study-fig svg { display: block; width: 100%; height: auto; overflow: visible; }
+.readout { font: 500 11.5px/1.4 var(--font-mono); font-variant-numeric: tabular-nums; min-height: 2.8em; color: var(--ink); }
+.readout.idle { color: var(--muted); }
+.qkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11px; color: var(--muted); }
+.qkey span { display: inline-flex; align-items: center; gap: 5px; }
+.qkey i { width: 10px; height: 10px; border-radius: 2px; background: var(--sw); }
+.tbl-wrap { overflow-x: auto; min-width: 0; }
+#studyTable { border-collapse: collapse; width: 100%; font-size: 11.5px; }
+#studyTable th { font: 600 9.5px var(--font-narrow); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--rule); white-space: nowrap; vertical-align: bottom; }
+#studyTable td { padding: 5px 6px; border-bottom: 1px solid var(--rule); text-align: right; font: 500 11.5px var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+#studyTable th:first-child, #studyTable td:first-child { text-align: left; font-family: var(--font-ui); padding-left: 0; }
+#studyTable tr:last-child td { border-bottom: 0; }
+#studyBtn[aria-expanded="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.pf-tier { fill: none; stroke: var(--ink); stroke-width: 1.3; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.pf-ground { stroke: var(--ink); stroke-width: 1.3; vector-effect: non-scaling-stroke; }
+.pf-grade { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
+.pf-ray { stroke-width: 0.8; opacity: 0.5; vector-effect: non-scaling-stroke; }
+.pf-ray.on { stroke-width: 2.2; opacity: 1; stroke: var(--accent); }
+.pf-eye { fill: var(--ink); }
+.pf-eye.on { fill: var(--accent); }
+.pf-txt { fill: var(--ink); font: 700 6.2px var(--font-narrow); letter-spacing: 0.05em; text-transform: uppercase; paint-order: stroke; stroke: var(--panel-solid); stroke-width: 2.4px; stroke-linejoin: round; }
+.pf-sub { fill: var(--muted); font: 500 5px var(--font-mono); paint-order: stroke; stroke: var(--panel-solid); stroke-width: 2px; }
+.q-low { stroke: var(--q-low); fill: var(--q-low); }
+.q-ok { stroke: var(--q-ok); fill: var(--q-ok); }
+.q-good { stroke: var(--q-good); fill: var(--q-good); }
+.q-best { stroke: var(--q-best); fill: var(--q-best); }
+line.q-low, line.q-ok, line.q-good, line.q-best { fill: none; }
+.ch-grid { stroke: var(--rule); stroke-width: 1; }
+.ch-ref { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.55; }
+.ch-txt { fill: var(--muted); font: 500 9px var(--font-mono); }
+.ch-tier { fill: var(--ink); font: 700 9px var(--font-narrow); letter-spacing: 0.06em; text-transform: uppercase; }
+.ch-bar { stroke: none; }
+.ch-bar.on { fill: var(--accent); }
+.ch-hit { fill: transparent; cursor: crosshair; }
+.pf-player { fill: var(--accent); }
+.lv.ctx .n { border-style: dashed; color: var(--sw); border-color: var(--sw); }
+.lv.ctx { cursor: default; }
+
 #fail { position: fixed; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); }
 
 @media (max-width: 720px) {
@@ -257,6 +327,7 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
   #titleblock .name { border-bottom: 0; }
   #titleblock h1 { font-size: 14px; }
   .lbl span { display: none; }
+  #study { top: auto; left: max(16px, env(safe-area-inset-left, 0px)); width: auto; height: min(72vh, 640px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .lbl, .chip { transition: none; }
@@ -291,7 +362,7 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
       <input id="explode" type="range" min="0" max="1.5" step="0.01" value="1">
       <output id="explodeVal" class="tnum" for="explode">100%</output>
     </div>
-    <div class="grp"><button id="reset" type="button">Reset view</button></div>
+    <div class="grp"><button id="studyBtn" type="button" aria-expanded="false" aria-controls="study">Sightline study</button><button id="reset" type="button">Reset view</button></div>
   </header>
 
   <details id="stack" class="panel" open>
@@ -299,6 +370,7 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
     <ol id="levels" reversed></ol>
     <div class="keys">
       <span><i class="cut"></i>Section cut</span>
+      <span><i style="--sw: var(--l-main)"></i>Main concourse and lower club</span>
       <span><i style="--sw: var(--l-exist)"></i>Existing lower bowl, upper suites and upper bowl</span>
       <span><i style="--sw: var(--l-build)"></i>Structure, concourses, facade</span>
     </div>
@@ -331,6 +403,26 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
   <div class="intro-skip">Click or press any key to skip</div>
 </div>
 
+<section id="study" class="panel" hidden aria-labelledby="studyTitle">
+  <header class="study-head">
+    <div><span class="k">Analysis · drawing A-402</span><h2 id="studyTitle">Sightline study</h2></div>
+    <button id="studyClose" type="button">Close</button>
+  </header>
+  <p class="study-note">Point of focus: 4 ft inside the sideline, at the shoulders of a 6 ft 2 in player (5 ft ½ in above the field), so every row sees players from the shoulders up. Rows are set out with the C-value formula; seated eye height 3 ft 11 in.</p>
+  <figure class="study-fig">
+    <figcaption>Section profile · one ray per row</figcaption>
+    <div id="studyProfile"></div>
+  </figure>
+  <figure class="study-fig">
+    <figcaption>C-value by row, in inches</figcaption>
+    <div id="studyReadout" class="readout idle">Hover or tap a bar to trace that row’s sightline in the profile and the model.</div>
+    <div id="studyChart"></div>
+    <div class="qkey" id="studyKey"></div>
+  </figure>
+  <div class="tbl-wrap"><table id="studyTable"></table></div>
+  <p class="study-note">C-value is how far a sightline passes above the eye of the person in the row in front. Reference values: 2.4 in (60 mm) minimum, 3.5 in (90 mm) good, 4.7 in (120 mm) excellent. Far-corner distance runs from the back row to the opposite corner of the field, end zone included.</p>
+</section>
+
 <div id="card" hidden>
   <div class="cat" id="cardCat"></div>
   <h2 id="cardName"></h2>
@@ -360,7 +452,8 @@ if (!window.THREE) {
    ===================================================================== */
 const DEG = Math.PI / 180;
 const L = 150, HZ = L / 2;
-const FOCUS = { r: 80, y: 0 };          // near touchline (C-value point of focus)
+const PLAYER = { h: 74 / 12, shoulder: 74 * 0.818 / 12 };   // 6 ft 2 in player; shoulder ≈ 81.8% of stature
+const FOCUS = { r: 80 - 4, y: PLAYER.shoulder };            // point of focus: 4 ft inside the sideline, at shoulder height
 const GRADE = 4;                        // existing field / plaza level
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
@@ -494,10 +587,15 @@ const P = (() => {
   const FR = rakeTier({ r0: 119, y0: 8.7, rows: 4, T: 33 / 12, eyeH: 3.9, C: 0.3, guard: { r: 118.9, y: 8.7 + 2.6 }, minR: 1.2, maxR: 1.2 });
   const frL = FR[3];
   // existing lower bowl (sightlines measured over the new front rows)
-  const LB = rakeTier({ r0: 130, y0: 13.5, rows: 34, T: 33 / 12, eyeH: 3.9, C: 0.3, guard: { r: frL.eyeR, y: frL.eyeY }, minR: 0.6, maxR: 2.0 });
-  const lbEnd = LB[33].r + LB[33].T, lbTop = LB[33].y;
-  const xs = lbEnd + 4;                                  // suite glass line, behind a 4 ft cross-aisle
-  const LS = Math.round(lbTop + 2), PS = LS + 13;
+  const LB = rakeTier({ r0: 130, y0: 13.5, rows: 33, T: 33 / 12, eyeH: 3.9, C: 0.3, guard: { r: frL.eyeR, y: frL.eyeY }, minR: 0.6, maxR: 2.0 });
+  const lbEnd = LB[32].r + LB[32].T, lbTop = LB[32].y;
+  const MC = Math.round(lbTop + 2);                       // main concourse, with the lower club at its front
+  // lower club loges: raised on a stepped platform so they see over the back row of the bowl
+  const Lb = LB[32], logeEyeR = lbEnd + 1.2 + 5.25 * 0.65;
+  const logeY0 = Math.ceil(((Lb.eyeY - FOCUS.y + 0.3) * (logeEyeR - FOCUS.r) / (Lb.eyeR - FOCUS.r) + FOCUS.y - 3.9) * 4) / 4;
+  const LOGE = rakeTier({ r0: lbEnd + 1.2, y0: Math.max(MC, logeY0), rows: 2, T: 5.25, eyeH: 3.9, C: 0.3, eyeFrac: 0.65, guard: { r: Lb.eyeR, y: Lb.eyeY }, minR: 1.0, maxR: 3 });
+  const xs = lbEnd + 4;                                  // suite glass line
+  const LS = MC + 13, PS = LS + 13;
   const CM = rakeTier({ r0: xs - 1, y0: PS + 14.5, rows: 13, T: 3, eyeH: 3.9, C: 0.3, guard: { r: xs - 1.4, y: PS + 14.5 + 2.2 }, minR: 0.8, maxR: 2.6 });
   const cmEnd = CM[12].r + CM[12].T, cmTop = CM[12].y;
   const US = Math.round(cmTop + 1.5);
@@ -515,9 +613,9 @@ const P = (() => {
     if (x < canopy.x1 - 18) return cy - canopy.depth;
     return cy - lerp(canopy.depth, canopy.back + 0.6, clamp((x - (canopy.x1 - 18)) / 18));
   };
-  return { FR, LB, CM, UB, lbEnd, lbTop, xs, LS, PS, cmEnd, cmTop, US, UC, ubEnd, ubTop, xf, canopy };
+  return { FR, LB, LOGE, MC, CM, UB, lbEnd, lbTop, xs, LS, PS, cmEnd, cmTop, US, UC, ubEnd, ubTop, xf, canopy };
 })();
-const { FR, LB, CM, UB } = P;
+const { FR, LB, LOGE, CM, UB } = P;
 
 /* =====================================================================
    3. SEATS, TREADS, VOMITORIES
@@ -611,6 +709,12 @@ function partsField() {
         k.box("white", 9.25, 0.02, z, 2, 0.04, 0.33);
       }
       for (const z of [-40, -20, 0, 20, 40]) k.box("dark", 100, 0.9, z, 1.6, 1.8, 14);
+      // 6 ft 2 in player at the point of focus, near the cut
+      const px = FOCUS.r, pz = HZ - 5, H = PLAYER.h;
+      for (const dz of [-0.45, 0.45]) k.cyl("accent", px, 0, pz + dz, 0.28, 0.47 * H, 10);
+      k.box("accent", px, 0.47 * H + 0.17 * H, pz, 0.9, 0.34 * H, 1.7);
+      k.box("accent", px, PLAYER.shoulder - 0.15, pz, 1.0, 0.3, 2.2);
+      k.cyl("accent", px, 0.84 * H, pz, 0.42, 0.16 * H, 12);
     } }];
 }
 function partsFrontRows() {
@@ -723,31 +827,52 @@ function partsFieldSuites() {
 function partsLowerBowl() {
   return [
     { id: "lowerBowl", name: "Lower bowl (existing)",
-      info: { type: "Existing lower bowl on precast treads, four stepped aisles", cap: "", dims: `34 rows · 33 in tread · ${rakeOf(LB).toFixed(0)}° average rake` },
+      info: { type: "Existing lower bowl on precast treads, four stepped aisles", cap: "", dims: `33 existing rows + 4 new = 37 · 33 in tread · ${rakeOf(LB).toFixed(0)}° average rake` },
       build(k) {
         treads(k, LB, [LB_VOM], 0.7);
-        seatRows(k, LB.filter((r) => r.i < 30), [LB_VOM], "std");
-        k.rail("dark", P.lbEnd + 0.3, P.lbTop, 3.4, -HZ, HZ, 8);
-        k.slab("tint", P.lbEnd, P.xs, P.lbTop - 0.6, P.lbTop + 0.4);
+        seatRows(k, LB, [LB_VOM], "std");
+        k.slab("tint", LB[32].r + LB[32].T, P.lbEnd + 0.6, P.lbTop - 0.6, P.MC - 1.4);     // riser up to the concourse edge
       } },
-    { id: "loges", name: "Loge boxes",
-      info: { type: "Loge boxes on the back four rows of the lower bowl, swivel chairs and drink rails", cap: "", dims: "4-seat boxes · 2 rows each · about 8 ft wide" },
+  ];
+}
+function partsMainLevel() {
+  const MC = P.MC, x0 = P.lbEnd, ceil = P.LS - 1.4;
+  return [
+    { id: "mainConcourse", name: "Main concourse",
+      info: { type: "Main concourse slab at the top of the lower bowl", cap: "Concessions, restrooms, circulation", dims: `${Math.round(P.xf - x0)} ft deep · EL +${MC} ft · 13 ft to the lower suites` },
       build(k) {
-        const segs = segments(-HZ + 1, HZ - 1, AISLES.map((c) => [c, 2]));
-        for (const [r0, r1] of [[30, 31], [32, 33]]) {
-          const A = LB[r0], B = LB[r1], x0 = A.r, x1 = B.r + B.T;
-          for (const [a, b] of segs) {
-            const n = Math.max(1, Math.round((b - a) / 8)), w = (b - a) / n;
-            for (let j = 0; j <= n; j++) k.box("base", (x0 + x1) / 2, (A.y + B.y + 3.6) / 2, a + j * w, x1 - x0, B.y + 3.6 - A.y, 0.25);
-            for (let j = 0; j < n; j++) {
-              const zc = a + (j + 0.5) * w;
-              for (const row of [A, B]) {
-                k.box("base", row.r + 0.45, row.y + 3.3, zc, 0.9, 0.15, w - 0.6);
-                for (const dz of [-(w - 1.4) / 2, (w - 1.4) / 2]) k.box("dark", row.r + 0.45, row.y + 1.62, zc + dz, 0.12, 3.24, 0.12);
-                for (const dz of [-w / 4, w / 4]) swivel(k, row.r + row.T - 1.0, row.y, zc + dz);
-              }
+        k.slab("tint", x0, P.xf, MC - 1.4, MC);
+        for (const z of [-48, 8]) { k.box("base", x0 + 62, MC + 5, z, 12, 10, 18); k.box("accent", x0 + 55.4, MC + 1.75, z, 1.2, 3.5, 17); }
+      } },
+    { id: "lowerClub", name: "Lower club",
+      info: { type: "Lower club at the main concourse level: two rows of loge boxes and a lounge behind glass", cap: "", dims: "4-seat loge boxes · lounge 28 ft deep" },
+      build(k) {
+        const A = LOGE[0], B = LOGE[1];
+        for (const row of [A, B]) if (row.y > MC) k.slab("tint", row.r, row.r + row.T, MC, row.y);   // stepped loge platform
+        k.glassGuard(x0 + 0.7, MC, 2.6);
+        const segs = segments(-HZ + 1, HZ - 1, AISLES.map((c) => [c, 2.5]));
+        for (const [a, b] of segs) {
+          const n = Math.max(1, Math.round((b - a) / 8)), w = (b - a) / n;
+          for (let j = 0; j <= n; j++) k.box("base", (A.r + B.r + B.T) / 2, (MC + B.y + 3.6) / 2, a + j * w, B.r + B.T - A.r, B.y + 3.6 - MC, 0.25);
+          for (let j = 0; j < n; j++) {
+            const zc = a + (j + 0.5) * w;
+            for (const row of [A, B]) {
+              k.box("base", row.r + 0.5, row.y + 2.55, zc, 0.9, 0.15, w - 0.6);                 // drink rail at 2 ft 7 in
+              for (const dz of [-(w - 1.4) / 2, (w - 1.4) / 2]) k.box("dark", row.r + 0.5, row.y + 1.25, zc + dz, 0.12, 2.5, 0.12);
+              for (const dz of [-w / 4, w / 4]) swivel(k, row.r + row.T - 1.6, row.y, zc + dz);
             }
           }
+        }
+        // lounge behind glass
+        const g = x0 + 12.2;
+        k.slab("glass", g, g + 0.3, MC, ceil);
+        for (let z = -HZ; z <= HZ; z += 5) k.box("dark", g + 0.15, (MC + ceil) / 2, z, 0.3, ceil - MC, 0.22);
+        k.slab("base", g + 18, g + 21, MC, MC + 3.6, -50, 50);
+        k.slab("accent", g + 17.8, g + 21.2, MC + 3.6, MC + 3.85, -50, 50);
+        for (let z = -60; z <= 60; z += 15) for (const x of [g + 6, g + 12]) {
+          k.cyl("dark", x, MC, z, 0.12, 3.4); k.cyl("base", x, MC + 3.4, z, 1.3, 0.15);
+          k.cyl("seat", x + 1.8, MC + 2.4, z, 0.5, 0.2); k.cyl("dark", x + 1.8, MC, z, 0.08, 2.4);
+          k.cyl("seat", x - 1.8, MC + 2.4, z, 0.5, 0.2); k.cyl("dark", x - 1.8, MC, z, 0.08, 2.4);
         }
       } },
   ];
@@ -882,7 +1007,7 @@ function partsBuilding() {
       build(k) {
         const xc = P.xs + 30;
         for (let z = -HZ + 15; z < HZ; z += 30) {
-          const cols = [[160, -2, tierYAt(LB, 160) - 3.4], [196, -2, tierYAt(LB, 196) - 3.4], [P.lbEnd - 1, 0, P.LS - 1.4],
+          const cols = [[160, -2, tierYAt(LB, 160) - 3.4], [196, -2, tierYAt(LB, 196) - 3.4], [P.lbEnd - 1, 0, P.MC - 1.4],
             [xc, GRADE, Math.min(P.UC - 1.4, tierYAt(CM, xc) - 3.4)], [P.cmEnd + 27, GRADE, upSoffit(P.cmEnd + 27)], [xf - 3, GRADE, upSoffit(xf - 3)]];
           for (const [x, y0, y1] of cols) k.box("accent", x, (y0 + y1) / 2, z, 2.5, y1 - y0, 2.5);
           for (const [tier, d] of [[LB, 3], [CM, 2.5], [UB, 3.5]]) {
@@ -907,7 +1032,7 @@ function partsBuilding() {
     { id: "vcirc", name: "Stairs and escalators",
       info: { type: "Escalator bank near the facade", cap: "≈ 6,000 persons / hour per escalator", dims: "30° escalators · 13 ft rises" },
       build(k) {
-        const x = xf - 12, levels = [GRADE, P.LS, P.PS, P.US, P.UC];
+        const x = xf - 12, levels = [GRADE, P.MC, P.LS, P.PS, P.US, P.UC];
         for (let i = 0; i < levels.length - 1; i++) {
           const y0 = levels[i], y1 = levels[i + 1], run = (y1 - y0) / Math.tan(30 * DEG);
           const dir = i % 2 ? -1 : 1, zA = 38, zB = zA + dir * run;
@@ -925,7 +1050,7 @@ function partsBuilding() {
         const top = P.ubTop + 4;
         k.slab("glass", xf, xf + 0.3, GRADE, top);
         for (let z = -HZ; z <= HZ; z += 6) k.box("dark", xf + 1, (GRADE + top) / 2, z, 2, top - GRADE, 0.4);
-        for (const y of [P.LS, P.PS, P.US, P.UC]) k.slab("base", xf - 0.2, xf + 2.2, y - 1.4, y);
+        for (const y of [P.MC, P.LS, P.PS, P.US, P.UC]) k.slab("base", xf - 0.2, xf + 2.2, y - 1.4, y);
       } },
     { id: "plaza", name: "Plaza",
       info: { type: "Entry plaza at existing grade", cap: "Gate approach", dims: "Existing grade, 4 ft above the new field" },
@@ -948,6 +1073,7 @@ const LEVELS = [
 ];
 const CONTEXT = [
   { key: "lowerBowl", css: "--l-exist", title: "Lower bowl (existing)", parts: partsLowerBowl, offset: [0, 0, 0] },
+  { key: "mainLevel", css: "--l-main", title: "Main concourse and lower club", parts: partsMainLevel, offset: [30, 2, 0], anchor: [P.lbEnd + 8, P.MC + 4, HZ - 10] },
   { key: "upperSuites", css: "--l-exist", title: "Upper suites (existing)", parts: partsUpperSuites, offset: [44, 64, 0] },
   { key: "upperBowl", css: "--l-exist", title: "Upper bowl (existing)", parts: partsUpperBowl, offset: [0, 86, 0] },
   { key: "building", css: "--l-build", title: "Structure, concourses & facade", parts: partsBuilding, offset: [96, 0, 0] },
@@ -1103,7 +1229,7 @@ document.getElementById("tbPV").textContent = `≈ ${kW} kW`;
 /* descriptions for the stack, computed from the model */
 const DESC = {
   field: "Turf, sideline and team area drop 4 ft, freeing headroom for field suites and the new front rows.",
-  frontRows: `Four new 33 in rows step down toward the field, ${fmt(G.frontRows.seats)} seats in this section.`,
+  frontRows: `Four new 33 in rows step down toward the field (37 rows in all), ${fmt(G.frontRows.seats)} seats in this section.`,
   vomStairs: "Four new vomitories on the stepped aisles open at the new fourth row, run four rows deep and drop by stair into the field club.",
   fieldSuites: `${G.fieldSuites.suites} sunken field suites behind glass, and a field club under the lower bowl.`,
   lowerSuites: "Lower suites renovated; new suites added at the southwest corner.",
@@ -1189,14 +1315,18 @@ const user = { daz: 0, del: 0, zoom: 1, pan: new THREE.Vector3() };
 const camState = { tgt: new THREE.Vector3(205, 100, 0), size: 400 };
 let viewH = 400;
 const stackEl = document.getElementById("stack");
+const studyEl = document.getElementById("study");
+let studyOpen = false, studyMix = 0;
 function updateCamera(t, dt) {
   const c = camAt(t);
   const iz = reduceMotion ? 1 : introCam.start === null ? 0 : ease(clamp((performance.now() - introCam.start - 200) / 1900));
-  const az = (c.az + user.daz - 30 * (1 - iz)) * DEG, el = clamp(c.el + user.del + 10 * (1 - iz), 2, 88) * DEG;
+  studyMix += ((studyOpen ? 1 : 0) - studyMix) * (1 - Math.exp(-dt * 3));
+  const az = (lerp(c.az, 90, studyMix) + user.daz - 30 * (1 - iz)) * DEG, el = clamp(lerp(c.el, 3, studyMix) + user.del + 10 * (1 - iz), 2, 88) * DEG;
   const eG = explodeAt(t, 0.5) * state.amount;
   const s = activeStep(t);
   let tx = 205 - 10 * eG, ty = 100 + 80 * eG, size = lerp(400, 760, eG);
   if (s >= 0) { const f = LEVELS[s].focus; tx = lerp(205, f[0], 0.45); ty = lerp(100, f[1], 0.45); size = 320; }
+  if (studyOpen) { tx = 205; ty = 104; size = 350; }
   const k = 1 - Math.exp(-dt * 2.2);
   camState.tgt.x += (tx - camState.tgt.x) * k; camState.tgt.y += (ty - camState.tgt.y) * k; camState.size += (size - camState.size) * k;
   const target = camState.tgt.clone().add(user.pan);
@@ -1208,7 +1338,8 @@ function updateCamera(t, dt) {
   if (aspect < 1.25) base *= lerp(1, 2.1, clamp((1.25 - aspect) / 0.8));
   viewH = base * lerp(0.62, 1, iz) / user.zoom;
   const stackW = w > 900 && stackEl.open ? stackEl.offsetWidth + 16 : 0;
-  const shiftW = -(stackW / 2) * viewH / h;
+  const studyW = w > 900 && studyOpen ? studyEl.offsetWidth + 16 : 0;
+  const shiftW = ((studyW - stackW) / 2) * viewH / h;
   camera.top = viewH / 2; camera.bottom = -viewH / 2;
   camera.left = -viewH * aspect / 2 + shiftW; camera.right = viewH * aspect / 2 + shiftW;
   camera.updateProjectionMatrix(); camera.updateMatrixWorld();
@@ -1219,10 +1350,15 @@ function updateCamera(t, dt) {
    ===================================================================== */
 const labelsEl = document.getElementById("labels"), leadersEl = document.getElementById("leaders");
 const SVGNS = "http://www.w3.org/2000/svg";
-for (const lv of LEVELS) {
+G.mainLevel.elev = `EL +${P.MC} ft`;
+G.mainLevel.desc = "Main concourse slab at the top of the lower bowl, with the lower club: loge boxes and a lounge behind glass.";
+const CALLOUTS = [...LEVELS.slice(0, 4), G.mainLevel, ...LEVELS.slice(4)];
+LEVELS.forEach((lv, i) => { lv.from = stepStart(i) + 0.4; });
+G.mainLevel.from = stepStart(4) + 0.4;
+for (const lv of CALLOUTS) {
   const d = document.createElement("div");
   d.className = "lbl"; d.style.setProperty("--sw", `var(${lv.css})`);
-  d.innerHTML = `<b><small>0${lv.n}</small>${lv.title}</b><span>${lv.elev}</span>`;
+  d.innerHTML = `<b><small>${lv.n ? "0" + lv.n : "··"}</small>${lv.title}</b><span>${lv.elev}</span>`;
   labelsEl.appendChild(d);
   const g = document.createElementNS(SVGNS, "g");
   const ln = document.createElementNS(SVGNS, "polyline"); ln.setAttribute("fill", "none"); ln.setAttribute("stroke-width", "1"); ln.style.stroke = "var(--ink)";
@@ -1238,10 +1374,10 @@ function toScreen(v) { _p.copy(v).project(camera); return { x: (_p.x + 1) / 2 * 
 function updateLabels(t) {
   const W = canvas.clientWidth, H = canvas.clientHeight, s = activeStep(t);
   const items = [];
-  LEVELS.forEach((lv, i) => {
-    const Lb = lv.lbl;
-    const vis = catVisible[lv.key] && t >= stepStart(i) + 0.4 && t < T_EXP + 8.6;
-    Lb.el.classList.toggle("show", vis); Lb.el.classList.toggle("on", s === i);
+  CALLOUTS.forEach((lv) => {
+    const Lb = lv.lbl, i = LEVELS.indexOf(lv);
+    const vis = !studyOpen && catVisible[lv.key] && t >= lv.from && t < T_EXP + 8.6;
+    Lb.el.classList.toggle("show", vis); Lb.el.classList.toggle("on", i >= 0 && s === i);
     Lb.g.style.opacity = vis ? 1 : 0;
     if (!vis) return;
     if (!Lb.w) { Lb.w = Lb.el.offsetWidth; Lb.h = Lb.el.offsetHeight; }
@@ -1302,6 +1438,14 @@ for (const g of GROUPS) catVisible[g.key] = true;
 const levelsEl = document.getElementById("levels");
 let hoverLevel = null;
 for (let i = LEVELS.length - 1; i >= 0; i--) {                 // top of the list = top of the building
+  if (i === 3) {
+    const m = G.mainLevel, li = document.createElement("li");
+    li.className = "lv ctx"; li.style.setProperty("--sw", `var(${m.css})`);
+    li.innerHTML = `<span class="n">–</span><div><div class="t">${m.title}</div><div class="d">${m.desc}</div><div class="el">${m.elev} · level</div></div>`;
+    li.addEventListener("pointerenter", () => { hoverLevel = m.key; });
+    li.addEventListener("pointerleave", () => { hoverLevel = null; });
+    levelsEl.appendChild(li);
+  }
   const lv = LEVELS[i];
   const li = document.createElement("li");
   li.className = "lv"; li.tabIndex = 0; li.style.setProperty("--sw", `var(${lv.css})`);
@@ -1388,6 +1532,136 @@ canvas.addEventListener("pointerup", endDrag); canvas.addEventListener("pointerc
 canvas.addEventListener("pointerleave", () => { if (!drag) { mouse = null; hovered = null; card.hidden = true; } });
 canvas.addEventListener("wheel", (e) => { e.preventDefault(); user.zoom = clamp(user.zoom * Math.exp(-e.deltaY * 0.0012), 0.4, 5); }, { passive: false });
 
+
+/* =====================================================================
+   11b. SIGHTLINE STUDY — point of focus 4 ft inside the sideline at the
+   shoulders of a 6 ft 2 in player; profile, C-value chart, tier schedule
+   ===================================================================== */
+const TIERS = [
+  { name: "New front rows", short: "Front", rows: FR },
+  { name: "Lower bowl", short: "Lower", rows: LB },
+  { name: "Lower club loges", short: "Loge", rows: LOGE },
+  { name: "Club mid bowl", short: "Club", rows: CM },
+  { name: "Upper bowl", short: "Upper", rows: UB },
+];
+const STUDY = [];
+for (const tr of TIERS) for (const row of tr.rows) {
+  const D = row.eyeR - FOCUS.r, E = row.eyeY - FOCUS.y;
+  STUDY.push({ tier: tr, row, label: `${tr.short} R${row.i + 1}`, D, E, cIn: row.C * 12,
+    rake: row.i > 0 ? Math.atan(row.riser / row.T) / DEG : null, dep: Math.atan(E / D) / DEG,
+    far: Math.hypot(row.eyeR + 80, 180, row.eyeY) });
+}
+const qClass = (c) => (c < 2.4 ? "q-low" : c < 3.5 ? "q-ok" : c < 4.7 ? "q-good" : "q-best");
+const RAY_Z = HZ + 0.6;
+const focusV = new THREE.Vector3(FOCUS.r, FOCUS.y, RAY_Z);
+const STUDY_RAY = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.28, depthTest: false });
+const STUDY_HL = new THREE.LineBasicMaterial({ transparent: true, opacity: 1, depthTest: false });
+const studyRays = (() => {
+  const pts = [];
+  for (const st of STUDY) pts.push(new THREE.Vector3(st.row.eyeR, st.row.eyeY, RAY_Z), focusV.clone());
+  const ls = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), STUDY_RAY);
+  ls.renderOrder = 11; ls.visible = false; scene.add(ls); return ls;
+})();
+const studyHL = new THREE.Line(new THREE.BufferGeometry().setFromPoints([focusV.clone(), focusV.clone()]), STUDY_HL);
+studyHL.renderOrder = 12; studyHL.visible = false; scene.add(studyHL);
+function studyTheme() { STUDY_RAY.color.set(cssVar("--ink") || "#142024"); STUDY_HL.color.set(cssVar("--accent") || "#004c54"); }
+
+function buildProfileSVG() {
+  const last = UB[UB.length - 1];
+  const rMin = 60, rMax = P.ubEnd + 26, yTop = last.eyeY + 12, yBot = -10;
+  const X = (r) => (r - rMin).toFixed(2), Y = (y) => (yTop - y).toFixed(2);
+  const W = rMax - rMin, H = yTop - yBot;
+  let o = `<svg viewBox="0 0 ${W.toFixed(1)} ${H.toFixed(1)}" role="img" aria-label="Section profile with a sightline from every row to the point of focus">`;
+  o += `<line class="pf-ground" x1="0" y1="${Y(0)}" x2="${X(118)}" y2="${Y(0)}"/>`;
+  o += `<line class="pf-grade" x1="${X(80)}" y1="${Y(-3)}" x2="${X(80)}" y2="${Y(3)}"/>`;
+  o += `<text class="pf-sub" x="${X(80) - 0}" y="${(yTop + 7).toFixed(1)}" text-anchor="middle">sideline</text>`;
+  STUDY.forEach((st, i) => { o += `<line class="pf-ray ${qClass(st.cIn)}" data-i="${i}" x1="${X(st.row.eyeR)}" y1="${Y(st.row.eyeY)}" x2="${X(FOCUS.r)}" y2="${Y(FOCUS.y)}"/>`; });
+  for (const tr of TIERS) {
+    let d = "";
+    tr.rows.forEach((row, i) => {
+      const next = i < tr.rows.length - 1 ? tr.rows[i + 1].r : row.r + row.T;
+      const yPrev = i ? tr.rows[i - 1].y : row.y - 1.5;
+      d += `${i ? "L" : "M"}${X(row.r)} ${Y(yPrev)} L${X(row.r)} ${Y(row.y)} L${X(next)} ${Y(row.y)} `;
+    });
+    o += `<path class="pf-tier" d="${d}"/>`;
+    const lr = tr.rows[tr.rows.length - 1];
+    const below = tr.short === "Lower";                       // keep clear of the loge label just above
+    o += `<text class="pf-txt" x="${(lr.r + lr.T - rMin + (below ? -1 : 2)).toFixed(1)}" y="${(yTop - lr.y + (below ? 8 : 2)).toFixed(1)}"${below ? ' text-anchor="end"' : ""}>${tr.short}</text>`;
+  }
+  STUDY.forEach((st, i) => { o += `<circle class="pf-eye" data-i="${i}" cx="${X(st.row.eyeR)}" cy="${Y(st.row.eyeY)}" r="0.8"/>`; });
+  // 6 ft 2 in player at the point of focus
+  const px = FOCUS.r, ph = PLAYER.h;
+  o += `<g class="pf-player"><circle cx="${X(px)}" cy="${Y(ph - 0.45)}" r="0.45"/><rect x="${(px - rMin - 0.5).toFixed(2)}" y="${Y(ph - 0.9)}" width="1" height="${(ph * 0.4).toFixed(2)}"/>` +
+    `<rect x="${(px - rMin - 0.45).toFixed(2)}" y="${Y(ph * 0.47)}" width="0.35" height="${(ph * 0.47).toFixed(2)}"/><rect x="${(px - rMin + 0.1).toFixed(2)}" y="${Y(ph * 0.47)}" width="0.35" height="${(ph * 0.47).toFixed(2)}"/></g>`;
+  o += `<circle cx="${X(FOCUS.r)}" cy="${Y(FOCUS.y)}" r="1.1" fill="var(--accent)"/>`;
+  o += `<text class="pf-txt" x="${X(FOCUS.r) - 2}" y="${Y(FOCUS.y + 9)}" text-anchor="end">Focus</text>`;
+  return o + "</svg>";
+}
+function buildChartSVG() {
+  const W = 520, H = 196, x0 = 30, x1 = W - 76, yT = 10, yB = 150, cMax = 12;
+  const n = STUDY.length, bw = (x1 - x0) / n;
+  const Y = (c) => (yB - clamp(c, 0, cMax) / cMax * (yB - yT)).toFixed(1);
+  let o = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar chart of C-value for every row">`;
+  for (let c = 0; c <= cMax; c += 3) o += `<line class="ch-grid" x1="${x0}" x2="${x1}" y1="${Y(c)}" y2="${Y(c)}"/><text class="ch-txt" x="${x0 - 5}" y="${(+Y(c) + 3).toFixed(1)}" text-anchor="end">${c}</text>`;
+  STUDY.forEach((st, i) => { const x = x0 + i * bw; o += `<rect class="ch-bar ${qClass(st.cIn)}" data-i="${i}" x="${(x + 0.5).toFixed(1)}" y="${Y(st.cIn)}" width="${Math.max(1, bw - 1).toFixed(1)}" height="${(yB - +Y(st.cIn)).toFixed(1)}"/>`; });
+  for (const [v, name] of [[2.4, "min"], [3.5, "good"], [4.7, "excellent"]]) o += `<line class="ch-ref" x1="${x0}" x2="${x1}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ch-txt" x="${x1 + 4}" y="${(+Y(v) + 3).toFixed(1)}">${v} ${name}</text>`;
+  let k = 0, alt = 0;
+  for (const tr of TIERS) {
+    const a = x0 + k * bw, b = a + tr.rows.length * bw;
+    if (k) o += `<line class="ch-grid" x1="${a.toFixed(1)}" x2="${a.toFixed(1)}" y1="${yT}" y2="${yB + 6}"/>`;
+    const small = tr.rows.length < 7;
+    o += `<text class="ch-tier" x="${((a + b) / 2).toFixed(1)}" y="${yB + 16 + (small ? 12 * (alt++ % 2) : 0)}" text-anchor="middle">${tr.short}</text>`;
+    k += tr.rows.length;
+  }
+  STUDY.forEach((st, i) => { o += `<rect class="ch-hit" data-i="${i}" x="${(x0 + i * bw).toFixed(1)}" y="${yT}" width="${bw.toFixed(2)}" height="${yB - yT}"/>`; });
+  return o + "</svg>";
+}
+function buildStudyTable() {
+  let o = "<thead><tr><th>Tier</th><th>Rows</th><th>Tread</th><th>Rake</th><th>C min</th><th>C avg</th><th>Back row<br>to focus</th><th>Back row to<br>far corner</th></tr></thead><tbody>";
+  for (const tr of TIERS) {
+    const sts = STUDY.filter((x) => x.tier === tr), rk = sts.map((x) => x.rake).filter((v) => v !== null), cs = sts.map((x) => x.cIn), back = sts[sts.length - 1];
+    const lo = Math.round(Math.min(...rk)), hi = Math.round(Math.max(...rk));
+    o += `<tr><td>${tr.name}</td><td>${tr.rows.length}</td><td>${Math.round(tr.rows[0].T * 12)} in</td><td>${rk.length ? (lo === hi ? `${lo}°` : `${lo}–${hi}°`) : "—"}</td>` +
+      `<td>${Math.min(...cs).toFixed(1)} in</td><td>${(cs.reduce((a, b) => a + b, 0) / cs.length).toFixed(1)} in</td><td>${Math.round(back.D)} ft</td><td>${Math.round(back.far)} ft</td></tr>`;
+  }
+  return o + "</tbody>";
+}
+const studyBtn = document.getElementById("studyBtn"), readout = document.getElementById("studyReadout");
+document.getElementById("studyProfile").innerHTML = buildProfileSVG();
+document.getElementById("studyChart").innerHTML = buildChartSVG();
+document.getElementById("studyTable").innerHTML = buildStudyTable();
+document.getElementById("studyKey").innerHTML = [["q-low", "< 2.4 in"], ["q-ok", "2.4–3.5 in"], ["q-good", "3.5–4.7 in"], ["q-best", "≥ 4.7 in"]].map(([q, t]) => `<span><i style="--sw: var(--${q})"></i>${t}</span>`).join("");
+const defaultReadout = readout.textContent;
+let studySel = -1;
+function selectStudyRow(i) {
+  if (i === studySel) return;
+  studyEl.querySelectorAll(".on").forEach((el) => el.classList.remove("on"));
+  studySel = i;
+  if (i < 0) { readout.textContent = defaultReadout; readout.classList.add("idle"); studyHL.visible = false; return; }
+  studyEl.querySelectorAll(`[data-i="${i}"]`).forEach((el) => el.classList.add("on"));
+  const ray = studyEl.querySelector(`.pf-ray[data-i="${i}"]`); if (ray) ray.parentNode.appendChild(ray);
+  const st = STUDY[i];
+  readout.classList.remove("idle");
+  readout.textContent = `${st.label} · C ${st.cIn.toFixed(1)} in · ${Math.round(st.D)} ft to focus, ${st.dep.toFixed(1)}° down` + (st.rake !== null ? ` · riser ${(st.row.riser * 12).toFixed(1)} in, ${st.rake.toFixed(1)}° rake` : "");
+  const pos = studyHL.geometry.attributes.position; pos.setXYZ(0, st.row.eyeR, st.row.eyeY, RAY_Z); pos.needsUpdate = true;
+  studyHL.visible = studyOpen;
+}
+const chartEl = document.getElementById("studyChart");
+chartEl.addEventListener("pointermove", (e) => { const i = e.target.dataset && e.target.dataset.i; if (i !== undefined) selectStudyRow(+i); });
+chartEl.addEventListener("pointerdown", (e) => { const i = e.target.dataset && e.target.dataset.i; if (i !== undefined) selectStudyRow(+i); });
+chartEl.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") selectStudyRow(-1); });
+let stackWasOpen = true;
+function placeStudy() { rootEl.style.setProperty("--study-top", `${Math.round(document.getElementById("bar").getBoundingClientRect().bottom + 8)}px`); }
+function setStudy(open) {
+  studyOpen = open; studyEl.hidden = !open; studyBtn.setAttribute("aria-expanded", String(open)); studyRays.visible = open;
+  if (open) { placeStudy(); setPlaying(false); state.t = 1.0; studyEl.scrollTop = 0; stackWasOpen = stackEl.open; stackEl.open = false; }
+  else { selectStudyRow(-1); if (stackWasOpen) stackEl.open = true; }
+  studyHL.visible = open && studySel >= 0;
+}
+studyBtn.addEventListener("click", () => setStudy(!studyOpen));
+document.getElementById("studyClose").addEventListener("click", () => { setStudy(false); studyBtn.focus(); });
+window.addEventListener("keydown", (e) => { if (e.key === "Escape" && studyOpen) setStudy(false); });
+
 /* =====================================================================
    12. INTRO — "The Nest"
    ===================================================================== */
@@ -1416,12 +1690,14 @@ setTimeout(endIntro, reduceMotion ? 1000 : 3300);
 const mq = window.matchMedia("(prefers-color-scheme: dark)");
 (mq.addEventListener ? mq.addEventListener("change", applyTheme) : mq.addListener(applyTheme));
 new MutationObserver(applyTheme).observe(rootEl, { attributes: true, attributeFilter: ["data-theme", "class", "style"] });
-applyTheme();
+applyTheme(); studyTheme();
+mq.addEventListener && mq.addEventListener("change", studyTheme);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { for (const nm of numberMats) nm.redraw(); });
 function resize() {
   const w = window.innerWidth, h = window.innerHeight;
   renderer.setSize(w, h, false); leadersEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
-  for (const lv of LEVELS) lv.lbl.w = 0;
+  for (const lv of CALLOUTS) lv.lbl.w = 0;
+  if (studyOpen) placeStudy();
 }
 window.addEventListener("resize", resize); resize();
 
@@ -1450,7 +1726,7 @@ function tick(now) {
   requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
-window.THE_NEST = { P, PARTS, LEVELS, state, user, renderer, SEATS, PANELS };
+window.THE_NEST = { P, PARTS, LEVELS, state, user, renderer, SEATS, PANELS, STUDY, FOCUS, PLAYER };
 })();
 </script>
 </body>
