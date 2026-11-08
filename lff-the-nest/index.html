@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LFF The Nest West Section</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Interactive section study of the west stand: field lowered 4 ft, field suites and clubs, suites, club mid bowl, reduced upper bowl with terraces, and a solar canopy.">
+<meta name="description" content="Interactive section study of the west stand: field lowered 4 ft, field suites and clubs, suites, club mid bowl and a solar canopy.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -280,10 +280,10 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
     </div>
     <div class="grp scrub-grp">
       <div class="scrub-wrap">
-        <input id="scrub" type="range" min="0" max="48.5" step="0.01" value="0" aria-label="Timeline position in seconds">
+        <input id="scrub" type="range" min="0" max="45" step="0.01" value="0" aria-label="Timeline position in seconds">
         <div class="phases" id="phases"></div>
       </div>
-      <output id="time" class="tnum" for="scrub">00.0 / 48.5 s</output>
+      <output id="time" class="tnum" for="scrub">00.0 / 45 s</output>
       <span id="phase">Proposed</span>
     </div>
     <div class="grp explode-grp">
@@ -299,7 +299,7 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
     <ol id="levels" reversed></ol>
     <div class="keys">
       <span><i class="cut"></i>Section cut</span>
-      <span><i style="--sw: var(--l-exist)"></i>Existing lower bowl and upper suites</span>
+      <span><i style="--sw: var(--l-exist)"></i>Existing lower bowl, upper suites and upper bowl</span>
       <span><i style="--sw: var(--l-build)"></i>Structure, concourses, facade</span>
     </div>
   </details>
@@ -326,7 +326,7 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
     <div class="intro-kicker"><span>West section</span><span>LFF</span></div>
     <h2 class="intro-word" id="introWord"></h2>
     <div class="intro-rule"></div>
-    <div class="intro-meta"><span>Field lowered 4 ft</span><span>Field suites &amp; clubs</span><span>Terraces</span><span>Solar canopy</span></div>
+    <div class="intro-meta"><span>Field lowered 4 ft</span><span>Field suites &amp; clubs</span><span>Solar canopy</span></div>
   </div>
   <div class="intro-skip">Click or press any key to skip</div>
 </div>
@@ -502,15 +502,12 @@ const P = (() => {
   const cmEnd = CM[12].r + CM[12].T, cmTop = CM[12].y;
   const US = Math.round(cmTop + 1.5);
   const uT = 32 / 12;
-  // existing upper bowl: 28 rows; the proposal keeps 20 and turns the back into a terrace
-  const UBall = rakeTier({ r0: cmEnd + 1, y0: US + 14, rows: 28, T: uT, eyeH: 3.9, C: 0.22, guard: { r: cmEnd + 0.6, y: US + 14 + 2.2 }, minR: uT * Math.tan(30 * DEG), maxR: uT * Math.tan(40 * DEG) });
-  const UB = UBall.slice(0, 20), UBx = UBall.slice(20);
-  const ubEnd = UB[19].r + uT, ubTop = UB[19].y;
-  const ubEndOld = UBall[27].r + uT;
-  const xf = ubEndOld + 4;                                // facade line (unchanged footprint)
+  // existing upper bowl, 28 rows (no change in this proposal)
+  const UB = rakeTier({ r0: cmEnd + 1, y0: US + 14, rows: 28, T: uT, eyeH: 3.9, C: 0.22, guard: { r: cmEnd + 0.6, y: US + 14 + 2.2 }, minR: uT * Math.tan(30 * DEG), maxR: uT * Math.tan(40 * DEG) });
+  const ubEnd = UB[27].r + uT, ubTop = UB[27].y;
+  const xf = ubEnd + 4;                                   // facade line
   const UC = US + 13;                                     // upper concourse
-  const terrY = ubTop + 0.6;                              // terrace deck on the removed rows
-  const cy = Math.round(ubTop + 36);
+  const cy = Math.round(ubTop + 26);
   const canopy = { x0: 168, x1: xf + 16, y: cy, deck: 0.8, depth: 7, back: 12 };
   canopy.soffitAt = (x) => {
     // underside line: thin at the leading edge, 7 ft deep from 40 ft back, turned down at the rear
@@ -518,15 +515,16 @@ const P = (() => {
     if (x < canopy.x1 - 18) return cy - canopy.depth;
     return cy - lerp(canopy.depth, canopy.back + 0.6, clamp((x - (canopy.x1 - 18)) / 18));
   };
-  return { FR, LB, CM, UB, UBx, UBall, lbEnd, lbTop, xs, LS, PS, cmEnd, cmTop, US, UC, ubEnd, ubTop, ubEndOld, xf, terrY, canopy };
+  return { FR, LB, CM, UB, lbEnd, lbTop, xs, LS, PS, cmEnd, cmTop, US, UC, ubEnd, ubTop, xf, canopy };
 })();
-const { FR, LB, CM, UB, UBx } = P;
+const { FR, LB, CM, UB } = P;
 
 /* =====================================================================
    3. SEATS, TREADS, VOMITORIES
    ===================================================================== */
-const VOM_OLD = { voms: [-52, -17, 17, 52], rows: [13, 18], half: 4, aisle: true };
-const VOM_NEW = { voms: [-34.5, 34.5], rows: [4, 9], half: 3.5, aisle: false };
+const AISLES = [-52, -17, 17, 52];                                        // stepped aisles in the lower bowl
+const LB_VOM = { voms: AISLES, rows: [0, 2], half: 3.5, aisle: true };   // existing rows 1–3 opened by the new vomitories
+const FR_VOM = { voms: AISLES, rows: [3, 3], half: 3.5, aisle: true };   // …and the new fourth row
 const inRows = (row, set) => row.i >= set.rows[0] && row.i <= set.rows[1];
 function gapsFor(row, sets, seat) {
   const g = [];
@@ -561,7 +559,18 @@ function treads(k, tier, sets, first = 2) {
   for (let i = 0; i < tier.length; i++) {
     const prof = treadProfile(tier, i, first);
     for (const [a, b] of segments(-HZ, HZ, gapsFor(tier[i], sets, false))) k.ext("tint", prof, a, b);
+    // intermediate aisle step halfway up each riser
+    if (i > 0 && tier[i].riser > 0.9) for (const s of sets) if (s.aisle) for (const c of s.voms) {
+      if (inRows(tier[i], s) || inRows(tier[i - 1], s)) continue;
+      const pr = tier[i - 1], h = tier[i].riser / 2;
+      k.box("tint", tier[i].r - pr.T / 4, pr.y + h / 2, c, pr.T / 2, h, 4);
+    }
   }
+}
+function swivel(k, x, y, z) {
+  k.cyl("dark", x, y, z, 0.5, 0.08); k.cyl("dark", x, y + 0.08, z, 0.09, 1.0);
+  k.cyl("seat", x, y + 1.08, z, 0.75, 0.28); k.box("seat", x + 0.62, y + 1.85, z, 0.24, 1.2, 1.3);
+  k.seats++;
 }
 /* vomitory portals with a short level tunnel under the rows behind */
 function vomPortals(k, tier, set, tunnel) {
@@ -609,8 +618,8 @@ function partsFrontRows() {
     { id: "frontRows", mode: "grow", name: "New front rows",
       info: { type: "Four new rows on precast treads, glass guard at the field wall", cap: "", dims: "4 rows · 33 in tread · 14 in risers" },
       build(k) {
-        treads(k, FR, [], 0.6);
-        seatRows(k, FR, [], "std");
+        treads(k, FR, [FR_VOM], 0.6);
+        seatRows(k, FR, [FR_VOM], "std");
         k.glassGuard(119.1, FR[0].y, 2.6);
         k.slab("tint", FR[3].r + FR[3].T, LB[0].r, FR[3].y - 0.6, FR[3].y);       // closer to the existing first row
       } },
@@ -620,68 +629,81 @@ function partsFrontRows() {
   ];
 }
 function partsVomStairs() {
-  const S = VOM_NEW;
+  const half = 3.5, PR = [FR[3], LB[0], LB[1], LB[2]];
+  const ceilAt = (x) => { for (const row of PR) if (x >= row.r && x < row.r + row.T) return row.y + 3.2; return tierYAt(LB, x) - 0.6; };
+  const fill = (k, tier, rows, first) => {
+    for (const row of rows) {
+      const prof = treadProfile(tier, row.i, first);
+      for (const c of AISLES) {
+        k.ext("tint", prof, c - half - 0.5, c + half + 0.5);
+        for (const [a, b] of [[c - half - 1, c - 2], [c + 2, c + half + 1]]) seatStrip(k, row.r + row.T - 0.55, row.y, a, b);
+      }
+    }
+  };
   return [
-    { id: "vomStairs", mode: "grow", name: "Vomitory stairs to the field club",
-      info: { type: "Two new vomitories with stairs down to the field club", cap: "≈ 600 persons per stair at egress width", dims: "7 ft wide · 31 risers to the club floor" },
+    { id: "vomStairs", mode: "grow", name: "Vomitories to the field club",
+      info: { type: "Four new vomitories on the stepped aisles: they open at the new fourth row, run four rows deep and drop by stair into the field club", cap: "≈ 600 persons per vomitory at egress width", dims: "7 ft wide · 4-row portal · 24 risers to the club floor" },
       build(k) {
-        const a = LB[S.rows[0]], floor = -2;
-        const rise = a.y - floor, n = Math.ceil(rise / 0.6), h = rise / n, tr = 0.92, x0 = a.r + 0.5;
-        for (const c of S.voms) {
+        const top = FR[3].y, floor = -2, x0 = FR[3].r + 0.6;
+        const n = Math.ceil((top - floor) / 0.6), h = (top - floor) / n, tr = 0.92;
+        for (const c of AISLES) {
+          k.slab("tint", FR[3].r, x0, top - 0.6, top, c - half, c + half);               // landing on the fourth row
           for (let i = 0; i < n; i++) {
-            const x = x0 + i * tr + tr / 2, top = a.y - (i + 1) * h;
-            k.box("tint", x, top - 0.3, c, tr, 0.6, 2 * S.half);
+            const x = x0 + i * tr + tr / 2, st = top - (i + 1) * h;
+            k.box("tint", x, st - 0.3, c, tr, 0.6, 2 * half);
             for (const sgn of [-1, 1]) {
-              const wallTop = Math.min(tierYAt(LB, x) + 3.2, top + 11);
-              k.box("base", x, (top + wallTop) / 2, c + sgn * (S.half + 0.25), tr, wallTop - top, 0.5);
+              const wt = Math.max(st + 3.4, Math.min(ceilAt(x), st + 12));
+              k.box("base", x, (floor + wt) / 2, c + sgn * (half + 0.25), tr, wt - floor, 0.5);
             }
           }
-          k.beam("base", c, x0, a.y - 0.6, x0 + n * tr, floor - 0.6, 1.2, 2 * S.half, "center");
-          for (const sgn of [-1, 1]) k.beam("dark", c + sgn * (S.half - 0.3), x0, a.y + 3, x0 + n * tr, floor + 3, 0.14, 0.14, "center");
-          k.slab("tint", x0 + n * tr, x0 + n * tr + 5, floor - 0.6, floor, c - S.half, c + S.half);
-          for (let i = S.rows[0]; i <= S.rows[1]; i++) {
-            const row = LB[i];
-            for (const sgn of [-1, 1]) k.box("dark", row.r + row.T / 2, row.y + 3.4, c + sgn * (S.half + 0.25), row.T, 0.12, 0.12);
+          for (const sgn of [-1, 1]) {
+            k.box("base", (FR[3].r + x0) / 2, (floor + top + 3.2) / 2, c + sgn * (half + 0.25), x0 - FR[3].r, top + 3.2 - floor, 0.5);
+            k.box("base", (118.8 + FR[3].r) / 2, (floor + 8) / 2, c + sgn * (half + 0.25), FR[3].r - 118.8, 10, 0.5);   // corridor walls through the suite zone
+            k.beam("dark", c + sgn * (half - 0.3), x0, top + 3, x0 + n * tr, floor + 3, 0.14, 0.14, "center");
           }
+          k.beam("base", c, x0, top - 0.6, x0 + n * tr, floor - 0.6, 1.2, 2 * half, "center");
+          k.slab("tint", x0 + n * tr, x0 + n * tr + 6, floor - 0.6, floor, c - half, c + half);
+          for (const row of PR) for (const sgn of [-1, 1]) k.box("dark", row.r + row.T / 2, row.y + 3.4, c + sgn * (half + 0.25), row.T, 0.12, 0.12);
         }
       } },
-    { id: "vomFill", mode: "remove", name: "Existing rows at the new vomitories",
-      info: { type: "Seats and treads removed to open the stairs", cap: "", dims: "6 rows × 2 openings" },
-      build(k) {
-        for (const row of LB.filter((r) => inRows(r, S))) {
-          const prof = treadProfile(LB, row.i, 0.7);
-          for (const c of S.voms) {
-            k.ext("tint", prof, c - S.half - 0.5, c + S.half + 0.5);
-            seatStrip(k, row.r + row.T - 0.55, row.y, c - S.half - 1, c + S.half + 1);
-          }
-        }
-      } },
+    { id: "vomFillExisting", mode: "remove", name: "Existing rows at the new vomitories",
+      info: { type: "Seats and treads of existing rows 1–3 removed on the aisles", cap: "Opened for the vomitories", dims: "3 rows × 4 openings" },
+      build(k) { fill(k, LB, LB.slice(0, 3), 0.7); } },
+    { id: "vomFillNew", mode: "between", name: "New fourth row at the vomitories",
+      info: { type: "Built with the new rows, opened for the vomitories", cap: "Opened for the vomitories", dims: "1 row × 4 openings" },
+      build(k) { fill(k, FR, [FR[3]], 0.6); } },
   ];
 }
 function partsFieldSuites() {
   return [
     { id: "fieldSuites", mode: "grow", name: "Field suites",
-      info: { type: "Sunken suites behind glass at the touchline, under the new front rows", cap: "", dims: "10 suites × 15 ft · 21 ft deep · 10 ft clear" },
+      info: { type: "Sunken suites behind glass at the touchline, between the vomitory corridors", cap: "", dims: "About 13 ft bays · 21 ft deep · 10 ft clear" },
       build(k) {
         const fl = -2;
         k.slab("tint", 118.5, 140, fl - 0.6, fl);
         k.slab("glass", 118.5, 118.8, fl, 8.0);
         for (let z = -HZ; z < HZ; z += 5) k.box("dark", 118.65, 3, z, 0.3, 10, 0.25);
-        k.slab("base", 118.5, 140, 8.0, 8.4);
+        for (const [a, b] of segments(-HZ, HZ, AISLES.map((c) => [c, 3.75]))) k.slab("base", 118.5, 140, 8.0, 8.4, a, b);
         k.slab("base", 139.6, 140, fl, 8.0);
-        for (let z = -HZ + 15; z < HZ; z += 15) k.box("base", 129.2, 3, z, 21, 10, 0.35);
-        for (let z = -HZ + 7.5; z < HZ; z += 15) {
-          k.box("seat", 128, fl + 0.75, z, 2.6, 1.5, 8); k.box("seat", 129.2, fl + 1.6, z, 0.5, 3.2, 8);
-          k.box("base", 124.2, fl + 0.6, z, 2.4, 1.2, 4);
-          k.box("accent", 137.6, fl + 1.75, z, 2.2, 3.5, 9);
-          k.box("seat", 121.6, fl + 0.8, z - 4.5, 2.2, 1.6, 2.2); k.box("seat", 121.6, fl + 0.8, z + 4.5, 2.2, 1.6, 2.2);
+        let count = 0;
+        for (const [a, b] of segments(-HZ, HZ, AISLES.map((c) => [c, 3.75]))) {
+          const n = Math.max(1, Math.round((b - a) / 14)), w = (b - a) / n;
+          for (let j = 1; j < n; j++) k.box("base", 129.2, 3, a + j * w, 21, 10, 0.35);
+          for (let j = 0; j < n; j++) {
+            const z = a + (j + 0.5) * w, sw = Math.min(8, w - 4);
+            k.box("seat", 128, fl + 0.75, z, 2.6, 1.5, sw); k.box("seat", 129.2, fl + 1.6, z, 0.5, 3.2, sw);
+            k.box("base", 124.2, fl + 0.6, z, 2.4, 1.2, 4);
+            k.box("accent", 137.6, fl + 1.75, z, 2.2, 3.5, Math.min(9, w - 3));
+            k.box("seat", 121.6, fl + 0.8, z - w / 4, 2.2, 1.6, 2.2); k.box("seat", 121.6, fl + 0.8, z + w / 4, 2.2, 1.6, 2.2);
+            count++;
+          }
         }
-        k.n.suites = 10;
+        k.n.suites = count;
         // steps down from the sideline to the sunken suite fronts
         for (let i = 0; i < 4; i++) k.slab("tint", 114 + i * 1.1, 118.5, -0.5 * (i + 1) - 0.4, -0.5 * (i + 1));
       } },
     { id: "fieldClub", mode: "grow", name: "Field club",
-      info: { type: "Club lounge under the lower bowl, reached by the new vomitory stairs", cap: "≈ 500 guests", dims: "56 ft deep × 150 ft · ceiling follows the rake" },
+      info: { type: "Club lounge under the lower bowl, reached by the four vomitory stairs", cap: "≈ 500 guests", dims: "56 ft deep × 150 ft · ceiling follows the rake" },
       build(k) {
         const fl = -2;
         k.slab("tint", 140, 196, fl - 0.6, fl);
@@ -691,7 +713,7 @@ function partsFieldSuites() {
         k.slab("dark", 192, 193.4, fl, fl + 7.5, -46, 46);
         for (let z = -66; z <= 66; z += 12) for (const x of [186, 168]) {
           if (x === 186 && Math.abs(z) < 52) continue;
-          if (x === 168 && VOM_NEW.voms.some((c) => Math.abs(z - c) < 7)) continue;
+          if (x === 168 && AISLES.some((c) => Math.abs(z - c) < 7)) continue;
           k.cyl("dark", x, fl, z, 0.12, 3.4); k.cyl("base", x, fl + 3.4, z, 1.4, 0.15);
           for (const [dx, dz] of [[1.9, 0], [-1.9, 0], [0, 1.9], [0, -1.9]]) { k.cyl("dark", x + dx, fl, z + dz, 0.08, 2.4); k.cyl("seat", x + dx, fl + 2.4, z + dz, 0.55, 0.2); }
         }
@@ -699,15 +721,36 @@ function partsFieldSuites() {
   ];
 }
 function partsLowerBowl() {
-  return [{ id: "lowerBowl", name: "Lower bowl (existing)",
-    info: { type: "Existing lower bowl on precast treads", cap: "", dims: `34 rows · 33 in tread · ${rakeOf(LB).toFixed(0)}° average rake` },
-    build(k) {
-      treads(k, LB, [VOM_OLD, VOM_NEW], 0.7);
-      vomPortals(k, LB, VOM_OLD, 14);
-      seatRows(k, LB, [VOM_OLD, VOM_NEW], "std");
-      k.rail("dark", P.lbEnd + 0.3, P.lbTop, 3.4, -HZ, HZ, 8);
-      k.slab("tint", P.lbEnd, P.xs, P.lbTop - 0.6, P.lbTop + 0.4);
-    } }];
+  return [
+    { id: "lowerBowl", name: "Lower bowl (existing)",
+      info: { type: "Existing lower bowl on precast treads, four stepped aisles", cap: "", dims: `34 rows · 33 in tread · ${rakeOf(LB).toFixed(0)}° average rake` },
+      build(k) {
+        treads(k, LB, [LB_VOM], 0.7);
+        seatRows(k, LB.filter((r) => r.i < 30), [LB_VOM], "std");
+        k.rail("dark", P.lbEnd + 0.3, P.lbTop, 3.4, -HZ, HZ, 8);
+        k.slab("tint", P.lbEnd, P.xs, P.lbTop - 0.6, P.lbTop + 0.4);
+      } },
+    { id: "loges", name: "Loge boxes",
+      info: { type: "Loge boxes on the back four rows of the lower bowl, swivel chairs and drink rails", cap: "", dims: "4-seat boxes · 2 rows each · about 8 ft wide" },
+      build(k) {
+        const segs = segments(-HZ + 1, HZ - 1, AISLES.map((c) => [c, 2]));
+        for (const [r0, r1] of [[30, 31], [32, 33]]) {
+          const A = LB[r0], B = LB[r1], x0 = A.r, x1 = B.r + B.T;
+          for (const [a, b] of segs) {
+            const n = Math.max(1, Math.round((b - a) / 8)), w = (b - a) / n;
+            for (let j = 0; j <= n; j++) k.box("base", (x0 + x1) / 2, (A.y + B.y + 3.6) / 2, a + j * w, x1 - x0, B.y + 3.6 - A.y, 0.25);
+            for (let j = 0; j < n; j++) {
+              const zc = a + (j + 0.5) * w;
+              for (const row of [A, B]) {
+                k.box("base", row.r + 0.45, row.y + 3.3, zc, 0.9, 0.15, w - 0.6);
+                for (const dz of [-(w - 1.4) / 2, (w - 1.4) / 2]) k.box("dark", row.r + 0.45, row.y + 1.62, zc + dz, 0.12, 3.24, 0.12);
+                for (const dz of [-w / 4, w / 4]) swivel(k, row.r + row.T - 1.0, row.y, zc + dz);
+              }
+            }
+          }
+        }
+      } },
+  ];
 }
 /* suite band: floor with fascia, glass front with mullions, partitions, furniture */
 function suiteBand(k, y, x0, depth, bay, dining) {
@@ -759,48 +802,17 @@ function partsUpperSuites() {
     build(k) { suiteBand(k, P.US, P.cmEnd + 1, 26, 15); } }];
 }
 const VOM_UP = { voms: [-62.5, -37.5, -12.5, 12.5, 37.5, 62.5], rows: [0, 4], half: 3, aisle: true };
-function partsUpper() {
-  return [
-    { id: "upperBowl", name: "Upper bowl, reduced to 20 rows",
-      info: { type: "Upper bowl kept to 20 rows, vomitories at the front", cap: "", dims: `20 rows (was 28) · 32 in tread · ${rakeOf(UB).toFixed(0)}° average rake` },
-      build(k) {
-        treads(k, UB, [VOM_UP], 2.4);
-        vomPortals(k, UB, VOM_UP, 8);
-        for (const c of VOM_UP.voms) k.box("base", UB[5].r + 2.5, UB[5].y + 2, c, 5, 4, 2 * VOM_UP.half + 1.5);
-        seatRows(k, UB, [VOM_UP], "std");
-        k.glassGuard(UB[0].r - 0.2, UB[0].y, 2.2);
-      } },
-    { id: "upperRemoved", mode: "remove", name: "Upper bowl rows 21–28 (removed)",
-      info: { type: "Existing back rows taken out", cap: "", dims: "8 rows" },
-      build(k) {
-        for (let i = 0; i < UBx.length; i++) {
-          const prof = treadProfile(UBx, i, UBx[0].riser);
-          k.ext("tint", prof);
-        }
-        seatRows(k, UBx, [VOM_UP], "std");
-        k.slab("base", P.ubEndOld - 0.4, P.ubEndOld, UBx[7].y, UBx[7].y + 4);
-      } },
-    { id: "upperConcourse", name: "Upper concourse, enlarged",
-      info: { type: "Deeper upper concourse under the reduced bowl", cap: "Concessions and circulation", dims: `${Math.round(P.xf - P.cmEnd - 18)} ft deep (was ${Math.round(P.xf - P.cmEnd - 27)} ft)` },
-      build(k) {
-        k.slab("tint", P.cmEnd + 18, P.xf, P.UC - 1.4, P.UC);
-        for (const z of [-48, 8]) { k.box("base", P.cmEnd + 28, P.UC + 5, z, 12, 10, 18); k.box("accent", P.cmEnd + 21.4, P.UC + 1.75, z, 1.2, 3.5, 17); }
-      } },
-    { id: "terrace", mode: "grow", name: "Corner terrace",
-      info: { type: "Open terrace deck on the removed rows, drink rails and high-tops", cap: "≈ 350 standing in this section", dims: `${Math.round(P.xf - P.ubEnd)} ft deep · under the canopy` },
-      build(k) {
-        const y = P.terrY;
-        k.ext("tint", [[P.ubEnd, y - 1.4], [P.xf + 1, y - 1.4], [P.xf + 1, y], [P.ubEnd, y]]);
-        k.glassGuard(P.xf + 0.6, y, 3.5);
-        k.slab("base", P.ubEnd + 4, P.ubEnd + 5.2, y + 3.4, y + 3.65);
-        for (let z = -HZ + 4; z <= HZ - 4; z += 8) k.box("dark", P.ubEnd + 4.6, y + 1.7, z, 0.15, 3.4, 0.15);
-        for (let z = -66; z <= 66; z += 12) for (const x of [P.ubEnd + 11, P.ubEnd + 19]) {
-          k.cyl("dark", x, y, z, 0.12, 3.4); k.cyl("base", x, y + 3.4, z, 1.3, 0.15);
-          k.cyl("seat", x + 1.8, y + 2.4, z, 0.5, 0.2); k.cyl("dark", x + 1.8, y, z, 0.08, 2.4);
-          k.cyl("seat", x - 1.8, y + 2.4, z, 0.5, 0.2); k.cyl("dark", x - 1.8, y, z, 0.08, 2.4);
-        }
-      } },
-  ];
+function partsUpperBowl() {
+  return [{ id: "upperBowl", name: "Upper bowl (existing)",
+    info: { type: "Existing upper bowl, vomitories at the front rows", cap: "", dims: `28 rows · 32 in tread · ${rakeOf(UB).toFixed(0)}° average rake` },
+    build(k) {
+      treads(k, UB, [VOM_UP], 2.4);
+      vomPortals(k, UB, VOM_UP, 8);
+      for (const c of VOM_UP.voms) k.box("base", UB[5].r + 2.5, UB[5].y + 2, c, 5, 4, 2 * VOM_UP.half + 1.5);
+      seatRows(k, UB, [VOM_UP], "std");
+      k.glassGuard(UB[0].r - 0.2, UB[0].y, 2.2);
+      k.slab("base", P.ubEnd - 0.4, P.ubEnd, P.ubTop, P.ubTop + 4);
+    } }];
 }
 function partsCanopy() {
   const c = P.canopy, xb = c.x1 - 18;
@@ -851,7 +863,7 @@ function partsCanopy() {
 /* structure, back-of-house floors, vertical circulation, facade, mast and plaza */
 function partsBuilding() {
   const xf = P.xf, c = P.canopy;
-  const upSoffit = (x) => (x < P.ubEnd ? tierYAt(UB, x) - 4 : P.terrY - 2.4);
+  const upSoffit = (x) => tierYAt(UB, x) - 4;
   return [
     { id: "floors", name: "Concourse floors",
       info: { type: "Back-of-house concourses at each level", cap: "Concessions, restrooms, circulation", dims: "13 ft floor-to-floor" },
@@ -860,7 +872,8 @@ function partsBuilding() {
         k.slab("tint", P.xs + 30, xf, P.LS - 1.4, P.LS);
         k.slab("tint", P.xs + 34, xf, P.PS - 1.4, P.PS);
         k.slab("tint", P.cmEnd + 27, xf, P.US - 1.4, P.US);
-        for (const [y, x0] of [[GRADE, 230], [P.LS, P.xs + 34], [P.US, P.cmEnd + 31]]) {
+        k.slab("tint", P.cmEnd + 27, xf, P.UC - 1.4, P.UC);
+        for (const [y, x0] of [[GRADE, 230], [P.LS, P.xs + 34], [P.US, P.cmEnd + 31], [P.UC, P.cmEnd + 31]]) {
           for (const z of [-48, 8]) { k.box("base", x0 + 6, y + 5, z, 12, 10, 18); k.box("accent", x0 - 0.6, y + 1.75, z, 1.2, 3.5, 17); }
         }
       } },
@@ -907,9 +920,9 @@ function partsBuilding() {
         }
       } },
     { id: "facade", name: "West facade",
-      info: { type: "Glazed facade with vertical fins", cap: "Entry and concourse daylight", dims: `${Math.round(P.terrY - GRADE)} ft to the terrace · fins at 6 ft` },
+      info: { type: "Glazed facade with vertical fins", cap: "Entry and concourse daylight", dims: `${Math.round(P.ubTop + 4 - GRADE)} ft tall · fins at 6 ft` },
       build(k) {
-        const top = P.terrY - 1.4;
+        const top = P.ubTop + 4;
         k.slab("glass", xf, xf + 0.3, GRADE, top);
         for (let z = -HZ; z <= HZ; z += 6) k.box("dark", xf + 1, (GRADE + top) / 2, z, 2, top - GRADE, 0.4);
         for (const y of [P.LS, P.PS, P.US, P.UC]) k.slab("base", xf - 0.2, xf + 2.2, y - 1.4, y);
@@ -926,17 +939,17 @@ function partsBuilding() {
 const LEVELS = [
   { key: "field", css: "--l1", title: "Lowering the field 4 ft", parts: partsField, focus: [90, 4], offset: [-62, -6, 0], anchor: [60, 0, HZ - 30] },
   { key: "frontRows", css: "--l2", title: "Adding 4 front rows", parts: partsFrontRows, focus: [125, 10], offset: [-40, 4, 0], anchor: [124, 11, HZ - 12] },
-  { key: "vomStairs", css: "--l3", title: "Vomitory stairs to the field club", parts: partsVomStairs, focus: [150, 10], offset: [-12, -2, 0], anchor: [150, 9, 34.5] },
+  { key: "vomStairs", css: "--l3", title: "Four vomitories to the field club", parts: partsVomStairs, focus: [140, 8], offset: [-12, -2, 0], anchor: [FR[3].r + 1, FR[3].y + 1, 17] },
   { key: "fieldSuites", css: "--l4", title: "New field suites and field clubs", parts: partsFieldSuites, focus: [150, 4], offset: [-30, -12, 0], anchor: [128, 4, HZ - 10] },
   { key: "lowerSuites", css: "--l5", title: "Lower suites, southwest corner", parts: partsLowerSuites, focus: [P.xs + 15, P.LS + 6], offset: [44, 10, 0], anchor: [P.xs + 5, P.LS + 9, HZ - 10] },
   { key: "presSuites", css: "--l6", title: "14 presidential suites, east side", parts: partsPresSuites, focus: [P.xs + 17, P.PS + 6], offset: [44, 28, 0], anchor: [P.xs + 5, P.PS + 9, HZ - 10] },
   { key: "clubMid", css: "--l7", title: "Club mid bowl, corners and end zone", parts: partsClubMid, focus: [(P.xs + P.cmEnd) / 2, (CM[0].y + P.cmTop) / 2], offset: [0, 46, 0], anchor: [CM[6].r, CM[6].y + 3, HZ - 30] },
-  { key: "upper", css: "--l8", title: "Upper bowl, concourse and corner terraces", parts: partsUpper, focus: [(UB[0].r + P.xf) / 2, (UB[0].y + P.terrY) / 2], offset: [0, 84, 0], anchor: [P.ubEnd + 12, P.terrY + 4, HZ - 30] },
   { key: "canopy", css: "--l9", title: "Canopy: reflective underside, solar on top", parts: partsCanopy, focus: [(P.canopy.x0 + P.canopy.x1) / 2, P.canopy.y - 24], offset: [0, 120, 0], anchor: [210, P.canopy.y + 1, HZ - 30] },
 ];
 const CONTEXT = [
   { key: "lowerBowl", css: "--l-exist", title: "Lower bowl (existing)", parts: partsLowerBowl, offset: [0, 0, 0] },
   { key: "upperSuites", css: "--l-exist", title: "Upper suites (existing)", parts: partsUpperSuites, offset: [44, 64, 0] },
+  { key: "upperBowl", css: "--l-exist", title: "Upper bowl (existing)", parts: partsUpperBowl, offset: [0, 86, 0] },
   { key: "building", css: "--l-build", title: "Structure, concourses & facade", parts: partsBuilding, offset: [96, 0, 0] },
 ];
 const GROUPS = [...LEVELS, ...CONTEXT];
@@ -1034,7 +1047,7 @@ for (const g of GROUPS) {
       }
     }
     g.root.add(group);
-    const counts = def.mode !== "remove";
+    const counts = def.mode !== "remove" && def.mode !== "between";
     if (counts) { g.seats += k.seats; SEATS += k.seats; }
     if (k.n.suites) g.suites += k.n.suites;
     if (k.n.panels) PANELS += k.n.panels;
@@ -1091,18 +1104,17 @@ document.getElementById("tbPV").textContent = `≈ ${kW} kW`;
 const DESC = {
   field: "Turf, sideline and team area drop 4 ft, freeing headroom for field suites and the new front rows.",
   frontRows: `Four new 33 in rows step down toward the field, ${fmt(G.frontRows.seats)} seats in this section.`,
-  vomStairs: "Two new vomitories with stairs that run under the bowl straight into the field club.",
+  vomStairs: "Four new vomitories on the stepped aisles open at the new fourth row, run four rows deep and drop by stair into the field club.",
   fieldSuites: `${G.fieldSuites.suites} sunken field suites behind glass, and a field club under the lower bowl.`,
   lowerSuites: "Lower suites renovated; new suites added at the southwest corner.",
   presSuites: "Presidential suites renovated and added, 14 in total on the east side.",
   clubMid: "Club mid bowl extended into the north and south corners and the end zone.",
-  upper: `Upper bowl cut from 28 to 20 rows; a deeper upper concourse and corner terraces take the space.`,
   canopy: `Slim hidden trusses between a reflective underside and a solar deck: ${fmt(PANELS)} modules ≈ ${kW} kW in this section.`,
 };
 const ELEV = {
-  field: "EL 0 · was +4 ft", frontRows: `EL +${FR[0].y.toFixed(0)} to +${FR[3].y.toFixed(0)} ft`, vomStairs: `EL +${Math.round(LB[VOM_NEW.rows[0]].y)} ft to −2 ft`,
+  field: "EL 0 · was +4 ft", frontRows: `EL +${FR[0].y.toFixed(0)} to +${FR[3].y.toFixed(0)} ft`, vomStairs: `EL +${Math.round(FR[3].y)} ft to −2 ft`,
   fieldSuites: "EL −2 to +8 ft", lowerSuites: `EL +${P.LS} ft`, presSuites: `EL +${P.PS} ft`,
-  clubMid: `EL +${Math.round(CM[0].y)} to +${Math.round(P.cmTop)} ft`, upper: `EL +${Math.round(UB[0].y)} to +${Math.round(P.terrY)} ft`, canopy: `EL +${P.canopy.y} ft`,
+  clubMid: `EL +${Math.round(CM[0].y)} to +${Math.round(P.cmTop)} ft`, canopy: `EL +${P.canopy.y} ft`,
 };
 LEVELS.forEach((lv, i) => { lv.n = i + 1; lv.desc = DESC[lv.key]; lv.elev = ELEV[lv.key]; });
 
@@ -1143,13 +1155,13 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 if (reduceMotion) state.t = T_EXP + 6;
 const introCam = { start: null };
 
-function applyPart(p, b, e) {
+function applyPart(p, b, e, bPrev) {
   const g = p.group;
   g.position.set(p.xo[0] * e, p.xo[1] * e, p.xo[2] * e);
   g.scale.set(1, 1, 1); g.visible = true;
   if (p.mode === "lower") g.position.y += GRADE * (1 - b);
-  else if (p.mode === "grow" || p.mode === "remove") {
-    const s = Math.max(0.001, p.mode === "grow" ? b : 1 - b);
+  else if (p.mode === "grow" || p.mode === "remove" || p.mode === "between") {
+    const s = Math.max(0.001, p.mode === "grow" ? b : p.mode === "remove" ? 1 - b : Math.min(bPrev, 1 - b));
     g.scale.y = s; g.position.y += p.baseY * (1 - s); g.visible = s > 0.01;
   } else if (p.mode === "drop") { g.position.y += 160 * (1 - b); g.visible = b > 0.01; }
 }
@@ -1158,7 +1170,8 @@ function applyTimeline(t) {
     const b = built(i, t), e = explodeAt(t, i / LEVELS.length) * state.amount;
     lv.root.visible = catVisible[lv.key];
     lv.root.position.set(lv.offset[0] * e, lv.offset[1] * e, lv.offset[2] * e);
-    for (const p of lv.partObjs) applyPart(p, b, e);
+    const bPrev = i > 0 ? built(i - 1, t) : 1;
+    for (const p of lv.partObjs) applyPart(p, b, e, bPrev);
   });
   for (const cx of CONTEXT) {
     const e = explodeAt(t, 0.5) * state.amount;
@@ -1182,7 +1195,7 @@ function updateCamera(t, dt) {
   const az = (c.az + user.daz - 30 * (1 - iz)) * DEG, el = clamp(c.el + user.del + 10 * (1 - iz), 2, 88) * DEG;
   const eG = explodeAt(t, 0.5) * state.amount;
   const s = activeStep(t);
-  let tx = 205 - 10 * eG, ty = 100 + 105 * eG, size = lerp(400, 860, eG);
+  let tx = 205 - 10 * eG, ty = 100 + 80 * eG, size = lerp(400, 760, eG);
   if (s >= 0) { const f = LEVELS[s].focus; tx = lerp(205, f[0], 0.45); ty = lerp(100, f[1], 0.45); size = 320; }
   const k = 1 - Math.exp(-dt * 2.2);
   camState.tgt.x += (tx - camState.tgt.x) * k; camState.tgt.y += (ty - camState.tgt.y) * k; camState.size += (size - camState.size) * k;
