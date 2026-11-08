@@ -32,3 +32,5 @@ Menú de Ejercicios:
 <br>
 [Arduino](Arduino.md)
 <br>
+[Anatomy of the Game — Animación](Anatomy.md)
+<br>
