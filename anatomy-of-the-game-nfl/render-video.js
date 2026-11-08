@@ -1,5 +1,5 @@
 /*
-  Renders the animation in index.html to an MP4 (1920x1080, 30 fps, with the generated score).
+  Renders the animation in index.html to an MP4 (1080x1350, 4:5, 30 fps, with the generated score).
   Requires Node, Playwright (Chromium) and ffmpeg on PATH.
 
     node render-video.js [out.mp4] [fps]
@@ -14,11 +14,11 @@ const path = require('path');
 
 (async () => {
   const out = path.resolve(process.argv[2] || path.join(__dirname, 'anatomy-of-the-game-football.mp4'));
-  const fps = Number(process.argv[3] || 30), DUR = 90, N = Math.round(DUR * fps);
+  const fps = Number(process.argv[3] || 30), DUR = 116, N = Math.round(DUR * fps);
   const wav = out.replace(/\.mp4$/, '') + '.score.wav';
 
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: 1080, height: 1350 }, deviceScaleFactor: 1 });
   page.on('pageerror', e => console.error('page error:', e.message));
   await page.goto('file://' + path.join(__dirname, 'index.html') + '?export=1');
   await page.waitForFunction(() => window.__ready);

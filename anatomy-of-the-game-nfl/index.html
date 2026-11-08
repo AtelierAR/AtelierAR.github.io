@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anatomy of the Game: Football</title>
-<meta name="description" content="A 90-second anatomical animation of American football: the ball, the player, the play, the stadium and the safety rules, dissected to reveal the data inside.">
+<meta name="description" content="A 116-second vertical (4:5) anatomical animation of American football: the ball, the player, the play, the stadium, acoustics, sight, premium seating and the safety rules, dissected to reveal the data inside.">
 <style>
   :root{
     --white:#FFFFFF; --light:#EEF1F4; --mid:#9AA3AE; --graphite:#3A4048; --blue:#1E5BFF; --cyan:#6EC8FF;
@@ -14,7 +14,7 @@
   html,body{background:var(--white);color:var(--graphite);font-family:var(--font);font-weight:300;min-height:100%}
   body{display:flex;flex-direction:column;min-height:100vh}
   .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px 8px}
-  .frame{position:relative;width:min(100%, calc((100vh - 150px) * 16 / 9));aspect-ratio:16/9;background:var(--white);
+  .frame{position:relative;width:min(100%, calc((100vh - 150px) * 4 / 5));aspect-ratio:4/5;background:var(--white);
     box-shadow:0 0 0 1px var(--light), 0 40px 90px -50px rgba(58,64,72,.35)}
   canvas{display:block;width:100%;height:100%}
   .start{position:absolute;inset:0;border:0;background:rgba(255,255,255,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
@@ -25,7 +25,7 @@
   .start .p{margin-top:1.4em;display:inline-flex;align-items:center;gap:.7em;font-weight:300;font-size:clamp(12px,1.1vw,16px);letter-spacing:.2em;text-transform:uppercase;color:var(--blue)}
   .start .p i{display:inline-block;width:0;height:0;border-left:11px solid var(--blue);border-top:7px solid transparent;border-bottom:7px solid transparent}
   .start.hidden{display:none}
-  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 16px 6px;width:min(100%, calc((100vh - 150px) * 16 / 9 + 32px));margin:0 auto}
+  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 16px 6px;width:min(100%, calc((100vh - 150px) * 4 / 5 + 32px));margin:0 auto}
   .bar button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.16em;text-transform:uppercase;background:none;border:0;color:var(--graphite);cursor:pointer;padding:6px 0}
   .bar button:hover,.bar button.on{color:var(--blue)}
   .scrub{position:relative;flex:1 1 260px;height:28px;display:flex;align-items:center}
@@ -37,31 +37,31 @@
   .ticks{position:absolute;left:0;right:0;top:50%;height:0;z-index:1;pointer-events:none}
   .ticks span{position:absolute;top:-5px;width:1px;height:10px;background:var(--mid)}
   .tc{font-size:12px;letter-spacing:.14em;color:var(--mid);font-variant-numeric:tabular-nums;min-width:110px}
-  .chapters{display:flex;flex-wrap:wrap;gap:4px 18px;padding:0 16px 22px;width:min(100%, calc((100vh - 150px) * 16 / 9 + 32px));margin:0 auto}
+  .chapters{display:flex;flex-wrap:wrap;gap:4px 18px;padding:0 16px 22px;width:min(100%, calc((100vh - 150px) * 4 / 5 + 32px));margin:0 auto}
   .chapters button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.04em;color:var(--mid);background:none;border:0;cursor:pointer;padding:2px 0}
   .chapters button b{font-weight:700;color:var(--graphite);margin-right:6px}
   .chapters button.on{color:var(--blue)} .chapters button.on b{color:var(--blue)}
   body.export .bar, body.export .chapters, body.export .start{display:none}
-  body.export .stage{padding:0} body.export .frame{width:1920px;height:1080px;box-shadow:none}
+  body.export .stage{padding:0} body.export .frame{width:1080px;height:1350px;box-shadow:none}
   @media (max-width:640px){ body{min-height:0} .stage{flex:none;padding:16px 16px 4px} .bar,.chapters{width:100%} }
 </style>
 </head>
 <body>
 <main class="stage">
   <div class="frame" id="frame">
-    <canvas id="cv" width="1920" height="1080" aria-label="Anatomy of the Game animation"></canvas>
+    <canvas id="cv" width="1080" height="1350" aria-label="Anatomy of the Game animation"></canvas>
     <button class="start" id="start" type="button">
       <span class="k">Vol. II · American football</span>
       <span class="t">Anatomy of the Game</span>
-      <span class="s">90 seconds · best with sound</span>
+      <span class="s">116 seconds · best with sound</span>
       <span class="p"><i></i>Play film</span>
     </button>
   </div>
 </main>
 <div class="bar">
   <button id="pp" type="button">Play</button>
-  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="90" step="0.01" value="0" aria-label="Timeline"></div>
-  <span class="tc" id="tc">00:00 / 01:30</span>
+  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="116" step="0.01" value="0" aria-label="Timeline"></div>
+  <span class="tc" id="tc">00:00 / 01:56</span>
   <button id="snd" type="button" class="on">Sound on</button>
   <button id="rec" type="button">Export WebM</button>
   <button id="fs" type="button">Fullscreen</button>
@@ -75,7 +75,7 @@
    Every frame is a pure function of time t (seconds), so the film can be
    played, scrubbed, or rendered frame-by-frame to video.
    ===================================================================== */
-const W = 1920, H = 1080, DUR = 90, TAU = Math.PI * 2, BEAT = 60 / 70;
+const W = 1080, H = 1350, DUR = 116, TAU = Math.PI * 2, BEAT = 60 / 70;
 const RGB = { white:[255,255,255], light:[238,241,244], mid:[154,163,174], graphite:[58,64,72], blue:[30,91,255], cyan:[110,200,255] };
 const rgba = (k, a) => `rgba(${RGB[k][0]},${RGB[k][1]},${RGB[k][2]},${Math.max(0, Math.min(1, a))})`;
 const FONT = '"Helvetica Neue","HelveticaNeue",Helvetica,Inter,Arial,sans-serif';
@@ -514,14 +514,22 @@ const pathCum = pts => { const cum = [0]; for (let i = 1; i < pts.length; i++) c
 function pathAt(pts, cum, s) { let k = 1; while (k < cum.length - 1 && cum[k] < s) k++; const r = clamp((s - cum[k - 1]) / (cum[k] - cum[k - 1] || 1)); return [lerp(pts[k - 1][0], pts[k][0], r), lerp(pts[k - 1][1], pts[k][1], r)]; }
 
 /* =====================================================================
-   SCENE 01 — BALL TO FIELD  (0 – 10.6)
+   LAYOUT (4:5) + helpers
+   ===================================================================== */
+const MX = 72, HY = 1190;
+const head = (c, segs, p, a, size = 52) => headline(c, segs, MX, HY, p, { size, maxW: W - 2 * MX, a });
+const lab = (c, ax, ay, tx, ty, p, title, a) => leader(c, ax, ay, tx, ty, p, title, null, { a, tsize: 24 });
+function stat(c, k, v, x, y, p, a) { kicker(c, k, x, y, seg(p, 0, .5), a); txt(c, v, x - 2, y + 62, { w: 700, size: 60, color: 'blue', a: a * smooth(seg(p, .2, .6)) }); }
+
+/* =====================================================================
+   01 — BALL TO FIELD  (0 – 10.6)
    ===================================================================== */
 const ballLocal = (u, v) => { const r = .62 * Math.pow(Math.sin(v), .85); return [Math.cos(v), r * Math.cos(u), r * Math.sin(u)]; };
 const N1KEYS = [
-  { t: 0, yaw: .55, pitch: .42, dist: 200, f: 1000, tx: 0, ty: 12, tz: 0, cx: 960, cy: 470 },
-  { t: 3.4, yaw: .45, pitch: .45, dist: 195, f: 1000, tx: 0, ty: 12, tz: 0, cx: 960, cy: 470 },
-  { t: 7.4, yaw: .2, pitch: .7, dist: 175, f: 1000, tx: 0, ty: 0, tz: 0, cx: 960, cy: 480 },
-  { t: 10.6, yaw: .1, pitch: .85, dist: 165, f: 1000, tx: 0, ty: 0, tz: 0, cx: 960, cy: 480 },
+  { t: 0, yaw: .55, pitch: .42, dist: 175, f: 1000, tx: 0, ty: 12, tz: 0, cx: 540, cy: 600 },
+  { t: 3.4, yaw: .45, pitch: .45, dist: 170, f: 1000, tx: 0, ty: 12, tz: 0, cx: 540, cy: 600 },
+  { t: 7.4, yaw: .2, pitch: .8, dist: 150, f: 1000, tx: 0, ty: 0, tz: 0, cx: 540, cy: 640 },
+  { t: 10.6, yaw: .1, pitch: .95, dist: 145, f: 1000, tx: 0, ty: 0, tz: 0, cx: 540, cy: 640 },
 ];
 function sBall(c, t) {
   const cm = cam(camKeys(N1KEYS, t));
@@ -536,21 +544,18 @@ function sBall(c, t) {
     c.save(); c.translate(sh[0], sh[1]); c.scale(1, .3); c.translate(-sh[0], -sh[1]); c.fillStyle = g; c.beginPath(); c.arc(sh[0], sh[1], r, 0, TAU); c.fill(); c.restore();
   }
   const dRef = cm.p(0, by, 0)[2], backA = lerp(.18, 1, m);
-  // latitude rings -> yard lines
   for (let k = 1; k <= 19; k++) {
     const v = k / 20 * Math.PI, xt = GL - k * 4.572, pts = [];
     for (let i = 0; i <= 48; i++) { const u = i / 48 * TAU; pts.push(world(ballLocal(u, v), [xt, 0, FZ * Math.cos(u)])); }
     const col = m < .5 ? 'mid' : (k === 10 ? 'blue' : 'graphite'), al = (m < .5 ? .8 : .6) * intro * (1 - .5 * smooth(seg(t, 7.6, 8.6)));
     strokeDepth(c, proj(cm, pts), dRef, rgba(col, al), 1.1, rgba(col, al * backA), .8);
   }
-  // meridians -> lengthwise lanes (sidelines survive)
   for (let j = 0; j < 12; j++) {
     const u = j / 12 * TAU, pts = [], side = j === 0 || j === 6;
     for (let i = 0; i <= 30; i++) { const v = .001 + i / 30 * (Math.PI - .002); pts.push(world(ballLocal(u, v), [GL * Math.cos(v), 0, FZ * Math.cos(u)])); }
     const al = (m < .5 ? .7 : .55) * intro * (side ? 1 : 1 - smooth(seg(t, 7.0, 8.2)));
     strokeDepth(c, proj(cm, pts), dRef, rgba(m < .5 ? 'mid' : 'blue', al), 1, rgba(m < .5 ? 'mid' : 'blue', al * backA), .8);
   }
-  // laces
   const la = intro * (1 - smooth(seg(t, 3.6, 4.6)));
   if (la > 0) {
     const top = x => .62 * Math.pow(Math.sin(Math.acos(x)), .85) + .01;
@@ -558,31 +563,28 @@ function sBall(c, t) {
     for (let i = 0; i < 8; i++) { const x = -.26 + i * .074, a = cm.p(...world([x, top(x) - .01, -.07])), b = cm.p(...world([x, top(x) - .01, .07])); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
     c.strokeStyle = rgba('blue', la); c.lineWidth = 2; c.stroke();
   }
-  // labels
   const ba = 1 - smooth(seg(t, 3.6, 4.1));
   const tip = cm.p(...world([1, 0, 0])), lace = cm.p(...world([0, .63, 0]));
-  leader(c, tip[0], tip[1], 1420, 360, seg(t, 1.2, 2.6), 'Prolate spheroid', '11 in long · 14–15 oz', { a: ba });
-  leader(c, lace[0], lace[1], 1420, 560, seg(t, 1.8, 3.2), 'Spiral', 'Spin about the long axis steadies flight', { a: ba });
+  lab(c, tip[0], tip[1], 720, 300, seg(t, 1.2, 2.6), 'Prolate spheroid', ba);
+  lab(c, lace[0], lace[1], 720, 380, seg(t, 1.8, 3.2), 'Spiral', ba);
   const fl = env(t, 8.0, 8.4, 9.8, 10.4), corner = cm.p(-FX, 0, FZ);
-  leader(c, corner[0], corner[1], 120, 300, seg(t, 8.0, 9.4), 'The field', '120 × 53⅓ yards · hashes 18 ft 6 in apart', { a: fl });
-  const ha = 1 - smooth(seg(t, 9.6, 10.4));
-  kicker(c, 'FIG. 01 — FROM BALL TO FIELD', 120, 852, seg(t, 4.0, 5.0), ha);
-  headline(c, [['Every snap is a ', 'graphite'], ['dataset.', 'blue']], 120, 930, seg(t, 4.6, 6.0), { size: 66, a: ha });
+  lab(c, corner[0], corner[1], MX, 300, seg(t, 8.0, 9.4), '120 × 53⅓ yd', fl);
+  head(c, [['Every snap is a ', 'graphite'], ['dataset.', 'blue']], seg(t, 4.6, 6.0), 1 - smooth(seg(t, 9.6, 10.4)), 62);
 }
 
 /* =====================================================================
-   SCENE 03 data — one pass play  (snap 26.0, throw 28.4, catch 29.6)
+   PLAY DATA — one pass play  (snap 26.0, throw 28.4, catch 29.6)
    ===================================================================== */
 const SNAP = 26.0, THROW = 28.4, CATCH = 29.6, LOS = yx(35);
-const OFFS = [ // start x, start z, route (dx,dz), speed m/s
+const OFFS = [
   [LOS - .5, 0, [[0, 0], [-1, 0]], 2], [LOS - .6, -1.4, [[0, 0], [-1.2, -.3]], 2], [LOS - .6, 1.4, [[0, 0], [-1.2, .3]], 2],
   [LOS - .7, -2.8, [[0, 0], [-1.5, -.8]], 2], [LOS - .7, 2.8, [[0, 0], [-1.5, .8]], 2],
-  [LOS - 4.6, 0, [[0, 0], [-2.7, 0]], 3.5],                       // 5 QB
-  [LOS - 4.6, -1.6, [[0, 0], [1.5, -3], [4.5, -8]], 6],          // 6 RB
-  [LOS - .6, 4.3, [[0, 0], [6, 0], [5, -1.5]], 6.5],             // 7 TE
-  [LOS - .5, -20, [[0, 0], [32, 0]], 8.5],                        // 8 WR go
-  [LOS - .5, 18, [[0, 0], [11, 0], [26, -10]], 8.5],             // 9 WR post — the target
-  [LOS - 1.4, 12, [[0, 0], [8, 0], [8, 6]], 7.5],                // 10 slot out
+  [LOS - 4.6, 0, [[0, 0], [-2.7, 0]], 3.5],
+  [LOS - 4.6, -1.6, [[0, 0], [1.5, -3], [4.5, -8]], 6],
+  [LOS - .6, 4.3, [[0, 0], [6, 0], [5, -1.5]], 6.5],
+  [LOS - .5, -20, [[0, 0], [32, 0]], 8.5],
+  [LOS - .5, 18, [[0, 0], [11, 0], [26, -10]], 8.5],
+  [LOS - 1.4, 12, [[0, 0], [8, 0], [8, 6]], 7.5],
 ].map(([x, z, r, v]) => { const p = r.map(q => [x + q[0], z + q[1]]); return { x, z, p, cum: pathCum(p), v }; });
 function routeAt(i, t) { const O = OFFS[i], s = Math.max(0, t - SNAP) * O.v, q = pathAt(O.p, O.cum, Math.min(s, O.cum[O.cum.length - 1])); return [q[0], 0, q[1]]; }
 const CATCHP = routeAt(9, CATCH), YAC = [CATCHP[0] + 9, 0, CATCHP[2] - 4.5];
@@ -608,19 +610,23 @@ const PLAY = (() => {
   const w = offPos(9, THROW); let best = 1e9; for (let i = 0; i < 11; i++) { const d = defPos(i, THROW); best = Math.min(best, Math.hypot(d[0] - w[0], d[2] - w[2])); }
   return { sepYd: best / YD, airYd: (CATCHP[0] - LOS) / YD, ttt: THROW - SNAP };
 })();
-const FIELDCAM = { yaw: .04, pitch: 1.12, dist: 112, f: 1000, tx: LOS + 10, ty: 0, tz: 0, cx: 780, cy: 530 };
-function fieldCam(t) { return cam(Object.assign({}, FIELDCAM, { yaw: lerp(-.12, .04, ease(seg(t, 24, 38))) })); }
+// field camera: end-zone view, the offence attacks up the frame
+function fieldCamO(t) {
+  const k4 = ease(seg(t, 31.6, 33.2));
+  return { yaw: Math.PI / 2 + lerp(-.12, .04, ease(seg(t, 24, 38))), pitch: 1.1, dist: lerp(78, 100, k4), f: 1000, tx: lerp(LOS + 12, 30, k4), ty: 0, tz: 0, cx: 540, cy: 640 };
+}
+const fieldCam = t => cam(fieldCamO(t));
 let _playDot = null;
 function playDot() { if (!_playDot) _playDot = fieldCam(24.6).p(...offPos(9, 24.6)); return _playDot; }
 
 /* =====================================================================
-   SCENE 02 — THE PLAYER  (10 – 24.6)
+   02 — THE PLAYER  (10 – 24.6)
    ===================================================================== */
 const PAD_CAPS = CAPS.map(cp => cp[0] === 'shL' && cp[1] === 'shR' ? ['shL', 'shR', .12, .12] : cp[0] === 'chest' && cp[1] === 'neck' ? ['chest', 'neck', .17, .09] : cp);
 function playerCam(t) {
-  const o = { yaw: lerp(-.55, .45, ease(seg(t, 10, 23))), pitch: .06, dist: lerp(3.25, 2.85, ease(seg(t, 10, 22.6))), f: 1000, tx: .05, ty: .95, tz: 0, cx: 900, cy: 500 };
+  const o = { yaw: lerp(-.55, .45, ease(seg(t, 10, 23))), pitch: .06, dist: lerp(3.6, 3.15, ease(seg(t, 10, 22.6))), f: 1000, tx: .05, ty: .95, tz: 0, cx: 560, cy: 640 };
   const k = ease(seg(t, 22.8, 24.4));
-  if (k > 0) { const d = playDot(); o.dist *= 1 + 34 * k * k; o.pitch = lerp(.06, 1.15, k); o.cx = lerp(900, d[0], k); o.cy = lerp(500, d[1], k); }
+  if (k > 0) { const d = playDot(); o.dist *= 1 + 34 * k * k; o.pitch = lerp(.06, 1.15, k); o.cx = lerp(560, d[0], k); o.cy = lerp(640, d[1], k); }
   return cam(o);
 }
 function sPlayer(c, t) {
@@ -628,40 +634,34 @@ function sPlayer(c, t) {
   for (const k in J) pj[k] = cm.p(J[k][0], J[k][1], J[k][2]);
   const fwd = cm.p(J.chest[0] + .1, J.chest[1], J.chest[2]), fdx = fwd[0] - pj.chest[0], fdy = fwd[1] - pj.chest[1], fl = Math.hypot(fdx, fdy) || 1, fd = [fdx / fl, fdy / fl];
   const exitK = seg(t, 22.8, 24.4), ov = 1 - smooth(seg(t, 22.4, 23.1)), figA = 1 - smooth(seg(t, 23.6, 24.3));
-  // turf disc
   const fa = env(t, 10.4, 11.4, 22.4, 23.2);
   if (fa > 0) {
     const sh = cm.p(.05, 0, 0), shR = .42 * sh[3], g = c.createRadialGradient(sh[0], sh[1], 0, sh[0], sh[1], shR); g.addColorStop(0, rgba('graphite', .12 * fa)); g.addColorStop(1, rgba('graphite', 0));
     c.save(); c.translate(sh[0], sh[1]); c.scale(1, .12); c.fillStyle = g; c.beginPath(); c.arc(0, 0, shR, 0, TAU); c.fill(); c.restore();
     for (const r of [.4, .7]) { c.beginPath(); for (let i = 0; i <= 64; i++) { const a = i / 64 * TAU, q = cm.p(r * Math.cos(a), 0, r * Math.sin(a)); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.strokeStyle = rgba('mid', .55 * fa); c.lineWidth = 1; c.stroke(); }
-    c.beginPath(); for (const [a, b] of [[[-.9, 0, 0], [.9, 0, 0]], [[0, 0, -.7], [0, 0, .7]]]) { const p = cm.p(...a), q = cm.p(...b); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('mid', .35 * fa); c.stroke();
   }
-  // layers: skin -> muscle -> skeleton
   const scan1 = seg(t, 12.0, 14.0), scan2 = seg(t, 15.0, 17.0);
   const topY = pj.head[1] - .15 * pj.head[3] - 10, botY = cm.p(0, 0, 0)[1] + 12, skinIn = smooth(seg(t, 10.0, 11.2)) * figA;
   const L0 = () => drawSilhouette(c, pj, skinIn, PAD_CAPS, .135);
   const L1 = () => { drawSilhouette(c, pj, .34 * skinIn, PAD_CAPS, .135); drawMuscles(c, pj, fd, figA); };
   const L2 = () => { drawSilhouette(c, pj, .24 * skinIn, PAD_CAPS, .135); drawMuscles(c, pj, fd, .2 * figA); drawSkeleton(c, pj, fd, figA); };
   const clipDraw = (y, above, fn) => { c.save(); c.beginPath(); above ? c.rect(0, 0, W, y) : c.rect(0, y, W, H - y); c.clip(); fn(); c.restore(); };
-  let scanY = null, scanName = '';
+  let scanY = null;
   if (scan1 <= 0) L0();
-  else if (scan1 < 1) { scanY = lerp(topY, botY, ease(scan1)); scanName = 'PADS → MUSCLE'; clipDraw(scanY, false, L0); clipDraw(scanY, true, L1); }
+  else if (scan1 < 1) { scanY = lerp(topY, botY, ease(scan1)); clipDraw(scanY, false, L0); clipDraw(scanY, true, L1); }
   else if (scan2 <= 0) L1();
-  else if (scan2 < 1) { scanY = lerp(topY, botY, ease(scan2)); scanName = 'MUSCLE → SKELETON'; clipDraw(scanY, false, L1); clipDraw(scanY, true, L2); }
+  else if (scan2 < 1) { scanY = lerp(topY, botY, ease(scan2)); clipDraw(scanY, false, L1); clipDraw(scanY, true, L2); }
   else L2();
   if (scanY !== null) {
-    const x0 = pj.pelvis[0] - 260, x1 = pj.pelvis[0] + 260, g = c.createLinearGradient(0, scanY - 40, 0, scanY);
+    const x0 = pj.pelvis[0] - 300, x1 = pj.pelvis[0] + 300, g = c.createLinearGradient(0, scanY - 40, 0, scanY);
     g.addColorStop(0, rgba('cyan', 0)); g.addColorStop(1, rgba('cyan', .16)); c.fillStyle = g; c.fillRect(x0, scanY - 40, x1 - x0, 40);
     c.beginPath(); c.moveTo(x0, scanY); c.lineTo(x1, scanY); glowStroke(c, 'cyan', .9, 1.4, 12);
-    txt(c, 'SCAN · ' + scanName, x0 - 14, scanY + 5, { size: 13, ls: 2, color: 'blue', align: 'right' });
   }
-  // helmet facemask
   const hd = pj.head, hr = .135 * hd[3];
   c.beginPath();
   for (const dy of [-.05, .22, .45]) { const cx0 = hd[0] + fd[0] * hr * .55, cy0 = hd[1] + hr * dy; c.moveTo(cx0, cy0); c.lineTo(cx0 + fd[0] * hr * .6, cy0 + hr * .08); }
   c.moveTo(hd[0] + fd[0] * hr * 1.1, hd[1] - hr * .05); c.lineTo(hd[0] + fd[0] * hr * 1.05, hd[1] + hr * .55);
   c.strokeStyle = rgba('graphite', .7 * figA); c.lineWidth = 1.6; c.stroke();
-  // RFID tags in the shoulder pads
   const ga = env(t, 10.8, 11.5, 22.4, 23.1);
   const tags = ['shL', 'shR'].map(k => cm.p(J[k][0], J[k][1] + .07, J[k][2]));
   if (ga > 0) {
@@ -669,67 +669,37 @@ function sPlayer(c, t) {
       marker(c, q[0], q[1], ga, 10);
       for (let r = 0; r < 2; r++) { const ph = ((t * 2 + r / 2 + i * .25) % 1); c.beginPath(); c.arc(q[0], q[1], 8 + 26 * ph, 0, TAU); c.strokeStyle = rgba('cyan', (1 - ph) * ga); c.lineWidth = 1.2; c.stroke(); }
     });
-    ['kneeR', 'ankleR', 'haR', 'kneeL', 'ankleL'].forEach((k, i) => { const q = pj[k]; marker(c, q[0], q[1], .6 * ga * smooth(seg(t, 11.6 + i * .15, 12.1 + i * .15)) * (k.endsWith('L') ? .55 : 1), 7); });
-    const [tl, tr] = tags[0][2] > tags[1][2] ? [tags[0], tags[1]] : [tags[1], tags[0]];  // far, near
-    leader(c, tl[0], tl[1], 120, 320, seg(t, 16.6, 18.0), 'RFID tag', 'Far shoulder pad', { a: ov });
-    leader(c, tr[0], tr[1], 120, 460, seg(t, 17.1, 18.5), 'RFID tag', 'Near shoulder pad · ~10 reads / s', { a: ov });
+    const tr = tags[0][2] > tags[1][2] ? tags[1] : tags[0];
+    lab(c, tr[0], tr[1], MX, 330, seg(t, 16.6, 18.0), 'RFID tags', ov);
     const ham = cm.p(...lerp3(J.hipR, J.kneeR, .5));
-    leader(c, ham[0], ham[1], 120, 640, seg(t, 17.8, 19.2), 'Muscle load', 'Hamstring strain risk, tracked', { a: ov });
+    lab(c, ham[0], ham[1], MX, 420, seg(t, 17.8, 19.2), 'Muscle load', ov);
   }
-  // orbiting data rings
   const oa = env(t, 11.6, 12.6, 22.4, 23.1) * figA;
   if (oa > 0) {
-    const rings = [[1.02, .62, .1, .7, ['21.3 mph', '2.8 yd sep.', '46 yd']], [1.62, .5, -.16, -.5, ['RFID 10 Hz', 'ROUTE: POST', 'LOAD ▲']]], dRef = cm.o.dist;
-    rings.forEach(([y, r, tilt, sp, tg], ri) => {
+    const rings = [[1.02, .62, .1, .7], [1.62, .5, -.16, -.5]], dRef = cm.o.dist;
+    rings.forEach(([y, r, tilt, sp], ri) => {
       const pts = []; for (let i = 0; i <= 96; i++) { const a = i / 96 * TAU; pts.push(cm.p(r * Math.cos(a), y + tilt * Math.sin(a), r * Math.sin(a))); }
       const dp = easeOut(seg(t, 11.6 + ri * .4, 13.0 + ri * .4)), vis = pts.slice(0, Math.max(2, Math.round(dp * 96) + 1));
       c.setLineDash([3, 5]); strokeDepth(c, vis, dRef, rgba('blue', .7 * oa), 1, rgba('blue', .22 * oa), 1); c.setLineDash([]);
-      tg.forEach((s, k) => {
-        const a = t * sp + k * TAU / 3 + ri, q = cm.p(r * Math.cos(a), y + tilt * Math.sin(a), r * Math.sin(a)), front = q[2] < dRef, na = oa * dp * (front ? 1 : .35);
-        c.beginPath(); c.arc(q[0], q[1], front ? 4 : 3, 0, TAU); c.fillStyle = rgba('blue', na); c.fill();
-        c.beginPath(); c.moveTo(q[0] + 6, q[1] - 6); c.lineTo(q[0] + 18, q[1] - 18); c.strokeStyle = rgba('mid', na); c.lineWidth = 1; c.stroke();
-        txt(c, s, q[0] + 22, q[1] - 20, { size: 13, ls: 1, color: front ? 'graphite' : 'mid', a: na });
-      });
+      for (let k = 0; k < 3; k++) { const a = t * sp + k * TAU / 3 + ri, q = cm.p(r * Math.cos(a), y + tilt * Math.sin(a), r * Math.sin(a)), front = q[2] < dRef; c.beginPath(); c.arc(q[0], q[1], front ? 4 : 3, 0, TAU); c.fillStyle = rgba('blue', oa * dp * (front ? 1 : .35)); c.fill(); }
     });
   }
-  // right column — speed trace + rows
-  const pa = env(t, 12.6, 13.2, 22.4, 23.1), X = 1420;
-  if (pa > 0) {
-    kicker(c, 'TOP SPEED', X, 250, seg(t, 12.6, 13.2), pa);
-    const mph = 21.3 * easeOut(seg(t, 12.8, 16.5));
-    txt(c, fmt(mph, 1), X, 322, { w: 700, size: 64, color: 'blue', a: pa });
-    c.font = `700 64px ${FONT}`; const bw = c.measureText(fmt(mph, 1)).width; txt(c, 'mph', X + bw + 10, 322, { size: 22, a: pa });
-    const p = easeOut(seg(t, 12.8, 16.5));
-    c.beginPath(); for (let i = 0; i <= 80 * p; i++) { const u = i / 80, x = X + u * 380, y = 400 - 56 * (1 - Math.exp(-u * 4.2)); i ? c.lineTo(x, y) : c.moveTo(x, y); }
-    c.strokeStyle = rgba('blue', pa); c.lineWidth = 2; c.stroke();
-    c.fillStyle = rgba('light', pa); c.fillRect(X, 400, 380, 1);
-    txt(c, '0 → 40 yd', X, 422, { size: 13, color: 'mid', a: pa });
-    [['ACCELERATION', 4.8, 1, ' yd/s²', .6, 14.0], ['DISTANCE · THIS PLAY', 46, 0, ' yd', .46, 14.5], ['SEPARATION', 2.8, 1, ' yd', .35, 15.0]].forEach(([n, v, d, u, frac, t0], i) => {
-      const ra = env(t, t0, t0 + .5, 22.4, 23.1), y = 500 + i * 100, pp = easeOut(seg(t, t0, t0 + 1.4)); if (ra <= 0) return;
-      kicker(c, n, X, y, seg(t, t0, t0 + .6), ra);
-      txt(c, fmt(v * pp, d) + u, X, y + 40, { w: 700, size: 32, a: ra });
-      c.fillStyle = rgba('light', ra); c.fillRect(X, y + 56, 380, 3); c.fillStyle = rgba('blue', ra); c.fillRect(X, y + 56, 380 * frac * pp, 3);
-    });
-    txt(c, 'Values illustrative', X, 820, { size: 13, color: 'mid', a: pa * smooth(seg(t, 15.5, 16.5)) });
-  }
+  stat(c, 'TOP SPEED', fmt(21.3 * easeOut(seg(t, 12.8, 16.5)), 1) + ' mph', MX, 210, seg(t, 12.6, 13.6), env(t, 12.6, 13.2, 22.4, 23.1));
   const da = smooth(seg(t, 23.5, 24.1));
   if (da > 0) { const d = playDot(), q = [lerp(pj.pelvis[0], d[0], exitK), lerp(pj.pelvis[1], d[1], exitK)]; c.beginPath(); c.arc(q[0], q[1], 7, 0, TAU); c.fillStyle = rgba('blue', da); c.fill(); }
-  kicker(c, 'FIG. 02 — THE PLAYER, LAYER BY LAYER', 120, 862, seg(t, 11.0, 12.0), ov);
-  headline(c, [['Two RFID tags', 'blue'], [' in the shoulder pads track every player about 10 times a second.', 'graphite']], 120, 925, seg(t, 12.4, 15.0), { size: 44, maxW: 1100, a: ov });
+  head(c, [['Two RFID tags', 'blue'], [' track every player.', 'graphite']], seg(t, 12.4, 14.4), ov);
 }
 
 /* =====================================================================
-   SCENE 03 — THE PLAY, DECODED  (24 – 40.6)
+   03 — THE PLAY, DECODED  (24 – 40.6)
    ===================================================================== */
 function sPlay(c, t) {
   const cm = fieldCam(t), ia = smooth(seg(t, 24.0, 24.8));
   drawField(c, cm, { a: ia, lines: i => easeOut(seg(t, 24.0 + i * .03, 25.0 + i * .03)) });
   const P = (x, y, z) => cm.p(x, y, z);
-  const playA = 1 - smooth(seg(t, 32.0, 32.8));
-  // line of scrimmage + line to gain
+  const playA = 1 - smooth(seg(t, 31.4, 32.2));
   const lineAt = (x, col, a, w) => { const p = P(x, 0, -FZ), q = P(x, 0, FZ); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.strokeStyle = rgba(col, a); c.lineWidth = w; c.stroke(); };
   if (playA > 0) { lineAt(LOS, 'blue', .9 * ia * playA, 2.4); lineAt(LOS + 10 * YD, 'cyan', .95 * ia * playA, 3); }
-  // planned routes
   const ra = smooth(seg(t, 24.6, 25.2)) * (1 - smooth(seg(t, 30.0, 31.0)));
   if (ra > 0) for (const i of [6, 7, 8, 9, 10]) {
     const O = OFFS[i], pr = O.p.map(q => P(q[0], 0, q[1]));
@@ -737,78 +707,58 @@ function sPlay(c, t) {
     const a = pr[pr.length - 2], b = pr[pr.length - 1], ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
     c.beginPath(); c.moveTo(b[0], b[1]); c.lineTo(b[0] - 9 * Math.cos(ang - .45), b[1] - 9 * Math.sin(ang - .45)); c.moveTo(b[0], b[1]); c.lineTo(b[0] - 9 * Math.cos(ang + .45), b[1] - 9 * Math.sin(ang + .45)); c.strokeStyle = rgba('blue', .7 * ra); c.lineWidth = 1.4; c.stroke();
   }
-  // players with trails
   if (playA > 0) {
     for (let i = 0; i < 11; i++) {
       const tr = []; for (let k = 0; k < 10; k++) tr.push(P(...defPos(i, t - k * .12)));
       for (let k = 1; k < tr.length; k++) { c.beginPath(); c.moveTo(tr[k - 1][0], tr[k - 1][1]); c.lineTo(tr[k][0], tr[k][1]); c.strokeStyle = rgba('mid', ia * playA * (1 - k / 10) * .8); c.lineWidth = 1.2; c.stroke(); }
-      c.beginPath(); c.arc(tr[0][0], tr[0][1], 6, 0, TAU); c.strokeStyle = rgba('mid', ia * playA); c.lineWidth = 1.6; c.stroke();
+      c.beginPath(); c.arc(tr[0][0], tr[0][1], 7, 0, TAU); c.strokeStyle = rgba('mid', ia * playA); c.lineWidth = 1.6; c.stroke();
     }
     for (let i = 0; i < 11; i++) {
       const tr = []; for (let k = 0; k < 10; k++) tr.push(P(...offPos(i, t - k * .12)));
       for (let k = 1; k < tr.length; k++) { c.beginPath(); c.moveTo(tr[k - 1][0], tr[k - 1][1]); c.lineTo(tr[k][0], tr[k][1]); c.strokeStyle = rgba('blue', ia * playA * (1 - k / 10) * .85); c.lineWidth = 2; c.stroke(); }
-      c.beginPath(); c.arc(tr[0][0], tr[0][1], i === 9 ? 8 : 6.5, 0, TAU); c.fillStyle = rgba('blue', ia * playA); c.fill();
+      c.beginPath(); c.arc(tr[0][0], tr[0][1], i === 9 ? 9 : 7.5, 0, TAU); c.fillStyle = rgba('blue', ia * playA); c.fill();
     }
-    // separation ring at the throw
     const sa = env(t, THROW - .1, THROW + .2, 30.6, 31.2);
     if (sa > 0) {
       const w = offPos(9, Math.min(t, CATCH)), R = PLAY.sepYd * YD, ring = [];
       for (let i = 0; i <= 48; i++) { const a = i / 48 * TAU; ring.push(P(w[0] + R * Math.cos(a), 0, w[2] + R * Math.sin(a))); }
       c.beginPath(); ring.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.fillStyle = rgba('cyan', .15 * sa); c.fill(); c.strokeStyle = rgba('cyan', sa); c.lineWidth = 1.4; c.stroke();
-      const q = P(w[0], 0, w[2] + R); txt(c, fmt(PLAY.sepYd, 1) + ' yd', q[0] + 10, q[1] - 8, { w: 700, size: 16, color: 'blue', a: sa });
     }
-    // ball
     const b = ballPos(t), bq = P(...b), sq = P(b[0], 0, b[2]);
     if (t > THROW && t < CATCH + .4) {
       const pts = []; for (let k = 0; k <= 30; k++) { const tt = THROW + (CATCH - THROW) * k / 30; if (tt > t) break; pts.push(P(...ballPos(tt))); }
-      c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .9 * playA, 1.6, 8);
+      c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .9 * playA, 1.8, 8);
     }
     c.beginPath(); c.ellipse(sq[0], sq[1], 5, 2.5, 0, 0, TAU); c.fillStyle = rgba('graphite', .18 * playA); c.fill();
-    c.beginPath(); c.ellipse(bq[0], bq[1], 6, 4, -.4, 0, TAU); c.fillStyle = rgba('white', playA); c.fill(); c.strokeStyle = rgba('graphite', playA); c.lineWidth = 1.3; c.stroke();
-    const cpA = env(t, THROW, THROW + .2, CATCH + .4, CATCH + .9);
-    if (cpA > 0) { const cp = Math.round(41 * easeOut(seg(t, THROW, CATCH))); txt(c, 'COMPLETION PROBABILITY', bq[0] - 16, bq[1] - 30, { size: 12, ls: 2, color: 'mid', a: cpA, align: 'right' }); txt(c, cp + '%', bq[0] - 16, bq[1] - 4, { w: 700, size: 24, color: 'blue', a: cpA, align: 'right' }); }
+    c.beginPath(); c.ellipse(bq[0], bq[1], 7, 4.5, -.4, 0, TAU); c.fillStyle = rgba('white', playA); c.fill(); c.strokeStyle = rgba('graphite', playA); c.lineWidth = 1.3; c.stroke();
     if (t > CATCH && t < CATCH + .8) { const r = (t - CATCH) / .8, q = P(...CATCHP); c.beginPath(); c.arc(q[0], q[1], 8 + 40 * r, 0, TAU); c.strokeStyle = rgba('cyan', 1 - r); c.lineWidth = 2; c.stroke(); }
   }
-  // right column — the tracked play
-  const X = 1440, ca = env(t, 26.2, 26.8, 31.8, 32.4);
-  if (ca > 0) {
-    kicker(c, 'THIS PLAY · TRACKING + MODEL', X, 250, seg(t, 26.2, 26.8), ca, 'blue');
-    [['TIME TO THROW', fmt(PLAY.ttt * easeOut(seg(t, SNAP, THROW)), 1) + ' s', 26.4], ['SEPARATION AT THROW', fmt(PLAY.sepYd * easeOut(seg(t, THROW, THROW + .8)), 1) + ' yd', THROW],
-      ['AIR YARDS', String(Math.round(PLAY.airYd * easeOut(seg(t, THROW, CATCH)))), THROW + .3], ['COMPLETION PROBABILITY', Math.round(41 * easeOut(seg(t, THROW, CATCH))) + '%', THROW + .6]].forEach(([n, v, t0], i) => {
-      const y = 320 + i * 104, a = ca * smooth(seg(t, t0, t0 + .4)); kicker(c, n, X, y, seg(t, t0, t0 + .6), a); txt(c, v, X - 2, y + 48, { w: 700, size: 40, color: i === 3 ? 'blue' : 'graphite', a });
-    });
-    txt(c, 'Probability from an illustrative model', X, 760, { size: 13, color: 'mid', a: ca * smooth(seg(t, THROW + .6, THROW + 1.2)) });
-  }
+  stat(c, 'SEPARATION', fmt(PLAY.sepYd * easeOut(seg(t, THROW, THROW + .8)), 1) + ' yd', MX, 200, seg(t, THROW - .2, THROW + .6), env(t, THROW - .2, THROW + .2, 31.4, 32.0));
+  stat(c, 'CATCH PROBABILITY', Math.round(41 * easeOut(seg(t, THROW, CATCH))) + '%', 620, 200, seg(t, THROW + .2, THROW + 1.0), env(t, THROW, THROW + .4, 31.4, 32.0));
   // fourth down
   const fa = env(t, 32.6, 33.2, 39.8, 40.4);
   if (fa > 0) {
     const spot = yx(62), gain = yx(64);
     lineAt(spot, 'blue', .9 * fa, 2.4); lineAt(gain, 'cyan', .95 * fa, 3);
-    const sp = P(spot, 0, -3); c.beginPath(); c.ellipse(sp[0], sp[1], 6, 4, -.4, 0, TAU); c.fillStyle = rgba('white', fa); c.fill(); c.strokeStyle = rgba('graphite', fa); c.stroke();
+    const sp = P(spot, 0, -3); c.beginPath(); c.ellipse(sp[0], sp[1], 7, 4.5, -.4, 0, TAU); c.fillStyle = rgba('white', fa); c.fill(); c.strokeStyle = rgba('graphite', fa); c.stroke();
     const arc = (to, h, p, col, dash) => { const pts = []; for (let k = 0; k <= 30; k++) { const u = k / 30; pts.push(P(lerp(spot, to[0], u), h * Math.sin(Math.PI * u) + (to[1] || 0) * u, lerp(-3, to[2], u))); } c.setLineDash(dash ? [6, 6] : []); c.beginPath(); polyPartial(c, pts, p); c.strokeStyle = rgba(col, fa); c.lineWidth = col === 'blue' ? 2.6 : 1.6; c.stroke(); c.setLineDash([]); return pts[30]; };
-    const g = arc([gain + 1.5, 0, -3], 0, easeOut(seg(t, 33.4, 34.2)), 'blue', false);
-    const fg = arc([FX + 1.2, 5, 0], 6, easeOut(seg(t, 33.9, 34.9)), 'mid', true);
-    const pu = arc([yx(90), 0, 8], 11, easeOut(seg(t, 34.4, 35.6)), 'mid', true);
-    txt(c, 'GO', g[0] + 10, g[1] + 22, { w: 700, size: 15, ls: 2, color: 'blue', a: fa * smooth(seg(t, 34.0, 34.4)) });
-    txt(c, 'FIELD GOAL', fg[0] - 18, fg[1] - 18, { size: 13, ls: 2, color: 'graphite', a: fa * smooth(seg(t, 34.7, 35.1)), align: 'right' });
-    txt(c, 'PUNT', pu[0] - 10, pu[1] - 14, { size: 13, ls: 2, color: 'graphite', a: fa * smooth(seg(t, 35.4, 35.8)) });
-    kicker(c, '4TH & 2 · OPPONENT 38', X, 250, seg(t, 33.0, 33.6), fa, 'blue');
-    kicker(c, 'WIN PROBABILITY · ILLUSTRATIVE MODEL', X, 280, seg(t, 33.2, 34.0), fa);
+    arc([gain + 1.5, 0, -3], 0, easeOut(seg(t, 33.4, 34.2)), 'blue', false);
+    arc([FX + 1.2, 5, 0], 6, easeOut(seg(t, 33.9, 34.9)), 'mid', true);
+    arc([yx(90), 0, 8], 11, easeOut(seg(t, 34.4, 35.6)), 'mid', true);
+    kicker(c, '4TH & 2 · WIN PROBABILITY', MX, 190, seg(t, 33.0, 33.8), fa, 'blue');
     [['GO FOR IT', 54, 'blue'], ['FIELD GOAL', 47, 'mid'], ['PUNT', 45, 'mid']].forEach(([n, v, col], i) => {
-      const t0 = 34.0 + i * .35, p = easeOut(seg(t, t0, t0 + 1.2)), y = 350 + i * 86;
-      txt(c, n, X, y, { size: 15, ls: 1, color: 'graphite', a: fa * smooth(seg(t, t0, t0 + .3)) });
-      c.fillStyle = rgba('light', fa); c.fillRect(X, y + 14, 360, 10); c.fillStyle = rgba(col, fa); c.fillRect(X, y + 14, 360 * v / 60 * p, 10);
-      txt(c, Math.round(v * p) + '%', X + 360, y, { w: 700, size: 18, color: col === 'blue' ? 'blue' : 'graphite', a: fa * smooth(seg(t, t0, t0 + .3)), align: 'right' });
+      const t0 = 34.0 + i * .35, p = easeOut(seg(t, t0, t0 + 1.2)), y = 250 + i * 76;
+      txt(c, n, MX, y, { w: 700, size: 22, color: col === 'blue' ? 'blue' : 'graphite', a: fa * smooth(seg(t, t0, t0 + .3)) });
+      c.fillStyle = rgba('light', fa); c.fillRect(MX, y + 14, 700, 12); c.fillStyle = rgba(col, fa); c.fillRect(MX, y + 14, 700 * v / 60 * p, 12);
+      txt(c, Math.round(v * p) + '%', MX + 720, y + 28, { w: 700, size: 26, color: col === 'blue' ? 'blue' : 'graphite', a: fa * smooth(seg(t, t0, t0 + .3)) });
     });
-    headline(c, [['Fourth-down attempts have risen sharply as coaches trust the models.', 'graphite']], X, 650, seg(t, 35.4, 37.0), { size: 20, w: 300, maxW: 360, lh: 1.4, a: fa });
   }
-  kicker(c, 'FIG. 03 — ALL 22, TRACKED', 120, 902, seg(t, 24.6, 25.4), ia * (1 - smooth(seg(t, 39.6, 40.3))));
-  headline(c, [['The play, ', 'graphite'], ['decoded.', 'blue']], 120, 962, seg(t, 24.8, 25.9), { size: 44, a: 1 - smooth(seg(t, 32.0, 32.6)) });
-  headline(c, [['Analytics changed ', 'graphite'], ['fourth down.', 'blue']], 120, 962, seg(t, 33.0, 34.4), { size: 44, a: 1 - smooth(seg(t, 39.6, 40.3)) });
+  head(c, [['The play, ', 'graphite'], ['decoded.', 'blue']], seg(t, 24.8, 25.9), 1 - smooth(seg(t, 31.6, 32.2)));
+  head(c, [['Analytics changed ', 'graphite'], ['fourth down.', 'blue']], seg(t, 33.0, 34.4), 1 - smooth(seg(t, 39.6, 40.3)));
 }
 
 /* =====================================================================
-   SCENE 04 — THE STADIUM  (40 – 56.6)
+   04 — THE STADIUM  (40 – 56.6)
    ===================================================================== */
 function drawPetals(c, cm, dy, open, a, glow = 0) {
   if (a <= 0) return;
@@ -825,13 +775,13 @@ function drawPetals(c, cm, dy, open, a, glow = 0) {
   }
 }
 const N4KEYS = [
-  Object.assign({ t: 40.0 }, FIELDCAM), Object.assign({ t: 40.4 }, FIELDCAM),
-  { t: 42.8, yaw: .55, pitch: .6, dist: 340, f: 1000, tx: 0, ty: 22, tz: 0, cx: 1040, cy: 560 },
-  { t: 44.6, yaw: .75, pitch: .55, dist: 370, f: 1000, tx: 0, ty: 26, tz: 0, cx: 1080, cy: 560 },
-  { t: 47.0, yaw: 1.0, pitch: .42, dist: 470, f: 1000, tx: 0, ty: 62, tz: 0, cx: 1140, cy: 545 },
-  { t: 49.6, yaw: .7, pitch: .42, dist: 480, f: 1000, tx: 0, ty: 62, tz: 0, cx: 1140, cy: 545 },
-  { t: 51.6, yaw: -.15, pitch: .62, dist: 440, f: 1000, tx: 20, ty: 18, tz: 0, cx: 1000, cy: 500 },
-  { t: 56.6, yaw: -.5, pitch: .62, dist: 500, f: 1000, tx: 70, ty: 14, tz: 0, cx: 1000, cy: 480 },
+  Object.assign({ t: 40.0 }, fieldCamO(40)), Object.assign({ t: 40.4 }, fieldCamO(40)),
+  { t: 42.8, yaw: .55, pitch: .6, dist: 330, f: 1000, tx: 0, ty: 22, tz: 0, cx: 560, cy: 700 },
+  { t: 44.6, yaw: .75, pitch: .55, dist: 360, f: 1000, tx: 0, ty: 26, tz: 0, cx: 580, cy: 720 },
+  { t: 47.0, yaw: 1.0, pitch: .42, dist: 430, f: 1000, tx: 0, ty: 50, tz: 0, cx: 640, cy: 640 },
+  { t: 49.6, yaw: .7, pitch: .42, dist: 440, f: 1000, tx: 0, ty: 50, tz: 0, cx: 640, cy: 640 },
+  { t: 51.6, yaw: -.15, pitch: .62, dist: 400, f: 1000, tx: 20, ty: 18, tz: 0, cx: 540, cy: 640 },
+  { t: 56.6, yaw: -.5, pitch: .62, dist: 470, f: 1000, tx: 70, ty: 14, tz: 0, cx: 540, cy: 620 },
 ];
 function sArena(c, t) {
   const cm = cam(camKeys(N4KEYS, t));
@@ -845,111 +795,146 @@ function sArena(c, t) {
   drawPetals(c, cm, OFF.roof * e, ease(seg(t, 51.6, 53.6)), smooth(seg(t, 42.4, 43.6)));
   const la = 1 - smooth(seg(t, 49.4, 50.0));
   if (t > 46.2 && la > 0) {
-    const seats = fmt(Math.round(70000 * easeOut(seg(t, 47.6, 48.8))));
-    const items = [['Roof', 'Ring truss + aperture petals', ringP(cm, 124, 104, 48 + OFF.roof * e), 46.4], ['Skin', 'Façade envelope', ringP(cm, 121, 101, 21 + OFF.skin * e), 46.8],
-      ['Systems', 'Power, air, data, RF tracking', ringP(cm, 110, 92, 30 + OFF.sys * e), 47.2], ['Circulation', 'Concourses, vomitories', ringP(cm, 115, 97, 20 + OFF.circ * e), 47.6],
-      ['Bowl', `${seats} seats`, ringP(cm, 106, 88, 25), 48.0], ['Foundations', 'Piles, ground beams', ringP(cm, 121, 101, -3 + OFF.found * e), 48.4]];
+    const items = [['Roof', ringP(cm, 124, 104, 48 + OFF.roof * e), 46.4], ['Skin', ringP(cm, 121, 101, 21 + OFF.skin * e), 46.8],
+      ['Systems', ringP(cm, 110, 92, 30 + OFF.sys * e), 47.2], ['Circulation', ringP(cm, 115, 97, 20 + OFF.circ * e), 47.6],
+      ['Bowl', ringP(cm, 106, 88, 25), 48.0], ['Foundations', ringP(cm, 121, 101, -3 + OFF.found * e), 48.4]];
     let lastY = -1e9;
-    items.forEach(([title, sub, pts, ts]) => { const q = leftmost(pts), ty = Math.max(q[1] + 8, lastY + 74); lastY = ty; leader(c, q[0], q[1], 120, ty, seg(t, ts, ts + 1.4), title, sub, { a: la }); });
+    items.forEach(([title, pts, ts]) => { const q = leftmost(pts), ty = Math.max(q[1] - 30, lastY + 60); lastY = ty; lab(c, q[0], q[1], MX, ty, seg(t, ts, ts + 1.4), title, la); });
   }
   const pa = env(t, 52.0, 52.4, 55.8, 56.4);
-  const pc = cm.p(0, 50, 0); leader(c, pc[0], pc[1], 120, 330, seg(t, 52.0, 53.4), 'Atlanta', 'An eight-petal roof opens like a camera aperture', { a: pa });
-  const fq = cm.p(175 * tray - FX, lift, -FZ); leader(c, fq[0], fq[1], 120, 500, seg(t, 53.4, 54.8), 'Las Vegas', 'The natural-grass field rolls outside on a tray to grow', { a: pa });
-  kicker(c, 'FIG. 04 — COMPOSITE STADIUM, EXPLODED', 120, 902, seg(t, 44.8, 45.8), 1 - smooth(seg(t, 55.8, 56.4)));
-  headline(c, [['A stadium is a ', 'graphite'], ['machine.', 'blue']], 120, 962, seg(t, 46.8, 48.2), { size: 50, a: 1 - smooth(seg(t, 51.0, 51.6)) });
-  headline(c, [['It opens its roof', 'blue'], [' and moves its own field.', 'graphite']], 120, 962, seg(t, 52.2, 54.0), { size: 50, maxW: 1500, a: 1 - smooth(seg(t, 55.8, 56.4)) });
+  const pc = cm.p(0, 50, 0); lab(c, pc[0], pc[1], MX, 260, seg(t, 52.0, 53.4), 'Aperture roof', pa);
+  const fq = cm.p(175 * tray - FX, lift, -FZ); lab(c, fq[0], fq[1], MX, 340, seg(t, 53.6, 55.0), 'Field on a tray', pa);
+  head(c, [['A stadium is a ', 'graphite'], ['machine.', 'blue']], seg(t, 46.8, 48.2), 1 - smooth(seg(t, 51.0, 51.6)));
+  head(c, [['Roofs open.', 'blue'], [' Fields roll outside.', 'graphite']], seg(t, 52.2, 54.0), 1 - smooth(seg(t, 55.8, 56.4)));
 }
 
 /* =====================================================================
-   SCENE 05 — SOUND & SIGHT  (56 – 68.6)
+   05 — ACOUSTICS  (56 – 70.6): half-section through one sideline stand
    ===================================================================== */
+const ST_N = 52, stRow = i => [58.5 + i * .95, 2 + i * .64 + .9];
 function sRoar(c, t) {
-  const O = [960, 770], k = 4.8, X = m => O[0] + m * k, Y = m => O[1] - m * k;
-  const ia = smooth(seg(t, 56.0, 56.7)), fo = 1 - smooth(seg(t, 62.0, 62.6)), lvl = ease(seg(t, 57.0, 60.2));
+  const O = [-300, 900], k = 11.5, X = m => O[0] + m * k, Y = m => O[1] - m * k;
+  const ia = smooth(seg(t, 56.0, 56.7)), fo = 1 - smooth(seg(t, 70.0, 70.6)), lvl = ease(seg(t, 57.0, 60.2));
+  const roofA = smooth(seg(t, 63.0, 64.0)), yr = 44;
   c.save(); c.globalAlpha = ia;
-  c.beginPath(); c.moveTo(X(-56), Y(0)); c.lineTo(X(56), Y(0)); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
-  c.beginPath(); for (let i = 0; i <= 24; i++) { const x = -54.86 + i * 4.572; c.moveTo(X(x), Y(0)); c.lineTo(X(x), Y(0) + 6); } c.strokeStyle = rgba('mid', .7); c.lineWidth = 1; c.stroke();
-  txt(c, 'FIELD', X(-8), Y(0) + 28, { size: 13, ls: 3, color: 'mid' });
-  for (const s of [-1, 1]) {
-    const pts = [[s * 57, 0], [s * 57, 2]]; for (let i = 0; i < 52; i++) { pts.push([s * (58 + i * .95), 2 + i * .64]); pts.push([s * (58.95 + i * .95), 2 + i * .64]); }
-    pts.push([s * 112, 2 + 51 * .64], [s * 112, 0]);
-    c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); c.closePath(); c.fillStyle = rgba('light', 1); c.fill();
-    c.save(); c.clip(); c.beginPath(); for (let h = -900; h < 900; h += 12) { c.moveTo(O[0] + h, Y(0)); c.lineTo(O[0] + h + 500, Y(0) - 500); } c.strokeStyle = rgba('mid', .25); c.lineWidth = 1; c.stroke(); c.restore();
-    c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); c.closePath(); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1; c.stroke();
-    c.fillStyle = rgba('blue', .6);
-    for (let i = 0; i < 52; i += 1) { const bx = X(s * (58.5 + i * .95)), by = Y(2 + i * .64 + .9 + (.15 + .5 * lvl) * Math.max(0, Math.sin(t * (8 + 6 * lvl) + i * .7))); c.beginPath(); c.arc(bx, by, 2.2, 0, TAU); c.fill(); }
-  }
+  c.beginPath(); c.moveTo(X(26), Y(0)); c.lineTo(X(122), Y(0)); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
+  c.beginPath(); for (let x = 54.86 - 4.572 * 6; x <= 54.86; x += 4.572) { c.moveTo(X(x), Y(0)); c.lineTo(X(x), Y(0) + 8); } c.strokeStyle = rgba('mid', .7); c.lineWidth = 1; c.stroke();
+  const pts = [[57, 0], [57, 2]]; for (let i = 0; i < ST_N; i++) { pts.push([58 + i * .95, 2 + i * .64]); pts.push([58.95 + i * .95, 2 + i * .64]); }
+  pts.push([112, 2 + 51 * .64], [112, 0]);
+  c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); c.closePath(); c.fillStyle = rgba('light', 1); c.fill();
+  c.save(); c.clip(); c.beginPath(); for (let h = -1200; h < 1400; h += 12) { c.moveTo(h, Y(0)); c.lineTo(h + 600, Y(0) - 600); } c.strokeStyle = rgba('mid', .25); c.lineWidth = 1; c.stroke(); c.restore();
+  c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); c.closePath(); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1; c.stroke();
+  c.fillStyle = rgba('blue', .65);
+  for (let i = 0; i < ST_N; i += 2) { const [rx, ry] = stRow(i); c.beginPath(); c.arc(X(rx), Y(ry + (.15 + .5 * lvl) * Math.max(0, Math.sin(t * (8 + 6 * lvl) + i * .7))), 3, 0, TAU); c.fill(); }
   c.restore();
-  // converging sound waves
+  // roof canopy over the stand
+  if (roofA > 0) {
+    c.save(); c.globalAlpha = ia * roofA;
+    c.beginPath(); c.moveTo(X(116), Y(0)); c.lineTo(X(116), Y(yr + 2)); c.strokeStyle = rgba('graphite', .8); c.lineWidth = 2; c.stroke();
+    const rp = [[118, yr + 2.4], [lerp(118, 40, easeOut(seg(t, 63.0, 64.4))), yr + .8], [lerp(118, 40, easeOut(seg(t, 63.0, 64.4))), yr], [118, yr + 1.2]];
+    c.beginPath(); rp.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); c.closePath(); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('blue', .9); c.lineWidth = 1.2; c.stroke();
+    c.restore();
+  }
+  // crowd waves toward the field, and their reflections off the roof
   const wa = smooth(seg(t, 56.8, 57.6)) * fo;
   if (wa > 0) {
-    c.save(); c.beginPath(); c.rect(X(-57), Y(48), X(57) - X(-57), Y(0) - Y(48)); c.clip();
-    const per = lerp(.9, .4, lvl), spd = 32;
-    for (const s of [-1, 1]) for (const i of [6, 18, 30, 42]) {
-      const sx = s * (58.5 + i * .95), sy = 2 + i * .64 + 1;
+    c.save(); c.beginPath(); c.rect(0, Y(yr), W, Y(0) - Y(yr)); c.clip();
+    const per = lerp(.9, .45, lvl), spd = 30;
+    for (const i of [6, 18, 30, 42]) {
+      const [sx, sy] = stRow(i);
       for (let e = 0; e < 6; e++) {
         const te = Math.floor((t - 56.8) / per) * per + 56.8 - e * per, r = (t - te) * spd; if (r <= 0 || te < 56.7) continue;
         const al = (1 - r / (spd * per * 6)) * wa * (.35 + .65 * lvl); if (al <= 0) continue;
-        c.beginPath(); c.arc(X(sx), Y(sy), r * k, s > 0 ? Math.PI * .5 : -Math.PI * .5, s > 0 ? Math.PI * 1.5 : Math.PI * .5); c.strokeStyle = rgba(e % 2 ? 'cyan' : 'blue', .55 * al); c.lineWidth = 1.2; c.stroke();
+        c.beginPath(); c.arc(X(sx), Y(sy), r * k, Math.PI * .5, Math.PI * 1.5); c.strokeStyle = rgba('blue', .5 * al); c.lineWidth = 1.2; c.stroke();
+        if (roofA > .5 && r > yr - sy) { c.beginPath(); c.arc(X(sx), Y(2 * yr - sy), r * k, Math.PI / 2, Math.PI); c.strokeStyle = rgba('cyan', .85 * al * roofA); c.lineWidth = 1.4; c.stroke(); }
       }
     }
     c.restore();
   }
-  // decibel meter
-  const ma = env(t, 56.6, 57.2, 62.0, 62.6), MX = 1640, MT = 380, MB = 760;
-  if (ma > 0) {
-    const db = 142.2 * lvl, h = (MB - MT) * db / 150;
-    kicker(c, 'CROWD ROAR', 1560, 250, seg(t, 56.6, 57.2), ma);
-    txt(c, fmt(db, 1), 1556, 322, { w: 700, size: 60, color: 'blue', a: ma });
-    c.font = `700 60px ${FONT}`; txt(c, 'dB', 1556 + c.measureText(fmt(db, 1)).width + 8, 322, { size: 22, a: ma });
-    c.fillStyle = rgba('light', ma); c.fillRect(MX, MT, 22, MB - MT); c.fillStyle = rgba('blue', ma); c.fillRect(MX, MB - h, 22, h);
-    for (const v of [60, 90, 120, 142.2]) { const y = MB - (MB - MT) * v / 150; c.fillStyle = rgba('mid', ma); c.fillRect(MX + 26, y, 10, 1); txt(c, v === 142.2 ? '142.2' : String(v), MX + 42, y + 5, { size: 13, color: v === 142.2 ? 'blue' : 'mid', a: ma }); }
+  // line arrays under the roof edge, aimed into the seats
+  const pa = smooth(seg(t, 65.2, 66.0)) * ia * fo;
+  if (pa > 0) for (const x of [62, 84]) {
+    for (let j = 0; j < 4; j++) { c.save(); c.translate(X(x), Y(yr - 1 - j * 1.1)); c.rotate(.12 * j); c.fillStyle = rgba('graphite', pa); c.fillRect(-9, -5, 18, 9); c.restore(); }
+    const [tx1, ty1] = stRow(x === 62 ? 14 : 34), [tx2, ty2] = stRow(x === 62 ? 30 : 50), pu = .5 + .5 * Math.sin(t * 5 + x);
+    c.beginPath(); c.moveTo(X(x), Y(yr - 3)); c.lineTo(X(tx1), Y(ty1 + 1)); c.lineTo(X(tx2), Y(ty2 + 1)); c.closePath(); c.fillStyle = rgba('cyan', (.12 + .1 * pu) * pa); c.fill();
   }
-  const la = env(t, 57.4, 57.8, 62.0, 62.6), sf = [X(-58.5 - 20 * .95), Y(2 + 20 * .64 + 1)];
-  leader(c, sf[0], sf[1], 120, 330, seg(t, 57.6, 59.0), 'Steep stands', 'Fans close to the field, noise kept in the bowl', { a: la });
-  const ha = 1 - smooth(seg(t, 62.0, 62.6));
-  vignetteTag(c, '01', 'CROWD NOISE', t, 56.4, ha, '02');
-  headline(c, [['Kansas City, 2014:', 'blue'], [' a 142.2 dB crowd roar — a Guinness World Record.', 'graphite']], 120, 920, seg(t, 57.0, 59.0), { size: 42, maxW: 1300, a: ha });
+  stat(c, 'CROWD ROAR', fmt(142.2 * lvl, 1) + ' dB', MX, 200, seg(t, 56.8, 57.8), env(t, 56.6, 57.2, 62.6, 63.2));
+  const la = env(t, 57.4, 57.8, 70.0, 70.6), [s1x, s1y] = stRow(26);
+  lab(c, X(s1x), Y(s1y), MX, 340, seg(t, 57.8, 59.2), 'Steep stands', la);
+  lab(c, X(60), Y(yr + .4), MX, 410, seg(t, 63.8, 65.0), 'Roof', la * roofA);
+  lab(c, X(62), Y(yr - 2), MX, 480, seg(t, 65.6, 66.8), 'Line arrays', la * pa);
+  head(c, [['Kansas City:', 'blue'], [' a record 142.2 dB.', 'graphite']], seg(t, 57.0, 58.6), 1 - smooth(seg(t, 62.6, 63.2)));
+  head(c, [['Acoustics:', 'blue'], [' roofs trap the roar.', 'graphite']], seg(t, 63.4, 65.0), 1 - smooth(seg(t, 70.0, 70.6)));
 }
+
+/* =====================================================================
+   06 — SIGHT  (70 – 80.6)
+   ===================================================================== */
 function sBoard(c, t) {
-  const cm = cam({ yaw: .55 + .05 * (t - 62), pitch: .36, dist: 330, f: 1000, tx: 0, ty: 22, tz: 0, cx: 880, cy: 560 });
-  const ia = smooth(seg(t, 62.0, 62.7));
+  const cm = cam({ yaw: .55 + .04 * (t - 70), pitch: .4, dist: 340, f: 1000, tx: 0, ty: 22, tz: 0, cx: 540, cy: 680 });
+  const ia = smooth(seg(t, 70.0, 70.7));
   drawField(c, cm, { a: .8 * ia, posts: 1 });
   drawStadium(c, cm, t, { e: 0, a: ia, fill: .7, pitchA: 0, pr: { roof: 1 } });
-  // the hanging double-sided ring board
-  const bp = easeOut(seg(t, 62.4, 63.6)), y0 = 30, y1 = 30 + 7 * bp, o = oval(54.9, 21);
+  const bp = easeOut(seg(t, 70.4, 71.6)), y0 = 30, y1 = 30 + 7 * bp, o = oval(54.9, 21);
   const bot = o.map(q => cm.p(q[0], y0, q[1])), top = o.map(q => cm.p(q[0], y1, q[1]));
   for (let i = 0; i < NS; i++) { c.beginPath(); c.moveTo(bot[i][0], bot[i][1]); c.lineTo(top[i][0], top[i][1]); c.lineTo(top[i + 1][0], top[i + 1][1]); c.lineTo(bot[i + 1][0], bot[i + 1][1]); c.closePath(); c.fillStyle = rgba('blue', .16 * ia); c.fill(); }
   for (const R of [bot, top]) { c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'blue', .9 * ia, 1.4, 10); }
   for (let s = 0; s < 3; s++) { const yy = y0 + ((t * 2.2 + s / 3) % 1) * (y1 - y0), R = o.map(q => cm.p(q[0], yy, q[1])); c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', .45 * ia); c.lineWidth = 1; c.stroke(); }
   c.beginPath(); for (let i = 0; i < NS; i += 12) { const a = cm.p(o[i][0], y1, o[i][1]), q = ovPt(74, 56, i / NS * TAU), b = cm.p(q[0], 46, q[1]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } c.strokeStyle = rgba('graphite', .45 * ia); c.lineWidth = .8; c.stroke();
-  // sightlines from seats to the board
-  const sa = env(t, 63.4, 64.0, 68.0, 68.6);
+  const sa = env(t, 72.0, 72.6, 80.0, 80.6);
   if (sa > 0) {
     c.beginPath();
-    for (const ti of [2, 5, 8]) { const ov_ = oval(lerp(62, 106, ti / 9), lerp(44, 88, ti / 9)); for (let i = 0; i < NS; i += 8) { if ((i / NS + ti * .1) % 1 > easeOut(seg(t, 63.4, 65.4))) continue; const a = cm.p(ov_[i][0], 1 + ti * 2.7, ov_[i][1]), b = cm.p(o[i][0], (y0 + y1) / 2, o[i][1]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } }
+    for (const ti of [2, 5, 8]) { const ov_ = oval(lerp(62, 106, ti / 9), lerp(44, 88, ti / 9)); for (let i = 0; i < NS; i += 8) { if ((i / NS + ti * .1) % 1 > easeOut(seg(t, 72.0, 74.4))) continue; const a = cm.p(ov_[i][0], 1 + ti * 2.7, ov_[i][1]), b = cm.p(o[i][0], (y0 + y1) / 2, o[i][1]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } }
     c.strokeStyle = rgba('cyan', .5 * sa); c.lineWidth = 1; c.stroke();
   }
-  const la = env(t, 63.0, 63.4, 68.0, 68.6), bl = leftmost(top);
-  leader(c, bl[0], bl[1], 120, 360, seg(t, 63.2, 64.6), 'Double-sided ring', 'Hung from the roof over the field', { a: la });
-  const ca = env(t, 63.0, 63.5, 68.0, 68.6), Xr = 1490;
-  if (ca > 0) {
-    kicker(c, 'BOARD LENGTH', Xr, 300, seg(t, 63.0, 63.6), ca);
-    txt(c, Math.round(120 * easeOut(seg(t, 63.2, 64.6))) + ' yd', Xr - 3, 372, { w: 700, size: 62, color: 'blue', a: ca });
-    kicker(c, 'VIEWING FACES', Xr, 450, seg(t, 63.6, 64.2), ca);
-    txt(c, '2', Xr - 2, 506, { w: 700, size: 44, a: ca * smooth(seg(t, 63.8, 64.2)) });
-  }
-  const ha = 1 - smooth(seg(t, 68.0, 68.6));
-  vignetteTag(c, '02', 'SIGHT', t, 62.4, ha, '02');
-  headline(c, [['Los Angeles:', 'blue'], [' a 120-yard, double-sided video board hangs from the roof.', 'graphite']], 120, 920, seg(t, 62.8, 64.8), { size: 42, maxW: 1300, a: ha });
+  const la = env(t, 71.0, 71.4, 80.0, 80.6), bl = leftmost(top);
+  lab(c, bl[0], bl[1], MX, 350, seg(t, 71.2, 72.6), 'Double-sided ring', la);
+  lab(c, cm.p(-80, 12, 60)[0], cm.p(-80, 12, 60)[1], MX, 420, seg(t, 72.4, 73.8), 'Sightlines', la);
+  stat(c, 'VIDEO BOARD', Math.round(120 * easeOut(seg(t, 71.0, 72.6))) + ' yd', MX, 200, seg(t, 70.8, 71.8), la);
+  head(c, [['Los Angeles:', 'blue'], [' the board rings the field.', 'graphite']], seg(t, 70.8, 72.6), 1 - smooth(seg(t, 80.0, 80.6)));
 }
 
 /* =====================================================================
-   SCENE 06 — SAFETY BY DESIGN: the 2024 kickoff  (68 – 80.6)
+   07 — PREMIUM  (80 – 94.6)
    ===================================================================== */
-const KICK = 70.8, LAND = 73.2;
-const KT = [...Array(10)].map((_, i) => [yx(40) + (i % 2) * .4, 0, -21 + i * (42 / 9)]);              // kicking team at the receiving 40
-const RT = [...Array(9)].map((_, i) => [yx(i % 2 ? 31 : 34), 0, -20 + i * 5]);                         // setup zone, receiving 30–35
+const PREM = [62, 82];                          // sideline arc (oval index range)
+const tierRing = ti => oval(lerp(62, 106, ti / 9), lerp(44, 88, ti / 9)).map(q => [q[0], 1 + ti * 2.7, q[1]]);
+function sPremium(c, t) {
+  const cm = cam({ yaw: Math.PI + .14 * Math.sin((t - 80) * .2), pitch: .5, dist: 190, f: 1000, tx: 0, ty: 6, tz: -38, cx: 540, cy: 700 }), P = q => cm.p(...q);
+  const ia = smooth(seg(t, 80.0, 80.7));
+  drawField(c, cm, { a: .7 * ia, posts: 1 });
+  drawStadium(c, cm, t, { e: 0, a: ia, fill: .7, pitchA: 0, flows: 0, pr: { roof: 0, skin: 0 } });
+  const quad = (a, b, c2, d, col, al) => { const q = [a, b, c2, d].map(P); c.beginPath(); q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = rgba(col, al); c.fill(); };
+  const T0 = tierRing(0), T1 = tierRing(1), T5 = tierRing(5), T6 = tierRing(6);
+  // field-level club: the first rows on the sideline, behind the bench
+  const ha = smooth(seg(t, 81.2, 82.0)) * ia;
+  if (ha > 0) for (let i = PREM[0] + 2; i < PREM[1] - 2; i++) quad(T0[i], T0[i + 1], T1[i + 1], T1[i], 'cyan', .6 * ha);
+  // tunnel walk: players pass through the club on the way to the field
+  const tw = smooth(seg(t, 83.4, 84.2)) * ia;
+  if (tw > 0) {
+    const mid = T0[72], fieldEdge = [mid[0], 0, -FZ - 2];
+    const a = P([mid[0], .1, mid[2]]), b = P(fieldEdge); c.setLineDash([4, 5]); c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.strokeStyle = rgba('blue', .8 * tw); c.lineWidth = 1.4; c.stroke(); c.setLineDash([]);
+    for (let j = 0; j < 6; j++) { const u = (t * .3 + j / 6) % 1, q = P(lerp3([mid[0], .9, mid[2] - 3], fieldEdge.map((v, i) => i === 1 ? .9 : v), u)); c.beginPath(); c.arc(q[0], q[1], 5, 0, TAU); c.fillStyle = rgba('blue', tw); c.fill(); }
+  }
+  // suites band
+  const sa = smooth(seg(t, 86.0, 86.8)) * ia;
+  if (sa > 0) { for (let i = PREM[0] - 6; i < PREM[1] + 6; i++) quad(T5[i], T5[i + 1], T6[i + 1], T6[i], 'blue', .3 * sa); c.beginPath(); for (let i = PREM[0] - 6; i <= PREM[1] + 6; i += 2) { const a = P(T5[i]), b = P(T6[i]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } c.strokeStyle = rgba('blue', .8 * sa); c.lineWidth = 1; c.stroke(); }
+  // sightlines to the field
+  const sl = smooth(seg(t, 88.2, 89.0)) * ia;
+  if (sl > 0) { const f = P([0, 0, -FZ + 6]); c.beginPath(); for (const q of [T0[68], T1[76], T5[70], T6[74]]) { const s = P(q); c.moveTo(s[0], s[1]); c.lineTo(f[0], f[1]); } c.strokeStyle = rgba('blue', .6 * sl); c.lineWidth = 1.2; c.stroke(); }
+  const la = env(t, 81.6, 82.0, 94.0, 94.6), cq = P(T1[66]), tq = P([T0[72][0], .9, T0[72][2]]), sq = P(T6[PREM[0] - 3]);
+  lab(c, cq[0], cq[1], MX, 230, seg(t, 81.8, 83.0), 'Field-level club', la);
+  lab(c, tq[0], tq[1], MX, 300, seg(t, 83.8, 85.0), 'Tunnel walk', la);
+  lab(c, sq[0], sq[1], MX, 370, seg(t, 86.4, 87.6), 'Suites', la);
+  head(c, [['Premium:', 'blue'], [' fans meet the players.', 'graphite']], seg(t, 81.0, 82.6), 1 - smooth(seg(t, 94.0, 94.6)));
+}
+
+/* =====================================================================
+   08 — SAFETY BY DESIGN: the 2024 kickoff  (94 – 106.6)
+   ===================================================================== */
+const KICK = 96.8, LAND = 99.2;
+const KT = [...Array(10)].map((_, i) => [yx(40) + (i % 2) * .4, 0, -21 + i * (42 / 9)]);
+const RT = [...Array(9)].map((_, i) => [yx(i % 2 ? 31 : 34), 0, -20 + i * 5]);
 const RET = [[yx(4), 0, 5], [yx(4), 0, -5]];
 const KICKER = [yx(65) + 1, 0, 0], LANDP = [yx(7), 0, 3];
 function returner(t) {
@@ -963,77 +948,64 @@ function kickBall(t) {
   const r = returner(t); return [r[0] + .4, 1.1, r[2]];
 }
 function sKickoff(c, t) {
-  const cm = cam({ yaw: -.06 + .015 * (t - 68), pitch: 1.05, dist: 118, f: 1000, tx: -12, ty: 0, tz: 0, cx: 800, cy: 520 }), P = (x, y, z) => cm.p(x, y, z);
-  const ia = smooth(seg(t, 68.0, 68.7));
+  const cm = cam({ yaw: -Math.PI / 2 - .05 + .01 * (t - 94), pitch: 1.05, dist: 76, f: 1000, tx: -20, ty: 0, tz: 0, cx: 540, cy: 650 }), P = (x, y, z) => cm.p(x, y, z);
+  const ia = smooth(seg(t, 94.0, 94.7));
   drawField(c, cm, { a: ia });
   const quad = (x0, x1, col, a) => { const q = [[x0, -FZ], [x1, -FZ], [x1, FZ], [x0, FZ]].map(p => P(p[0], 0, p[1])); c.beginPath(); q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = rgba(col, a); c.fill(); };
-  // before 2024 (ghost)
-  const ga = env(t, 68.4, 68.9, 69.9, 70.5);
+  const ga = env(t, 94.4, 94.9, 95.9, 96.5);
   if (ga > 0) {
     c.setLineDash([4, 6]); c.beginPath();
     for (let i = 0; i < 10; i++) { const z = -21 + i * 4.67, a = P(yx(64), 0, z), b = P(yx(36), 0, z * .5); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
     for (let i = 0; i < 9; i++) { const z = -20 + i * 5, a = P(yx(20), 0, z), b = P(yx(34), 0, z * .5); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
     c.strokeStyle = rgba('mid', .8 * ga); c.lineWidth = 1.2; c.stroke(); c.setLineDash([]);
-    const q = P(yx(35), 0, 0); c.beginPath(); c.arc(q[0], q[1], 22, 0, TAU); c.strokeStyle = rgba('mid', ga); c.stroke();
-    txt(c, 'BEFORE 2024 · THE LINES MET AT FULL SPEED', q[0] - 160, q[1] - 34, { size: 13, ls: 2, color: 'graphite', a: ga });
+    const q = P(yx(35), 0, 0); c.beginPath(); c.arc(q[0], q[1], 26, 0, TAU); c.strokeStyle = rgba('mid', ga); c.stroke();
+    txt(c, 'Before 2024', q[0] + 40, q[1] + 8, { w: 700, size: 24, color: 'graphite', a: ga });
   }
-  const fa = smooth(seg(t, 70.0, 70.6));
+  const fa = smooth(seg(t, 96.0, 96.6));
   if (fa > 0) {
     quad(yx(0), yx(20), 'cyan', .22 * fa); quad(yx(30), yx(35), 'blue', .08 * fa);
-    // 5-yard separation dimension
     const d0 = P(yx(35), 0, -FZ - 3), d1 = P(yx(40), 0, -FZ - 3);
-    c.beginPath(); c.moveTo(d0[0], d0[1]); c.lineTo(d1[0], d1[1]); c.moveTo(d0[0], d0[1] - 6); c.lineTo(d0[0], d0[1] + 6); c.moveTo(d1[0], d1[1] - 6); c.lineTo(d1[0], d1[1] + 6); c.strokeStyle = rgba('blue', fa); c.lineWidth = 1.6; c.stroke();
-    txt(c, '5 yd', (d0[0] + d1[0]) / 2, d0[1] + 26, { w: 700, size: 18, color: 'blue', a: fa, align: 'center' });
+    c.beginPath(); c.moveTo(d0[0], d0[1]); c.lineTo(d1[0], d1[1]); c.strokeStyle = rgba('blue', fa); c.lineWidth = 1.6; c.stroke();
+    txt(c, '5 yd', (d0[0] + d1[0]) / 2 + 16, (d0[1] + d1[1]) / 2 + 9, { w: 700, size: 26, color: 'blue', a: fa });
     const hold = t > KICK && t < LAND, pulse = hold ? .5 + .5 * Math.sin(t * 12) : 0;
     const mv = ease(seg(t, LAND, LAND + 3.4)), r = returner(t);
-    KT.forEach((p, i) => { const tgt = [r[0] + 2 + (i % 3), 0, r[2] + (i - 4.5) * 1.3], q = P(...lerp3(p, tgt, mv * .82)); if (hold) { c.beginPath(); c.arc(q[0], q[1], 10 + 4 * pulse, 0, TAU); c.strokeStyle = rgba('cyan', .7 * fa); c.lineWidth = 1; c.stroke(); } c.beginPath(); c.arc(q[0], q[1], 6.5, 0, TAU); c.fillStyle = rgba('blue', fa); c.fill(); });
-    RT.forEach((p, i) => { const q = P(...lerp3(p, [p[0] - 5, 0, p[2] + (r[2] - p[2]) * .35], mv)); if (hold) { c.beginPath(); c.arc(q[0], q[1], 10 + 4 * pulse, 0, TAU); c.strokeStyle = rgba('cyan', .7 * fa); c.lineWidth = 1; c.stroke(); } c.beginPath(); c.arc(q[0], q[1], 6, 0, TAU); c.strokeStyle = rgba('graphite', fa); c.lineWidth = 1.6; c.stroke(); });
-    [r, RET[1]].forEach(p => { const q = P(...p); c.beginPath(); c.arc(q[0], q[1], 6, 0, TAU); c.strokeStyle = rgba('graphite', fa); c.lineWidth = 1.6; c.stroke(); });
-    const kq = P(...KICKER); c.beginPath(); c.arc(kq[0], kq[1], 6.5, 0, TAU); c.fillStyle = rgba('blue', fa); c.fill();
-    // ball flight
+    KT.forEach((p, i) => { const tgt = [r[0] + 2 + (i % 3), 0, r[2] + (i - 4.5) * 1.3], q = P(...lerp3(p, tgt, mv * .82)); if (hold) { c.beginPath(); c.arc(q[0], q[1], 11 + 4 * pulse, 0, TAU); c.strokeStyle = rgba('cyan', .7 * fa); c.lineWidth = 1; c.stroke(); } c.beginPath(); c.arc(q[0], q[1], 7.5, 0, TAU); c.fillStyle = rgba('blue', fa); c.fill(); });
+    RT.forEach(p => { const q = P(...lerp3(p, [p[0] - 5, 0, p[2] + (r[2] - p[2]) * .35], mv)); if (hold) { c.beginPath(); c.arc(q[0], q[1], 11 + 4 * pulse, 0, TAU); c.strokeStyle = rgba('cyan', .7 * fa); c.lineWidth = 1; c.stroke(); } c.beginPath(); c.arc(q[0], q[1], 7, 0, TAU); c.strokeStyle = rgba('graphite', fa); c.lineWidth = 1.6; c.stroke(); });
+    [r, RET[1]].forEach(p => { const q = P(...p); c.beginPath(); c.arc(q[0], q[1], 7, 0, TAU); c.strokeStyle = rgba('graphite', fa); c.lineWidth = 1.6; c.stroke(); });
+    const kq = P(...KICKER); c.beginPath(); c.arc(kq[0], kq[1], 7.5, 0, TAU); c.fillStyle = rgba('blue', fa); c.fill();
     const b = kickBall(t), bq = P(...b), sq = P(b[0], 0, b[2]);
-    if (t > KICK) { const pts = []; for (let k = 0; k <= 40; k++) { const tt = KICK + (LAND - KICK) * k / 40; if (tt > t) break; pts.push(P(...kickBall(tt))); } c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .8 * fa, 1.6, 8); }
+    if (t > KICK) { const pts = []; for (let k = 0; k <= 40; k++) { const tt = KICK + (LAND - KICK) * k / 40; if (tt > t) break; pts.push(P(...kickBall(tt))); } c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .8 * fa, 1.8, 8); }
     c.beginPath(); c.ellipse(sq[0], sq[1], 5, 2.5, 0, 0, TAU); c.fillStyle = rgba('graphite', .2 * fa); c.fill();
-    c.beginPath(); c.ellipse(bq[0], bq[1], 6, 4, -.4, 0, TAU); c.fillStyle = rgba('white', fa); c.fill(); c.strokeStyle = rgba('graphite', fa); c.lineWidth = 1.3; c.stroke();
+    c.beginPath(); c.ellipse(bq[0], bq[1], 7, 4.5, -.4, 0, TAU); c.fillStyle = rgba('white', fa); c.fill(); c.strokeStyle = rgba('graphite', fa); c.lineWidth = 1.3; c.stroke();
     if (t > LAND && t < LAND + .8) { const rr = (t - LAND) / .8, q = P(...LANDP); c.beginPath(); c.arc(q[0], q[1], 8 + 46 * rr, 0, TAU); c.strokeStyle = rgba('cyan', 1 - rr); c.lineWidth = 2; c.stroke(); }
-    if (hold) txt(c, 'NO ONE MOVES UNTIL THE BALL LANDS', 800, 200, { size: 15, ls: 3, color: 'blue', a: fa * (.6 + .4 * pulse), align: 'center' });
+    if (hold) txt(c, 'NO ONE MOVES UNTIL IT LANDS', W / 2, 150, { w: 700, size: 22, ls: 3, color: 'blue', a: fa * (.6 + .4 * pulse), align: 'center' });
   }
-  // labels
-  const la = env(t, 70.6, 71.0, 79.8, 80.4);
-  const kl = P(yx(40), 0, FZ); leader(c, kl[0], kl[1], 120, 330, seg(t, 70.6, 72.0), 'Kicking team', 'Lined up at the receiving 40', { a: la * (1 - smooth(seg(t, LAND, LAND + .6))) });
-  const sz = P(yx(32.5), 0, FZ); leader(c, sz[0], sz[1], 120, 480, seg(t, 71.0, 72.4), 'Setup zone', 'Receiving 30 to 35', { a: la });
-  const lz = P(yx(4), 0, -10); leader(c, lz[0], lz[1], 120, 630, seg(t, 71.4, 72.8), 'Landing zone', 'Goal line to the 20', { a: la });
-  const ca = env(t, 70.4, 70.9, 79.8, 80.4), Xr = 1490;
-  if (ca > 0) [['LINE SEPARATION', 'as little as 5 yd'], ['LANDING ZONE', 'Goal line → 20'], ['MOVEMENT STARTS', 'Ball lands']].forEach(([n, v], i) => {
-    const t0 = 70.6 + i * .4, y = 300 + i * 112; kicker(c, n, Xr, y, seg(t, t0, t0 + .6), ca); txt(c, typed(v, seg(t, t0 + .2, t0 + 1)), Xr, y + 42, { w: 700, size: 28, color: i === 2 ? 'blue' : 'graphite', a: ca });
-  });
-  const ha = 1 - smooth(seg(t, 79.8, 80.4));
-  kicker(c, 'FIG. 06 — SAFETY BY DESIGN', 120, 862, seg(t, 68.4, 69.2), ha);
-  headline(c, [['2024 dynamic kickoff:', 'blue'], [' the two lines start as little as 5 yards apart — redesigned around injury data.', 'graphite']], 120, 925, seg(t, 70.4, 72.6), { size: 42, maxW: 1300, a: ha });
+  const la = env(t, 96.6, 97.0, 106.0, 106.6);
+  const sz = P(yx(32.5), 0, -FZ); lab(c, sz[0], sz[1], MX, 260, seg(t, 97.0, 98.4), 'Setup zone', la);
+  const lz = P(yx(10), 0, -FZ); lab(c, lz[0], lz[1], MX, 330, seg(t, 97.4, 98.8), 'Landing zone', la);
+  head(c, [['2024 kickoff:', 'blue'], [' redesigned for safety.', 'graphite']], seg(t, 96.4, 98.2), 1 - smooth(seg(t, 106.0, 106.6)));
 }
 
 /* =====================================================================
-   SCENE 07 — CLOSING  (80 – 90)
+   09 — CLOSING  (106 – 116)
    ===================================================================== */
 const N7KEYS = [
-  { t: 80.0, yaw: 1.7, pitch: .62, dist: 470, f: 1000, tx: 0, ty: 18, tz: 0, cx: 960, cy: 520 },
-  { t: 83.6, yaw: 2.1, pitch: .5, dist: 440, f: 1000, tx: 0, ty: 24, tz: 0, cx: 960, cy: 500 },
-  { t: 90, yaw: 2.4, pitch: .56, dist: 700, f: 1000, tx: 0, ty: 20, tz: 0, cx: 960, cy: 470 },
+  { t: 106.0, yaw: 1.7, pitch: .62, dist: 360, f: 1000, tx: 0, ty: 18, tz: 0, cx: 540, cy: 660 },
+  { t: 109.6, yaw: 2.1, pitch: .5, dist: 330, f: 1000, tx: 0, ty: 24, tz: 0, cx: 540, cy: 640 },
+  { t: 116, yaw: 2.4, pitch: .56, dist: 440, f: 1000, tx: 0, ty: 20, tz: 0, cx: 540, cy: 620 },
 ];
 function sFinal(c, t) {
   const cm = cam(camKeys(N7KEYS, t));
-  const e = .6 * (1 - ease(seg(t, 80.2, 83.2)));
-  const pulse = heartPulse(t, 84.0, 88.3), g = smooth(seg(t, 83.4, 84.2)) * (.35 + .65 * pulse);
-  if (t > 84) {
-    const n = Math.floor((t - 84) / BEAT);
-    for (let k = Math.max(0, n - 2); k <= n; k++) { const bt = 84 + k * BEAT; if (bt > 88.3) continue; const r = (t - bt) / 2.2; if (r > 1) continue; const s = 1 + r * .9, R = ringP(cm, 121 * s, 101 * s, 0); c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', .6 * (1 - r)); c.lineWidth = 1.4; c.stroke(); }
+  const e = .6 * (1 - ease(seg(t, 106.2, 109.2)));
+  const pulse = heartPulse(t, 110.0, 114.3), g = smooth(seg(t, 109.4, 110.2)) * (.35 + .65 * pulse);
+  if (t > 110) {
+    const n = Math.floor((t - 110) / BEAT);
+    for (let k = Math.max(0, n - 2); k <= n; k++) { const bt = 110 + k * BEAT; if (bt > 114.3) continue; const r = (t - bt) / 2.2; if (r > 1) continue; const s = 1 + r * .9, R = ringP(cm, 121 * s, 101 * s, 0); c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', .6 * (1 - r)); c.lineWidth = 1.4; c.stroke(); }
   }
   drawField(c, cm, { a: 1 });
-  drawStadium(c, cm, t, { e, fill: lerp(1, 1.5, smooth(seg(t, 82, 84))), glow: g, pitchA: 0 });
-  drawPetals(c, cm, OFF.roof * e, 1 - ease(seg(t, 80.4, 83.2)), 1, g);
-  const ta = 1 - smooth(seg(t, 88.2, 89.2));
-  kicker(c, 'FIG. 07 — ASSEMBLY', 120, 862, seg(t, 84.0, 84.8), ta);
-  headline(c, [['Every yard is ', 'graphite'], ['designed by data.', 'blue']], 120, 940, seg(t, 84.5, 86.3), { size: 76, maxW: 1600, a: ta });
+  drawStadium(c, cm, t, { e, fill: lerp(1, 1.5, smooth(seg(t, 108, 110))), glow: g, pitchA: 0 });
+  drawPetals(c, cm, OFF.roof * e, 1 - ease(seg(t, 106.4, 109.2)), 1, g);
+  head(c, [['Every yard is ', 'graphite'], ['designed by data.', 'blue']], seg(t, 110.5, 112.3), 1 - smooth(seg(t, 114.2, 115.2)), 56);
 }
 
 /* =====================================================================
@@ -1041,9 +1013,10 @@ function sFinal(c, t) {
    ===================================================================== */
 const SCENES = [
   { a: 0, b: 10.6, f: sBall }, { a: 10.0, b: 24.6, f: sPlayer }, { a: 24.0, b: 40.6, f: sPlay }, { a: 40.0, b: 56.6, f: sArena },
-  { a: 56.0, b: 62.6, f: sRoar }, { a: 62.0, b: 68.6, f: sBoard }, { a: 68.0, b: 80.6, f: sKickoff }, { a: 80.0, b: 90.01, f: sFinal },
+  { a: 56.0, b: 70.6, f: sRoar }, { a: 70.0, b: 80.6, f: sBoard }, { a: 80.0, b: 94.6, f: sPremium }, { a: 94.0, b: 106.6, f: sKickoff },
+  { a: 106.0, b: 116.01, f: sFinal },
 ];
-const CHAPTERS = [{ t: 0, n: '01', name: 'Ball to Field' }, { t: 10, n: '02', name: 'The Player' }, { t: 24, n: '03', name: 'The Play, Decoded' }, { t: 40, n: '04', name: 'The Stadium' }, { t: 56, n: '05', name: 'Sound & Sight' }, { t: 68, n: '06', name: 'Safety by Design' }, { t: 80, n: '07', name: 'Closing' }];
+const CHAPTERS = [{ t: 0, n: '01', name: 'Ball to Field' }, { t: 10, n: '02', name: 'The Player' }, { t: 24, n: '03', name: 'The Play, Decoded' }, { t: 40, n: '04', name: 'The Stadium' }, { t: 56, n: '05', name: 'Acoustics' }, { t: 70, n: '06', name: 'Sight' }, { t: 80, n: '07', name: 'Premium' }, { t: 94, n: '08', name: 'Safety by Design' }, { t: 106, n: '09', name: 'Closing' }];
 const chapterAt = t => { let ch = CHAPTERS[0]; for (const c of CHAPTERS) if (t >= c.t) ch = c; return ch; };
 const tc = t => { const s = Math.floor(t), f = Math.floor((t - s) * 25); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f).padStart(2, '0')}`; };
 
@@ -1056,9 +1029,9 @@ const EXPORT = new URLSearchParams(location.search).has('export');
 let forceFull = EXPORT;
 function resize() {
   let pw;
-  if (forceFull) pw = 1920;
+  if (forceFull) pw = W;
   else { const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1); pw = Math.min(2880, Math.max(640, Math.round(r.width * dpr))); }
-  const ph = Math.round(pw * 9 / 16);
+  const ph = Math.round(pw * H / W);
   for (const k of [cv, layer, sil, bg]) { k.width = pw; k.height = ph; }
   SC = pw / W;
   bgCtx.setTransform(SC, 0, 0, SC, 0, 0);
@@ -1068,12 +1041,13 @@ function resize() {
 }
 function drawBackground(c, t) {
   c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
-  const g = c.createRadialGradient(960, 520, 240, 960, 520, 1250); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(238,241,244,1)');
+  const g = c.createRadialGradient(W / 2, H * .45, 200, W / 2, H * .45, 1000); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(238,241,244,1)');
   c.fillStyle = g; c.fillRect(0, 0, W, H);
-  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 87, 89)));
+  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 113, 115)));
   if (reveal > 0) { c.save(); c.beginPath(); c.rect(0, 0, W * reveal, H); c.clip(); c.globalAlpha = ga; c.drawImage(bg, 0, 0, W, H); c.restore(); }
 }
 function drawChrome(c, t) {
+  return;  // no header or footer in this cut
   const a = env(t, .6, 2.0, 87.4, 88.8); if (a <= 0) return;
   c.save(); c.globalAlpha = a;
   txt(c, 'ANATOMY OF THE GAME', 120, 92, { w: 700, size: 15, ls: 4 });
@@ -1101,7 +1075,7 @@ function draw(t) {
   }
   ctx.setTransform(SC, 0, 0, SC, 0, 0);
   drawChrome(ctx, t);
-  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 88.0, 89.7)));
+  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 114.0, 115.7)));
   if (white > 0) { ctx.fillStyle = `rgba(255,255,255,${white})`; ctx.fillRect(0, 0, W, H); }
 }
 
@@ -1109,9 +1083,9 @@ function draw(t) {
    SOUND — generative score (Web Audio), shared by live playback,
    WebM export and offline WAV rendering
    ===================================================================== */
-const PINGS = [1.4, 2.0, 4.6, 8.0, 11.0, 12.6, 13.4, 14.0, 14.5, 15.0, 16.6, 17.1, 17.8, 24.8, 26.4, 28.4, 29.6, 33.0, 34.0, 34.35, 34.7, 35.4, 46.4, 46.8, 47.2, 47.6, 48.0, 48.4, 52.0, 53.4, 57.0, 57.6, 62.8, 63.2, 70.4, 70.6, 71.0, 71.4, 84.5];
-const WHOOSH = [[3.4, 3.4], [12.0, 2.0], [15.0, 2.0], [22.8, 1.6], [40.2, 2.6], [44.6, 2.2], [49.8, 1.6], [51.6, 2.0], [53.2, 2.6], [61.9, .9], [67.9, .9], [79.9, 3.0]];
-const CHORDS = [[0, [110, 164.81, 246.94, 277.18]], [10, [92.5, 138.59, 220, 329.63]], [24, [73.42, 110, 185, 277.18]], [40, [82.41, 123.47, 207.65, 311.13]], [56, [98, 146.83, 220, 293.66]], [68, [87.31, 130.81, 196, 329.63]], [80, [110, 164.81, 207.65, 277.18]]];
+const PINGS = [1.4, 2.0, 4.6, 8.0, 11.0, 12.6, 13.4, 14.0, 14.5, 15.0, 16.6, 17.8, 24.8, 26.4, 28.4, 29.6, 33.0, 34.0, 34.35, 34.7, 46.4, 46.8, 47.2, 47.6, 48.0, 48.4, 52.0, 53.6, 57.0, 57.8, 63.4, 63.8, 65.6, 70.8, 71.2, 72.4, 81.0, 81.8, 83.8, 86.4, 88.2, 96.4, 97.0, 97.4, 110.5];
+const WHOOSH = [[3.4, 3.4], [12.0, 2.0], [15.0, 2.0], [22.8, 1.6], [40.2, 2.6], [44.6, 2.2], [49.8, 1.6], [51.6, 2.0], [53.2, 2.6], [62.4, 1.4], [69.6, .9], [79.6, .9], [93.6, .9], [105.4, 3.0]];
+const CHORDS = [[0, [110, 164.81, 246.94, 277.18]], [10, [92.5, 138.59, 220, 329.63]], [24, [73.42, 110, 185, 277.18]], [40, [82.41, 123.47, 207.65, 311.13]], [56, [98, 146.83, 220, 293.66]], [70, [82.41, 123.47, 185, 277.18]], [80, [98, 146.83, 246.94, 293.66]], [94, [87.31, 130.81, 196, 329.63]], [106, [110, 164.81, 207.65, 277.18]]];
 const PING_NOTES = [1318.5, 1479.98, 1760, 1661.22, 2217.46];
 function noiseBuffer(ac, secs, seed) { const r = rng(seed), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); let p = 0; for (let i = 0; i < d.length; i++) { const w = r() * 2 - 1; p = .97 * p + .03 * w; d[i] = w * .5 + p * 3; } } return b; }
 function impulse(ac, secs) { const r = rng(99), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / d.length, 3.2); } return b; }
@@ -1119,14 +1093,14 @@ function buildScore(ac, out, offset, offline) {
   const now = ac.currentTime + (offline ? 0 : .06), T = x => now + (x - offset), nodes = [];
   const valAt = (keys, x) => { if (x <= keys[0][0]) return keys[0][1]; for (let i = 1; i < keys.length; i++) if (x <= keys[i][0]) return lerp(keys[i - 1][1], keys[i][1], (x - keys[i - 1][0]) / (keys[i][0] - keys[i - 1][0])); return keys[keys.length - 1][1]; };
   const auto = (param, keys) => { param.setValueAtTime(valAt(keys, offset), now); for (const [k, v] of keys) if (k > offset) param.linearRampToValueAtTime(v, T(k)); };
-  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [88, .9], [89.9, 0]]);
+  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [114, .9], [115.9, 0]]);
   const comp = ac.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 3; comp.connect(master);
   const rev = ac.createConvolver(); rev.buffer = impulse(ac, 3.2); const revG = ac.createGain(); revG.gain.value = .45; rev.connect(revG); revG.connect(comp);
   const dry = ac.createGain(); dry.connect(comp);
   const send = ac.createGain(); send.gain.value = 1; send.connect(rev);
   // pad
-  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [10, 900], [24, 1300], [40, 900], [56, 1200], [68, 1400], [80, 1600], [90, 700]]);
-  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [84, .1], [89.5, 0]]);
+  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [10, 900], [24, 1300], [40, 900], [56, 1200], [70, 1300], [80, 1100], [94, 1400], [106, 1600], [116, 700]]);
+  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [110, .1], [115.5, 0]]);
   padLP.connect(padG); padG.connect(dry); padG.connect(send);
   const lfo = ac.createOscillator(); lfo.frequency.value = .07; const lfoG = ac.createGain(); lfoG.gain.value = 160; lfo.connect(lfoG); lfoG.connect(padLP.frequency); lfo.start(now); nodes.push(lfo);
   let ci = 0; for (let i = 0; i < CHORDS.length; i++) if (CHORDS[i][0] <= offset) ci = i;
@@ -1138,12 +1112,12 @@ function buildScore(ac, out, offset, offline) {
   // heart / data pulse
   const pulse = (time, gain, f = 56) => { if (time < offset) return; const t0 = T(time), o = ac.createOscillator(), g = ac.createGain(), lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220; o.frequency.setValueAtTime(f * 2.2, t0); o.frequency.exponentialRampToValueAtTime(f, t0 + .09); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + .006); g.gain.exponentialRampToValueAtTime(.0001, t0 + .5); o.connect(lp); lp.connect(g); g.connect(dry); o.start(t0); o.stop(t0 + .55); };
   for (const [bt, gn] of [[SNAP, .5], [CATCH, .35], [KICK, .45], [LAND, .4], [53.6, .3]]) { pulse(bt, gn); }
-  for (let k = 0; ; k++) { const bt = 84.0 + k * BEAT; if (bt > 88.3) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
+  for (let k = 0; ; k++) { const bt = 110.0 + k * BEAT; if (bt > 114.3) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
   // reveal pings (with a soft pulse underneath)
   PINGS.forEach((pt, i) => {
     if (pt < offset) return; const t0 = T(pt), f = PING_NOTES[i % PING_NOTES.length];
     for (const [mul, gv] of [[1, .045], [2, .012]]) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f * mul; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gv, t0 + .004); g.gain.exponentialRampToValueAtTime(.0001, t0 + .9); o.connect(g); g.connect(dry); g.connect(send); o.start(t0); o.stop(t0 + 1); }
-    if (pt > 10 && pt < 84) pulse(pt, .12, 70);
+    if (pt > 10 && pt < 110) pulse(pt, .12, 70);
   });
   // whooshes on layer peels / transitions
   const nb = noiseBuffer(ac, 4, 5);
@@ -1158,7 +1132,7 @@ function buildScore(ac, out, offset, offline) {
   const crowd = ac.createBufferSource(); crowd.buffer = noiseBuffer(ac, 6, 21); crowd.loop = true;
   const cb = ac.createBiquadFilter(); cb.type = 'bandpass'; cb.frequency.value = 850; cb.Q.value = .5;
   const cl = ac.createBiquadFilter(); cl.type = 'lowshelf'; cl.frequency.value = 300; cl.gain.value = 6;
-  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [54, 0], [56.5, .04], [58.5, .16], [60.2, .22], [61.6, .2], [63, .04], [68, .02], [80, .03], [84, .06], [87, .11], [88.6, .12], [89.9, 0]]);
+  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [54, 0], [56.5, .04], [58.5, .16], [60.2, .22], [62.4, .2], [64, .12], [69, .1], [70.6, .03], [80, .03], [94, .02], [99.2, .06], [101, .03], [106, .03], [110, .06], [113, .11], [114.6, .12], [115.9, 0]]);
   const am = ac.createOscillator(); am.frequency.value = .31; const amG = ac.createGain(); amG.gain.value = .012; am.connect(amG); amG.connect(cg.gain);
   crowd.connect(cb); cb.connect(cl); cl.connect(cg); cg.connect(dry); cg.connect(send); crowd.start(now); am.start(now); nodes.push(crowd, am);
   return { now, stop() { try { master.gain.cancelScheduledValues(ac.currentTime); master.gain.setTargetAtTime(0, ac.currentTime, .03); } catch (e) {} setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) {} }); master.disconnect(); }, 200); } };
@@ -1201,7 +1175,7 @@ function loop() {
   if (Math.abs(t - lastUi) > .03) {
     lastUi = t; $('sc').value = t.toFixed(2);
     const f = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-    $('tc').textContent = `${f(t)} / 01:30`;
+    $('tc').textContent = `${f(t)} / 01:56`;
     const ch = chapterAt(t); document.querySelectorAll('.chapters button').forEach(b => b.classList.toggle('on', b.dataset.n === ch.n));
   }
   requestAnimationFrame(loop);
@@ -1214,7 +1188,7 @@ if (EXPORT) {
   resize(); window.__ready = true;
 } else {
   CHAPTERS.forEach(ch => { const b = document.createElement('button'); b.type = 'button'; b.dataset.n = ch.n; b.innerHTML = `<b>${ch.n}</b>${ch.name}`; b.onclick = () => { $('start').classList.add('hidden'); seek(ch.t + .01); if (!playing) play(); }; $('chapters').appendChild(b); const tk = document.createElement('span'); tk.style.left = (ch.t / DUR * 100) + '%'; $('ticks').appendChild(tk); });
-  tHold = 43.9;
+  tHold = 84.0;
   resize(); window.addEventListener('resize', resize);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw(curT()));
   $('start').onclick = () => { $('start').classList.add('hidden'); tHold = 0; play(); };
