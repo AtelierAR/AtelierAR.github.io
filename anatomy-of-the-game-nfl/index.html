@@ -1,0 +1,1244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anatomy of the Game: Football</title>
+<meta name="description" content="A 90-second anatomical animation of American football: the ball, the player, the play, the stadium and the safety rules, dissected to reveal the data inside.">
+<style>
+  :root{
+    --white:#FFFFFF; --light:#EEF1F4; --mid:#9AA3AE; --graphite:#3A4048; --blue:#1E5BFF; --cyan:#6EC8FF;
+    --font:"Helvetica Neue","HelveticaNeue",Helvetica,Inter,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--white);color:var(--graphite);font-family:var(--font);font-weight:300;min-height:100%}
+  body{display:flex;flex-direction:column;min-height:100vh}
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px 8px}
+  .frame{position:relative;width:min(100%, calc((100vh - 150px) * 16 / 9));aspect-ratio:16/9;background:var(--white);
+    box-shadow:0 0 0 1px var(--light), 0 40px 90px -50px rgba(58,64,72,.35)}
+  canvas{display:block;width:100%;height:100%}
+  .start{position:absolute;inset:0;border:0;background:rgba(255,255,255,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:6% 6.25%;cursor:pointer;text-align:left;font-family:var(--font);color:var(--graphite)}
+  .start .k{font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.28em;text-transform:uppercase}
+  .start .t{font-weight:700;font-size:clamp(28px,5vw,76px);letter-spacing:-.02em;margin:.25em 0 .2em;line-height:1}
+  .start .s{font-weight:300;font-size:clamp(12px,1.2vw,18px);color:var(--mid)}
+  .start .p{margin-top:1.4em;display:inline-flex;align-items:center;gap:.7em;font-weight:300;font-size:clamp(12px,1.1vw,16px);letter-spacing:.2em;text-transform:uppercase;color:var(--blue)}
+  .start .p i{display:inline-block;width:0;height:0;border-left:11px solid var(--blue);border-top:7px solid transparent;border-bottom:7px solid transparent}
+  .start.hidden{display:none}
+  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 16px 6px;width:min(100%, calc((100vh - 150px) * 16 / 9 + 32px));margin:0 auto}
+  .bar button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.16em;text-transform:uppercase;background:none;border:0;color:var(--graphite);cursor:pointer;padding:6px 0}
+  .bar button:hover,.bar button.on{color:var(--blue)}
+  .scrub{position:relative;flex:1 1 260px;height:28px;display:flex;align-items:center}
+  .scrub input{width:100%;appearance:none;-webkit-appearance:none;background:transparent;height:28px;position:relative;z-index:2;cursor:pointer}
+  .scrub input::-webkit-slider-runnable-track{height:1px;background:var(--mid)}
+  .scrub input::-moz-range-track{height:1px;background:var(--mid)}
+  .scrub input::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--blue);margin-top:-5px;border:0}
+  .scrub input::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--blue);border:0}
+  .ticks{position:absolute;left:0;right:0;top:50%;height:0;z-index:1;pointer-events:none}
+  .ticks span{position:absolute;top:-5px;width:1px;height:10px;background:var(--mid)}
+  .tc{font-size:12px;letter-spacing:.14em;color:var(--mid);font-variant-numeric:tabular-nums;min-width:110px}
+  .chapters{display:flex;flex-wrap:wrap;gap:4px 18px;padding:0 16px 22px;width:min(100%, calc((100vh - 150px) * 16 / 9 + 32px));margin:0 auto}
+  .chapters button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.04em;color:var(--mid);background:none;border:0;cursor:pointer;padding:2px 0}
+  .chapters button b{font-weight:700;color:var(--graphite);margin-right:6px}
+  .chapters button.on{color:var(--blue)} .chapters button.on b{color:var(--blue)}
+  body.export .bar, body.export .chapters, body.export .start{display:none}
+  body.export .stage{padding:0} body.export .frame{width:1920px;height:1080px;box-shadow:none}
+  @media (max-width:640px){ body{min-height:0} .stage{flex:none;padding:16px 16px 4px} .bar,.chapters{width:100%} }
+</style>
+</head>
+<body>
+<main class="stage">
+  <div class="frame" id="frame">
+    <canvas id="cv" width="1920" height="1080" aria-label="Anatomy of the Game animation"></canvas>
+    <button class="start" id="start" type="button">
+      <span class="k">Vol. II · American football</span>
+      <span class="t">Anatomy of the Game</span>
+      <span class="s">90 seconds · best with sound</span>
+      <span class="p"><i></i>Play film</span>
+    </button>
+  </div>
+</main>
+<div class="bar">
+  <button id="pp" type="button">Play</button>
+  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="90" step="0.01" value="0" aria-label="Timeline"></div>
+  <span class="tc" id="tc">00:00 / 01:30</span>
+  <button id="snd" type="button" class="on">Sound on</button>
+  <button id="rec" type="button">Export WebM</button>
+  <button id="fs" type="button">Fullscreen</button>
+</div>
+<nav class="chapters" id="chapters"></nav>
+
+<script>
+"use strict";
+/* =====================================================================
+   ANATOMY OF THE GAME · VOL. II, AMERICAN FOOTBALL — 90 s procedural animation
+   Every frame is a pure function of time t (seconds), so the film can be
+   played, scrubbed, or rendered frame-by-frame to video.
+   ===================================================================== */
+const W = 1920, H = 1080, DUR = 90, TAU = Math.PI * 2, BEAT = 60 / 70;
+const RGB = { white:[255,255,255], light:[238,241,244], mid:[154,163,174], graphite:[58,64,72], blue:[30,91,255], cyan:[110,200,255] };
+const rgba = (k, a) => `rgba(${RGB[k][0]},${RGB[k][1]},${RGB[k][2]},${Math.max(0, Math.min(1, a))})`;
+const FONT = '"Helvetica Neue","HelveticaNeue",Helvetica,Inter,Arial,sans-serif';
+
+/* ---------- math ---------- */
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const smooth = t => t * t * (3 - 2 * t);
+const env = (t, a, b, c, d) => Math.min(smooth(seg(t, a, b)), 1 - smooth(seg(t, c, d)));
+const lerp3 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const fmt = (v, d = 0) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const angDiff = (a, b) => { let d = (a - b) % TAU; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; return d; };
+
+/* heartbeat: lub-dub on a 70 bpm grid */
+const gpulse = x => x < 0 ? 0 : (1 - Math.exp(-x * 45)) * Math.exp(-x * 8.5);
+function heartPulse(t, start, end) {
+  if (t < start || t > end + .8) return 0;
+  const n = Math.floor((t - start) / BEAT); let v = 0;
+  for (let k = n - 1; k <= n; k++) { if (k < 0) continue; const bt = start + k * BEAT; if (bt > end) continue; v += gpulse(t - bt) + .55 * gpulse(t - bt - .24); }
+  return v / .6;
+}
+const G = (l, m, s) => Math.exp(-(((l - m) / s) ** 2));
+function ecg(tt, start) {
+  if (tt < start) return 0;
+  const l = ((tt - start + .1) % BEAT) - .1;
+  return -.12 * G(l, -.012, .008) + G(l, .012, .011) - .28 * G(l, .036, .011) + .2 * G(l, .26, .05) + .07 * G(l, BEAT - .2, .03);
+}
+
+/* ---------- camera ---------- */
+function cam(o) {
+  const cy = Math.cos(o.yaw), sy = Math.sin(o.yaw), cp = Math.cos(o.pitch), sp = Math.sin(o.pitch);
+  return { o, p(x, y, z) {
+    x -= o.tx; y -= o.ty; z -= o.tz;
+    const x1 = x * cy - z * sy, z1 = x * sy + z * cy;
+    const y2 = y * cp + z1 * sp, z2 = -y * sp + z1 * cp;
+    const d = Math.max(.01, o.dist + z2), s = o.f / d;
+    return [o.cx + x1 * s, o.cy - y2 * s, d, s];
+  } };
+}
+function camKeys(keys, t) {
+  if (t <= keys[0].t) return Object.assign({}, keys[0]);
+  for (let i = 0; i < keys.length - 1; i++) {
+    const a = keys[i], b = keys[i + 1];
+    if (t <= b.t) { const k = ease((t - a.t) / (b.t - a.t)); const o = {}; for (const key in a) o[key] = lerp(a[key], b[key], k); return o; }
+  }
+  return Object.assign({}, keys[keys.length - 1]);
+}
+const proj = (c, pts) => pts.map(q => c.p(q[0], q[1], q[2]));
+
+/* ---------- drawing primitives ---------- */
+function polyPartial(c, p2, p) {
+  const n = p2.length - 1; if (n < 1 || p <= 0) return;
+  const f = clamp(p) * n, k = Math.floor(f);
+  c.moveTo(p2[0][0], p2[0][1]);
+  for (let i = 1; i <= Math.min(k, n); i++) c.lineTo(p2[i][0], p2[i][1]);
+  if (k < n) { const a = p2[k], b = p2[k + 1], r = f - k; c.lineTo(a[0] + (b[0] - a[0]) * r, a[1] + (b[1] - a[1]) * r); }
+}
+function polyLen(c, pts, p) {
+  let L = 0; const ls = []; for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); ls.push(l); L += l; }
+  let rem = clamp(p) * L; c.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) {
+    if (rem >= ls[i - 1]) { c.lineTo(pts[i][0], pts[i][1]); rem -= ls[i - 1]; }
+    else { const r = ls[i - 1] ? rem / ls[i - 1] : 0; c.lineTo(lerp(pts[i - 1][0], pts[i][0], r), lerp(pts[i - 1][1], pts[i][1], r)); break; }
+  }
+}
+function strokeDepth(c, pr, dRef, fs, fw, bs, bw) {
+  c.beginPath();
+  for (let i = 1; i < pr.length; i++) if ((pr[i][2] + pr[i - 1][2]) / 2 > dRef) { c.moveTo(pr[i - 1][0], pr[i - 1][1]); c.lineTo(pr[i][0], pr[i][1]); }
+  c.strokeStyle = bs; c.lineWidth = bw; c.stroke();
+  c.beginPath();
+  for (let i = 1; i < pr.length; i++) if ((pr[i][2] + pr[i - 1][2]) / 2 <= dRef) { c.moveTo(pr[i - 1][0], pr[i - 1][1]); c.lineTo(pr[i][0], pr[i][1]); }
+  c.strokeStyle = fs; c.lineWidth = fw; c.stroke();
+}
+function taper(c, A, ra, B, rb) {
+  const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1e-6, nx = -dy / L, ny = dx / L;
+  c.moveTo(A[0] + nx * ra, A[1] + ny * ra); c.lineTo(B[0] + nx * rb, B[1] + ny * rb); c.lineTo(B[0] - nx * rb, B[1] - ny * rb); c.lineTo(A[0] - nx * ra, A[1] - ny * ra); c.closePath();
+  c.moveTo(A[0] + ra, A[1]); c.arc(A[0], A[1], ra, 0, TAU); c.moveTo(B[0] + rb, B[1]); c.arc(B[0], B[1], rb, 0, TAU);
+}
+function spindle(c, A, B, w, t0, t1, off) {
+  const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+  const sx = A[0] + dx * t0 + nx * off, sy = A[1] + dy * t0 + ny * off, ex = A[0] + dx * t1 + nx * off, ey = A[1] + dy * t1 + ny * off;
+  const mx = (sx + ex) / 2, my = (sy + ey) / 2;
+  c.moveTo(sx, sy); c.quadraticCurveTo(mx + nx * w * 2, my + ny * w * 2, ex, ey); c.quadraticCurveTo(mx - nx * w * 2, my - ny * w * 2, sx, sy);
+  for (const f of [.42, -.42]) { c.moveTo(sx, sy); c.quadraticCurveTo(mx + nx * w * 2 * f, my + ny * w * 2 * f, ex, ey); }
+}
+function bone(c, A, B, w) {
+  const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+  for (const s of [1, -1]) { c.moveTo(A[0] + dx * .1 + nx * w * s, A[1] + dy * .1 + ny * w * s); c.lineTo(A[0] + dx * .9 + nx * w * .8 * s, A[1] + dy * .9 + ny * w * .8 * s); }
+  c.moveTo(A[0] + dx * .06 + w * 1.7, A[1] + dy * .06); c.arc(A[0] + dx * .06, A[1] + dy * .06, w * 1.7, 0, TAU);
+  c.moveTo(A[0] + dx * .94 + w * 1.4, A[1] + dy * .94); c.arc(A[0] + dx * .94, A[1] + dy * .94, w * 1.4, 0, TAU);
+}
+
+/* ---------- typography ---------- */
+function txt(c, s, x, y, o = {}) {
+  const { w = 300, size = 20, color = 'graphite', a = 1, ls = 0, align = 'left' } = o;
+  if (!s || a <= 0) return;
+  c.font = `${w} ${size}px ${FONT}`; c.fillStyle = rgba(color, a); c.textAlign = align; c.textBaseline = 'alphabetic';
+  c.letterSpacing = ls + 'px'; c.fillText(s, x, y); c.letterSpacing = '0px';
+}
+const typed = (s, p) => s.slice(0, Math.floor(s.length * clamp(p) + 1e-6));
+function headline(c, segs, x, y, p, o = {}) {
+  const { size = 48, w = 700, maxW = 1200, lh = 1.16, a = 1 } = o;
+  if (p <= 0 || a <= 0) return;
+  c.font = `${w} ${size}px ${FONT}`; c.letterSpacing = (size >= 40 ? -size * .018 : 0) + 'px';
+  c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+  const toks = []; for (const [s, col] of segs) s.split(/(\s+)/).forEach(tk => { if (tk) toks.push([tk, col, c.measureText(tk).width]); });
+  const lines = [[]]; let lw = 0;
+  for (const tk of toks) {
+    const sp = /^\s+$/.test(tk[0]);
+    if (!sp && lw + tk[2] > maxW && lw > 0) { lines.push([]); lw = 0; }
+    if (sp && lw === 0) continue;
+    lines[lines.length - 1].push(tk); lw += tk[2];
+  }
+  let total = 0; for (const L of lines) for (const tk of L) total += tk[0].length;
+  let rem = Math.floor(total * clamp(p) + 1e-6), cx = x, cy = y;
+  for (let li = 0; li < lines.length && rem > 0; li++) {
+    cx = x; cy = y + li * size * lh;
+    for (const tk of lines[li]) {
+      if (rem <= 0) break;
+      const s = tk[0].slice(0, rem); c.fillStyle = rgba(tk[1], a); c.fillText(s, cx, cy);
+      cx += s.length === tk[0].length ? tk[2] : c.measureText(s).width; rem -= tk[0].length;
+    }
+  }
+  if (p < 1) { c.fillStyle = rgba('blue', a); c.fillRect(cx + 4, cy - size * .74, Math.max(2, size * .05), size * .86); }
+  c.letterSpacing = '0px';
+}
+function leader(c, ax, ay, tx, ty, p, title, sub, o = {}) {
+  const { a = 1, tsize = 22 } = o;
+  if (p <= 0 || a <= 0) return;
+  c.font = `700 ${tsize}px ${FONT}`; const w1 = c.measureText(title).width;
+  c.font = `300 16px ${FONT}`; const w2 = sub ? c.measureText(sub).width : 0;
+  const right = tx > ax, ex = right ? tx - 16 : tx + Math.max(w1, w2) + 16, ly = ty - tsize * .34;
+  const dir = Math.sign(ex - ax) || 1, kx = ax + dir * Math.min(Math.abs(ly - ay), Math.abs(ex - ax) * .6);
+  const lp = easeOut(seg(p, 0, .5));
+  c.fillStyle = rgba('blue', a); c.beginPath(); c.arc(ax, ay, 3.2, 0, TAU); c.fill();
+  c.strokeStyle = rgba('blue', .35 * a); c.lineWidth = 1; c.beginPath(); c.arc(ax, ay, 8 * easeOut(seg(p, 0, .3)), 0, TAU); c.stroke();
+  c.strokeStyle = rgba('mid', a); c.beginPath(); polyLen(c, [[ax, ay], [kx, ly], [ex, ly]], lp); c.stroke();
+  if (lp >= 1) { c.fillStyle = rgba('graphite', a); c.fillRect(ex - (right ? 0 : 1), ly - 3, 1, 6); }
+  txt(c, typed(title, seg(p, .35, .75)), tx, ty, { w: 700, size: tsize, color: 'graphite', a });
+  if (sub) txt(c, typed(sub, seg(p, .5, 1)), tx, ty + 25, { size: 16, color: 'mid', a });
+}
+function kicker(c, s, x, y, p, a = 1, color = 'mid') { txt(c, typed(s, p), x, y, { size: 14, ls: 3, color, a }); }
+function marker(c, x, y, a, s = 9) {
+  c.strokeStyle = rgba('blue', a); c.lineWidth = 1.2; c.strokeRect(x - s / 2, y - s / 2, s, s);
+  c.beginPath(); c.moveTo(x - s, y); c.lineTo(x - s / 2 - 2, y); c.moveTo(x + s / 2 + 2, y); c.lineTo(x + s, y);
+  c.moveTo(x, y - s); c.lineTo(x, y - s / 2 - 2); c.moveTo(x, y + s / 2 + 2); c.lineTo(x, y + s); c.stroke();
+}
+function glowStroke(c, color, a, w, blur) {
+  c.save(); c.shadowColor = rgba(color, a); c.shadowBlur = blur * SC; c.strokeStyle = rgba(color, a); c.lineWidth = w; c.stroke(); c.restore();
+}
+
+/* =====================================================================
+   SHARED GEOMETRY
+   ===================================================================== */
+/* superellipse plan used by every stadium view */
+const NS = 96, OVC = new Map();
+function ovPt(a, b, th, n = 2.8) { const cc = Math.cos(th), s = Math.sin(th); return [a * Math.sign(cc) * Math.pow(Math.abs(cc), 2 / n), b * Math.sign(s) * Math.pow(Math.abs(s), 2 / n)]; }
+function oval(a, b) { const k = a + '_' + b; if (!OVC.has(k)) { const p = []; for (let i = 0; i <= NS; i++) p.push(ovPt(a, b, i / NS * TAU)); OVC.set(k, p); } return OVC.get(k); }
+const ring3 = (a, b, y) => oval(a, b).map(q => [q[0], y, q[1]]);
+const ringP = (cm, a, b, y) => oval(a, b).map(q => cm.p(q[0], y, q[1]));
+
+/* American football field (metres; x along the field, z across, y up) */
+const YD = .9144, FX = 54.864, FZ = 24.384, GL = 45.72, yx = y => -GL + y * YD;  // yx: yard line (0 = left goal line) -> x
+const PL = (() => {
+  const L = [], y = 0;
+  L.push([[-FX, y, -FZ], [FX, y, -FZ], [FX, y, FZ], [-FX, y, FZ], [-FX, y, -FZ]]);
+  for (let i = 0; i <= 20; i++) { const x = yx(i * 5); L.push([[x, y, -FZ], [x, y, FZ]]); }
+  return L;
+})();
+const HASH = (() => { const s = []; for (let i = 1; i < 100; i++) { if (i % 5 === 0) continue; for (const z of [-FZ + .35, -2.82, 2.82, FZ - .35]) s.push([yx(i), z]); } return s; })();
+function drawField(c, cm, o = {}) {
+  const { a = 1, lines = 1, hashA = 1, posts = 1, surf = 1, dx = 0, lift = 0 } = o;
+  if (a <= 0) return;
+  const P = (x, y, z) => cm.p(x + dx, y + lift, z);
+  const quad = pts => { c.beginPath(); pts.forEach((q, i) => { const p = P(q[0], 0, q[1]); i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }); c.closePath(); };
+  if (surf > 0) {
+    quad([[-FX, -FZ], [FX, -FZ], [FX, FZ], [-FX, FZ]]); c.fillStyle = rgba('white', .88 * surf * a); c.fill();
+    for (let i = 0; i < 20; i += 2) { const x0 = yx(i * 5), x1 = yx(i * 5 + 5); quad([[x0, -FZ], [x1, -FZ], [x1, FZ], [x0, FZ]]); c.fillStyle = rgba('light', .65 * surf * a); c.fill(); }
+    for (const s of [-1, 1]) { quad([[s * GL, -FZ], [s * FX, -FZ], [s * FX, FZ], [s * GL, FZ]]); c.fillStyle = rgba('cyan', .16 * surf * a); c.fill(); }
+  }
+  if (lines) drawPitchLines(c, { p: P, o: cm.o }, a, lines);
+  if (hashA > 0) { c.beginPath(); for (const [x, z] of HASH) { const p = P(x, 0, z - .3), q = P(x, 0, z + .3); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('graphite', .45 * hashA * a); c.lineWidth = 1; c.stroke(); }
+  if (posts > 0) {
+    c.beginPath();
+    for (const s of [-1, 1]) {
+      const x = s * (FX + 1.2), top = 3.05 + 10.67 * posts;
+      for (const [A, B] of [[[x, 0, 0], [x, 3.05, 0]], [[x, 3.05, -2.82], [x, 3.05, 2.82]], [[x, 3.05, -2.82], [x, top, -2.82]], [[x, 3.05, 2.82], [x, top, 2.82]]]) { const p = P(...A), q = P(...B); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); }
+    }
+    c.strokeStyle = rgba('blue', .9 * a); c.lineWidth = 1.6; c.stroke();
+  }
+}
+
+function drawPitchLines(c, cm, a, prog = 1, t0 = 0) {
+  c.lineWidth = 1.2;
+  PL.forEach((L, i) => {
+    const p = typeof prog === 'function' ? prog(i) : prog; if (p <= 0) return;
+    const pr = proj(cm, L);
+    c.beginPath(); polyPartial(c, pr, p); c.strokeStyle = rgba('cyan', .25 * a); c.lineWidth = 4; c.stroke();
+    c.strokeStyle = rgba('graphite', .6 * a); c.lineWidth = 1.1; c.stroke();
+  });
+}
+
+
+/* =====================================================================
+   SHARED BODY — pose, layered anatomy
+   ===================================================================== */
+function pose(t) {
+  const ph = TAU * .52 * t, lean = .2, bob = .035 * Math.cos(2 * ph);
+  const pelvis = [0, .96 + bob, 0];
+  const neck = [pelvis[0] + .5 * Math.sin(lean), pelvis[1] + .5 * Math.cos(lean), 0];
+  const chest = [lerp(pelvis[0], neck[0], .62), lerp(pelvis[1], neck[1], .62), 0];
+  const head = [neck[0] + .17 * Math.sin(lean * .6), neck[1] + .15, 0];
+  const J = { pelvis, neck, chest, head };
+  for (const [s, zs, off] of [['R', -1, 0], ['L', 1, Math.PI]]) {
+    const psi = ph + off;
+    const hip = [pelvis[0], pelvis[1] - .05, zs * .095];
+    const th = .18 + .62 * Math.sin(psi);
+    const kn = .12 + 1.05 * (.5 + .5 * Math.sin(psi + 1.9));
+    const knee = [hip[0] + .45 * Math.sin(th), hip[1] - .45 * Math.cos(th), hip[2]];
+    const a = th - kn;
+    const ankle = [knee[0] + .43 * Math.sin(a), knee[1] - .43 * Math.cos(a), hip[2]];
+    const fa = a + .15;
+    const toe = [ankle[0] + .2 * Math.cos(fa), ankle[1] + .2 * Math.sin(fa) - .02, hip[2]];
+    const sh = [neck[0] - .03, neck[1] - .06, zs * .185];
+    const ua = -.9 * Math.sin(psi);
+    const el = [sh[0] + .29 * Math.sin(ua), sh[1] - .29 * Math.cos(ua), sh[2] + zs * .02];
+    const ef = 1.45 + .3 * Math.sin(psi);
+    const ha = [el[0] + .26 * Math.sin(ua + ef), el[1] - .26 * Math.cos(ua + ef), el[2]];
+    J['hip' + s] = hip; J['knee' + s] = knee; J['ankle' + s] = ankle; J['toe' + s] = toe; J['sh' + s] = sh; J['el' + s] = el; J['ha' + s] = ha;
+  }
+  return J;
+}
+const CAPS = [['pelvis', 'chest', .135, .15], ['chest', 'neck', .14, .065], ['hipL', 'hipR', .1, .1], ['shL', 'shR', .065, .065], ['neck', 'head', .05, .05],
+  ['hipL', 'kneeL', .085, .055], ['kneeL', 'ankleL', .052, .034], ['ankleL', 'toeL', .035, .022], ['hipR', 'kneeR', .085, .055], ['kneeR', 'ankleR', .052, .034], ['ankleR', 'toeR', .035, .022],
+  ['shL', 'elL', .048, .037], ['elL', 'haL', .036, .026], ['shR', 'elR', .048, .037], ['elR', 'haR', .036, .026]];
+function drawSilhouette(c, pj, alpha, caps = CAPS, headR = .105) {
+  if (alpha <= 0) return;
+  const s = silCtx; s.setTransform(1, 0, 0, 1, 0, 0); s.clearRect(0, 0, sil.width, sil.height); s.setTransform(SC, 0, 0, SC, 0, 0);
+  const hd = pj.head;
+  const disc = (q, r) => { s.beginPath(); s.arc(q[0], q[1], Math.max(.5, r), 0, TAU); s.fill(); };
+  for (const pass of [0, 1]) {
+    const add = pass ? 0 : 1.5;
+    if (pass === 0) s.fillStyle = rgba('mid', .9);
+    else { const g = s.createLinearGradient(0, hd[1] - 60, 0, hd[1] + 640); g.addColorStop(0, '#FFFFFF'); g.addColorStop(.6, '#F3F5F7'); g.addColorStop(1, '#E4E8ED'); s.fillStyle = g; }
+    // each primitive filled on its own so overlapping windings never punch holes
+    for (const [a, b, ra, rb] of caps) {
+      const A = pj[a], B = pj[b], r1 = ra * A[3] + add, r2 = rb * B[3] + add, dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1e-6, nx = -dy / L, ny = dx / L;
+      s.beginPath(); s.moveTo(A[0] + nx * r1, A[1] + ny * r1); s.lineTo(B[0] + nx * r2, B[1] + ny * r2); s.lineTo(B[0] - nx * r2, B[1] - ny * r2); s.lineTo(A[0] - nx * r1, A[1] - ny * r1); s.closePath(); s.fill();
+      disc(A, r1); disc(B, r2);
+    }
+    disc(hd, headR * hd[3] + add);
+    for (const h of ['haL', 'haR']) disc(pj[h], .035 * pj[h][3] + add);
+  }
+  c.save(); c.globalAlpha = alpha; c.shadowColor = 'rgba(58,64,72,0.13)'; c.shadowBlur = 28 * SC; c.shadowOffsetY = 12 * SC;
+  c.drawImage(sil, 0, 0, W, H); c.restore();
+}
+function frontSign(A, B, fd) { const dx = B[0] - A[0], dy = B[1] - A[1]; return Math.sign(-dy * fd[0] + dx * fd[1]) || 1; }
+function sideOrder(pj) { return pj.hipL[2] > pj.hipR[2] ? ['L', 'R'] : ['R', 'L']; }
+function drawMuscles(c, pj, fd, a) {
+  if (a <= 0) return;
+  const ord = sideOrder(pj);
+  c.lineWidth = 1;
+  for (const s of ord) {
+    const fa = (s === ord[0] ? .45 : 1) * a;
+    const Hp = pj['hip' + s], K = pj['knee' + s], A = pj['ankle' + s], S = pj['sh' + s], E = pj['el' + s], Hd = pj['ha' + s];
+    const rT = .075 * Hp[3], rC = .048 * K[3], rU = .045 * S[3], rF = .034 * E[3];
+    c.beginPath();
+    let f = frontSign(Hp, K, fd); spindle(c, Hp, K, rT * .6, .12, .9, f * rT * .32); spindle(c, Hp, K, rT * .45, .2, .95, -f * rT * .42);
+    f = frontSign(K, A, fd); spindle(c, K, A, rC * .85, .05, .6, -f * rC * .3); spindle(c, K, A, rC * .3, .1, .85, f * rC * .5);
+    f = frontSign(S, E, fd); spindle(c, S, E, rU * .55, .15, .9, f * rU * .25); spindle(c, S, E, rU * .5, .1, .85, -f * rU * .35); spindle(c, S, E, rU * .95, -.12, .35, 0);
+    spindle(c, E, Hd, rF * .6, .05, .7, 0);
+    c.strokeStyle = rgba('blue', .72 * fa); c.stroke();
+  }
+  const Pl = pj.pelvis, Nk = pj.neck, rCh = .15 * pj.chest[3], fT = frontSign(Pl, Nk, fd);
+  c.beginPath();
+  spindle(c, Pl, Nk, rCh * .35, .62, .92, fT * rCh * .55);
+  for (let i = 0; i < 4; i++) spindle(c, Pl, Nk, rCh * .12, .1 + i * .12, .2 + i * .12, fT * rCh * .62);
+  spindle(c, Pl, Nk, rCh * .3, .08, .55, fT * rCh * .2);
+  spindle(c, Pl, Nk, rCh * .45, .35, .88, -fT * rCh * .45);
+  spindle(c, Pl, Nk, rCh * .14, .05, .95, -fT * rCh * .78);
+  spindle(c, Nk, pj.head, .03 * Nk[3], 0, .7, 0);
+  c.strokeStyle = rgba('blue', .72 * a); c.stroke();
+}
+function drawSkeleton(c, pj, fd, a) {
+  if (a <= 0) return;
+  const ord = sideOrder(pj);
+  for (const s of ord) {
+    const fa = (s === ord[0] ? .45 : 1) * a;
+    const sc = pj['hip' + s][3];
+    c.beginPath();
+    bone(c, pj['hip' + s], pj['knee' + s], .017 * sc); bone(c, pj['knee' + s], pj['ankle' + s], .015 * sc); bone(c, pj['ankle' + s], pj['toe' + s], .009 * sc);
+    bone(c, pj['sh' + s], pj['el' + s], .014 * sc); bone(c, pj['el' + s], pj['ha' + s], .011 * sc);
+    c.strokeStyle = rgba('graphite', .8 * fa); c.lineWidth = 1.1; c.stroke();
+    c.fillStyle = rgba('blue', fa);
+    for (const j of ['hip', 'knee', 'ankle', 'sh', 'el']) { const q = pj[j + s]; c.beginPath(); c.arc(q[0], q[1], 2.6, 0, TAU); c.fill(); }
+  }
+  const Pl = pj.pelvis, Nk = pj.neck, Hd = pj.head, sc = pj.chest[3], fT = frontSign(Pl, Nk, fd);
+  const dx = Nk[0] - Pl[0], dy = Nk[1] - Pl[1], L = Math.hypot(dx, dy), nx = -dy / L * fT, ny = dx / L * fT, ang = Math.atan2(ny, nx);
+  c.beginPath();
+  for (let i = 0; i < 15; i++) { const u = .04 + i / 14 * .94, x = Pl[0] + dx * u - nx * .1 * sc, y = Pl[1] + dy * u - ny * .1 * sc; c.moveTo(x + nx * .012 * sc, y + ny * .012 * sc); c.lineTo(x - nx * .012 * sc, y - ny * .012 * sc); }
+  for (let i = 0; i < 4; i++) { const u = (i + .5) / 4, x = lerp(Nk[0], Hd[0], u * .7), y = lerp(Nk[1], Hd[1], u * .7); c.moveTo(x - 4, y); c.lineTo(x + 4, y); }
+  c.strokeStyle = rgba('graphite', .75 * a); c.lineWidth = 2; c.stroke();
+  c.beginPath();
+  // ribcage: an outline plus ribs sweeping from the spine down toward the sternum
+  const rcx = Pl[0] + dx * .7 + nx * .03 * sc, rcy = Pl[1] + dy * .7 + ny * .03 * sc, sAng = Math.atan2(dy, dx);
+  c.moveTo(rcx + Math.cos(sAng) * .2 * sc, rcy + Math.sin(sAng) * .2 * sc); c.ellipse(rcx, rcy, .2 * sc, .12 * sc, sAng, 0, TAU);
+  for (let i = 0; i < 7; i++) {
+    const u = .55 + i * .055, bx = Pl[0] + dx * u - nx * .09 * sc, by = Pl[1] + dy * u - ny * .09 * sc;
+    const fx = Pl[0] + dx * (u - .09) + nx * .11 * sc, fy = Pl[1] + dy * (u - .09) + ny * .11 * sc;
+    const cx_ = (bx + fx) / 2 + dx * .06 + nx * .02 * sc, cy_ = (by + fy) / 2 + dy * .06 + ny * .02 * sc;
+    c.moveTo(bx, by); c.quadraticCurveTo(cx_, cy_, fx, fy);
+  }
+  void ang;
+  c.moveTo(pj.shL[0], pj.shL[1]); c.lineTo(lerp(pj.shL[0], pj.shR[0], .5), lerp(pj.shL[1], pj.shR[1], .5) + .02 * sc); c.lineTo(pj.shR[0], pj.shR[1]);
+  c.moveTo(Pl[0] + .12 * sc, Pl[1]); c.ellipse(Pl[0], Pl[1] + .01 * sc, .12 * sc, .075 * sc, ang, 0, TAU);
+  c.moveTo(Hd[0] + .095 * sc, Hd[1]); c.arc(Hd[0], Hd[1], .095 * sc, 0, TAU);
+  c.moveTo(Hd[0] + nx * .05 * sc + .02 * sc, Hd[1] + ny * .05 * sc - .01 * sc); c.arc(Hd[0] + nx * .05 * sc, Hd[1] + ny * .05 * sc - .01 * sc, .02 * sc, 0, TAU);
+  c.moveTo(Hd[0] + nx * .085 * sc, Hd[1] + .03 * sc); c.quadraticCurveTo(Hd[0] + nx * .07 * sc, Hd[1] + .12 * sc, Hd[0] - nx * .02 * sc, Hd[1] + .09 * sc);
+  c.strokeStyle = rgba('graphite', .7 * a); c.lineWidth = 1; c.stroke();
+}
+
+/* =====================================================================
+   STADIUM (exploded axonometric)
+   ===================================================================== */
+const OFF = { found: -55, bowl: 0, circ: 42, sys: 84, skin: 126, roof: 140 };
+function bandPath(c, A, B) { c.beginPath(); A.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); for (let i = B.length - 1; i >= 0; i--) i === B.length - 1 ? c.moveTo(B[i][0], B[i][1]) : c.lineTo(B[i][0], B[i][1]); c.closePath(); }
+function drawStadium(c, cm, t, o) {
+  const { e = 0, pr = {}, fill = 1, glow = 0, a = 1, pitchA = .5, flows = 1 } = o;
+  const P = k => pr[k] === undefined ? 1 : pr[k];
+  const dRef = cm.o.dist + cm.o.ty * Math.sin(cm.o.pitch);
+  const dy = k => OFF[k] * e;
+  const L = (pts, p, col, al, lw) => { c.beginPath(); polyPartial(c, pts, p); c.strokeStyle = rgba(col, al * a); c.lineWidth = lw; c.stroke(); };
+  // FOUNDATIONS
+  if (P('found') > 0) {
+    const y = -3 + dy('found'), p = P('found');
+    const inner = ringP(cm, 60, 42, y), outer = ringP(cm, 121, 101, y);
+    L(inner, p, 'graphite', .5, 1); L(outer, p, 'graphite', .5, 1);
+    c.beginPath(); const oi = oval(60, 42), oo = oval(121, 101);
+    for (let i = 0; i < NS * p; i += 4) { const A = cm.p(oo[i][0], y, oo[i][1]), B = cm.p(oo[i][0], y - 10, oo[i][1]); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); const C = cm.p(oi[i][0], y, oi[i][1]), D = cm.p(oi[i][0], y - 8, oi[i][1]); c.moveTo(C[0], C[1]); c.lineTo(D[0], D[1]); if (i % 8 === 0) { c.moveTo(A[0], A[1]); c.lineTo(C[0], C[1]); } }
+    c.strokeStyle = rgba('graphite', .35 * a); c.lineWidth = .8; c.stroke();
+  }
+  // BOWL + pitch
+  if (P('bowl') > 0) {
+    const p = P('bowl'), y0 = dy('bowl');
+    const pcm = { p: (x, y, z) => cm.p(x, y + y0, z), o: cm.o };
+    drawPitchLines(c, pcm, pitchA * a, 1);
+    const tiers = []; for (let i = 0; i < 10; i++) tiers.push(ringP(cm, lerp(62, 106, i / 9), lerp(44, 88, i / 9), y0 + 1 + i * 2.7));
+    if (p >= 1) { bandPath(c, tiers[9], tiers[0]); c.fillStyle = rgba('white', .55 * fill * a); c.fill('evenodd'); }
+    tiers.forEach((T, i) => L(T, p, i === 0 || i === 9 ? 'graphite' : 'mid', i === 0 || i === 9 ? .7 : .55, i === 9 ? 1.1 : .7));
+    c.beginPath(); for (let i = 0; p > .02 && i < NS * p; i += 4) { c.moveTo(tiers[0][i][0], tiers[0][i][1]); c.lineTo(tiers[9][i][0], tiers[9][i][1]); }
+    c.strokeStyle = rgba('graphite', .3 * a); c.lineWidth = .7; c.stroke();
+  }
+  // CIRCULATION
+  if (P('circ') > 0) {
+    const p = P('circ'), y0 = dy('circ');
+    for (const y of [8, 20]) {
+      const A = ringP(cm, 108, 90, y + y0), B = ringP(cm, 115, 97, y + y0);
+      if (p >= 1) { bandPath(c, B, A); c.fillStyle = rgba('cyan', .16 * fill * a); c.fill('evenodd'); }
+      L(A, p, 'blue', .65, .9); L(B, p, 'blue', .65, .9);
+      c.beginPath(); const o1 = oval(104, 86), o2 = oval(108, 90);
+      for (let i = 3; i < NS * p; i += 6) { const q1 = cm.p(o1[i][0], y + y0, o1[i][1]), q2 = cm.p(o2[i][0], y + y0, o2[i][1]); c.moveTo(q1[0], q1[1]); c.lineTo(q2[0], q2[1]); }
+      c.strokeStyle = rgba('blue', .8 * a); c.lineWidth = 2; c.stroke();
+      if (p >= 1 && flows > 0) { c.fillStyle = rgba('blue', .9 * a * flows); for (let k = 0; k < 44; k++) { const th = (k / 44) * TAU + t * (y === 8 ? .12 : -.09), q0 = ovPt(111.5, 93.5, th), q = cm.p(q0[0], y + y0, q0[1]); c.fillRect(q[0] - 1.5, q[1] - 1.5, 3, 3); } }
+    }
+  }
+  // SYSTEMS
+  if (P('sys') > 0) {
+    const p = P('sys'), y0 = dy('sys');
+    L(ringP(cm, 110, 92, 30 + y0), p, 'blue', .85, 1.4);
+    c.setLineDash([6, 6]); L(ringP(cm, 112, 94, 24 + y0), p, 'cyan', .9, 1.2); c.setLineDash([]);
+    const o1 = oval(110, 92); c.beginPath();
+    for (let i = 0; i < NS * p; i += 8) { const A = cm.p(o1[i][0], y0, o1[i][1]), B = cm.p(o1[i][0], 30 + y0, o1[i][1]); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); }
+    c.strokeStyle = rgba('blue', .45 * a); c.lineWidth = .8; c.stroke();
+    if (p >= 1) for (let i = 0; i < NS; i += 8) {
+      const B = cm.p(o1[i][0], 30 + y0, o1[i][1]); c.strokeStyle = rgba('blue', a); c.lineWidth = 1; c.strokeRect(B[0] - 3, B[1] - 3, 6, 6);
+      if (flows > 0) { const yy = (t * 14 + i * 3) % 30, q = cm.p(o1[i][0], yy + y0, o1[i][1]); c.fillStyle = rgba('cyan', a * flows); c.beginPath(); c.arc(q[0], q[1], 2.4, 0, TAU); c.fill(); }
+    }
+  }
+  // SKIN
+  if (P('skin') > 0) {
+    const p = P('skin'), y0 = dy('skin'), o1 = oval(121, 101), n = Math.floor(NS * p);
+    const bot = ringP(cm, 121, 101, y0), top = oval(121, 101).map((q, i) => { const r = ovPt(121, 101, i / NS * TAU + .05); return cm.p(r[0], 42 + y0, r[1]); });
+    for (let i = 0; i < n; i += 2) {
+      const j = Math.min(i + 2, NS); c.beginPath(); c.moveTo(bot[i][0], bot[i][1]); c.lineTo(top[i][0], top[i][1]); c.lineTo(top[j][0], top[j][1]); c.lineTo(bot[j][0], bot[j][1]); c.closePath();
+      c.fillStyle = rgba('white', .26 * fill * a); c.fill();
+    }
+    c.beginPath(); for (let i = 0; i < n; i += 2) { c.moveTo(bot[i][0], bot[i][1]); c.lineTo(top[i][0], top[i][1]); }
+    c.strokeStyle = rgba('mid', .55 * a); c.lineWidth = .7; c.stroke();
+    L(bot, p, 'graphite', .6, 1); L(top, p, 'graphite', .6, 1);
+    if (glow > 0) { c.beginPath(); bot.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .7 * glow * a, 1.5 + 2 * glow, 22 * glow); }
+  }
+  // ROOF
+  if (P('roof') > 0) {
+    const p = P('roof'), y0 = dy('roof');
+    const it = ringP(cm, 74, 56, 46 + y0), ib = ringP(cm, 74, 56, 41 + y0), ot = ringP(cm, 124, 104, 48 + y0), ob = ringP(cm, 124, 104, 45 + y0);
+    if (p >= 1) { bandPath(c, ot, it); c.fillStyle = rgba('white', .62 * fill * a); c.fill('evenodd'); bandPath(c, ot, it); c.fillStyle = rgba('cyan', .05 * fill * a); c.fill('evenodd'); }
+    c.beginPath();
+    for (let i = 0; i < NS * p; i += 2) {
+      const pts = [it[i], ot[i]], bts = [ib[i], ob[i]];
+      c.moveTo(it[i][0], it[i][1]); c.lineTo(ot[i][0], ot[i][1]); c.moveTo(ib[i][0], ib[i][1]); c.lineTo(ob[i][0], ob[i][1]);
+      c.moveTo(it[i][0], it[i][1]); c.lineTo(ib[i][0], ib[i][1]);
+      for (let k = 0; k < 4; k++) { const u0 = k / 4, u1 = (k + 1) / 4, A = k % 2 ? [lerp(it[i][0], ot[i][0], u0), lerp(it[i][1], ot[i][1], u0)] : [lerp(ib[i][0], ob[i][0], u0), lerp(ib[i][1], ob[i][1], u0)], B = k % 2 ? [lerp(ib[i][0], ob[i][0], u1), lerp(ib[i][1], ob[i][1], u1)] : [lerp(it[i][0], ot[i][0], u1), lerp(it[i][1], ot[i][1], u1)]; c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); }
+      void pts; void bts;
+    }
+    c.strokeStyle = rgba('blue', .42 * a); c.lineWidth = .7; c.stroke();
+    L(it, p, 'blue', .9, 1.3); L(ib, p, 'blue', .5, .8); L(ot, p, 'blue', .9, 1.3); L(ob, p, 'blue', .5, .8);
+    if (glow > 0) { for (const R of [ot, it]) { c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .85 * glow * a, 1.5 + 2.5 * glow, 26 * glow); } }
+  }
+  void dRef;
+}
+function leftmost(pts) { let b = pts[0]; for (const q of pts) if (q[0] < b[0]) b = q; return b; }
+function vignetteTag(c, n, name, t, t0, a, of = '03') { kicker(c, `${n} / ${of} — ${name}`, 120, 196, seg(t, t0, t0 + .8), a, 'blue'); }
+
+/* ---------- stick figures + path helpers ---------- */
+const STICK = [['pelvis', 'chest'], ['chest', 'neck'], ['neck', 'head'], ['hipL', 'hipR'], ['shL', 'shR'], ['hipL', 'kneeL'], ['kneeL', 'ankleL'], ['ankleL', 'toeL'], ['hipR', 'kneeR'], ['kneeR', 'ankleR'], ['ankleR', 'toeR'], ['shL', 'elL'], ['elL', 'haL'], ['shR', 'elR'], ['elR', 'haR']];
+const MIDS = [['hipL', 'kneeL'], ['kneeL', 'ankleL'], ['hipR', 'kneeR'], ['kneeR', 'ankleR'], ['shL', 'elL'], ['elL', 'haL'], ['shR', 'elR'], ['elR', 'haR'], ['pelvis', 'chest'], ['chest', 'neck'], ['neck', 'head']];
+const placePose = (J, ox, oz) => { const o = {}; for (const k in J) o[k] = [J[k][0] + ox, J[k][1], J[k][2] + oz]; return o; };
+function track29(J) { const pts = Object.keys(J).map(k => J[k]); for (const [a, b] of MIDS) pts.push(lerp3(J[a], J[b], .5)); return pts; } // 18 joints + 11 midpoints
+const bodyFront = J => Math.max(...Object.keys(J).filter(k => !/^(ha|el)/.test(k)).map(k => J[k][0]));  // arms don't count for offside
+const densify = (L, step = 1.5) => { const o = [L[0]]; for (let i = 1; i < L.length; i++) { const a = L[i - 1], b = L[i], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[2] - a[2]) / step)); for (let k = 1; k <= n; k++) o.push(lerp3(a, b, k / n)); } return o; };
+const PLD = PL.map(L => densify(L));
+function strokeSafe(c, pr, minD = 4) { for (let i = 1; i < pr.length; i++) { if (pr[i][2] < minD || pr[i - 1][2] < minD) continue; c.moveTo(pr[i - 1][0], pr[i - 1][1]); c.lineTo(pr[i][0], pr[i][1]); } }
+function drawStick(c, cm, J, col, a) {
+  const P = {}; for (const k in J) P[k] = cm.p(...J[k]);
+  c.beginPath(); for (const [x, y] of STICK) { c.moveTo(P[x][0], P[x][1]); c.lineTo(P[y][0], P[y][1]); }
+  c.lineCap = 'round'; c.strokeStyle = rgba(col, .85 * a); c.lineWidth = 2.4; c.stroke(); c.lineCap = 'butt';
+  const h = P.head; c.beginPath(); c.arc(h[0], h[1], .11 * h[3], 0, TAU); c.fillStyle = rgba('white', a); c.fill(); c.strokeStyle = rgba(col, .85 * a); c.lineWidth = 1.6; c.stroke();
+  return P;
+}
+const pathCum = pts => { const cum = [0]; for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])); return cum; };
+function pathAt(pts, cum, s) { let k = 1; while (k < cum.length - 1 && cum[k] < s) k++; const r = clamp((s - cum[k - 1]) / (cum[k] - cum[k - 1] || 1)); return [lerp(pts[k - 1][0], pts[k][0], r), lerp(pts[k - 1][1], pts[k][1], r)]; }
+
+/* =====================================================================
+   SCENE 01 — BALL TO FIELD  (0 – 10.6)
+   ===================================================================== */
+const ballLocal = (u, v) => { const r = .62 * Math.pow(Math.sin(v), .85); return [Math.cos(v), r * Math.cos(u), r * Math.sin(u)]; };
+const N1KEYS = [
+  { t: 0, yaw: .55, pitch: .42, dist: 200, f: 1000, tx: 0, ty: 12, tz: 0, cx: 960, cy: 470 },
+  { t: 3.4, yaw: .45, pitch: .45, dist: 195, f: 1000, tx: 0, ty: 12, tz: 0, cx: 960, cy: 470 },
+  { t: 7.4, yaw: .2, pitch: .7, dist: 175, f: 1000, tx: 0, ty: 0, tz: 0, cx: 960, cy: 480 },
+  { t: 10.6, yaw: .1, pitch: .85, dist: 165, f: 1000, tx: 0, ty: 0, tz: 0, cx: 960, cy: 480 },
+];
+function sBall(c, t) {
+  const cm = cam(camKeys(N1KEYS, t));
+  const m = ease(seg(t, 3.6, 6.8)), S = 34, by = 14, intro = smooth(seg(t, .2, 1.6));
+  const spin = 2.4 * (t < 6.8 ? t : 6.8), cs = Math.cos(spin), sn = Math.sin(spin);
+  const world = (q, tgt) => { const y = q[1] * cs - q[2] * sn, z = q[1] * sn + q[2] * cs, b = [q[0] * S, by + y * S, z * S]; return tgt ? lerp3(b, tgt, m) : b; };
+  const fa = smooth(seg(t, 6.0, 7.6));
+  if (fa > 0) drawField(c, cm, { a: fa, surf: fa, lines: easeOut(seg(t, 6.4, 7.8)), hashA: smooth(seg(t, 7.2, 8.4)), posts: easeOut(seg(t, 7.6, 9.0)) });
+  if (m < 1) {
+    const sh = cm.p(0, 0, 0), r = S * 1.1 * sh[3], g = c.createRadialGradient(sh[0], sh[1], 0, sh[0], sh[1], r);
+    g.addColorStop(0, rgba('graphite', .14 * (1 - m) * intro)); g.addColorStop(1, rgba('graphite', 0));
+    c.save(); c.translate(sh[0], sh[1]); c.scale(1, .3); c.translate(-sh[0], -sh[1]); c.fillStyle = g; c.beginPath(); c.arc(sh[0], sh[1], r, 0, TAU); c.fill(); c.restore();
+  }
+  const dRef = cm.p(0, by, 0)[2], backA = lerp(.18, 1, m);
+  // latitude rings -> yard lines
+  for (let k = 1; k <= 19; k++) {
+    const v = k / 20 * Math.PI, xt = GL - k * 4.572, pts = [];
+    for (let i = 0; i <= 48; i++) { const u = i / 48 * TAU; pts.push(world(ballLocal(u, v), [xt, 0, FZ * Math.cos(u)])); }
+    const col = m < .5 ? 'mid' : (k === 10 ? 'blue' : 'graphite'), al = (m < .5 ? .8 : .6) * intro * (1 - .5 * smooth(seg(t, 7.6, 8.6)));
+    strokeDepth(c, proj(cm, pts), dRef, rgba(col, al), 1.1, rgba(col, al * backA), .8);
+  }
+  // meridians -> lengthwise lanes (sidelines survive)
+  for (let j = 0; j < 12; j++) {
+    const u = j / 12 * TAU, pts = [], side = j === 0 || j === 6;
+    for (let i = 0; i <= 30; i++) { const v = .001 + i / 30 * (Math.PI - .002); pts.push(world(ballLocal(u, v), [GL * Math.cos(v), 0, FZ * Math.cos(u)])); }
+    const al = (m < .5 ? .7 : .55) * intro * (side ? 1 : 1 - smooth(seg(t, 7.0, 8.2)));
+    strokeDepth(c, proj(cm, pts), dRef, rgba(m < .5 ? 'mid' : 'blue', al), 1, rgba(m < .5 ? 'mid' : 'blue', al * backA), .8);
+  }
+  // laces
+  const la = intro * (1 - smooth(seg(t, 3.6, 4.6)));
+  if (la > 0) {
+    const top = x => .62 * Math.pow(Math.sin(Math.acos(x)), .85) + .01;
+    c.beginPath(); for (let i = 0; i <= 10; i++) { const x = -.3 + i * .06, q = cm.p(...world([x, top(x), 0])); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); }
+    for (let i = 0; i < 8; i++) { const x = -.26 + i * .074, a = cm.p(...world([x, top(x) - .01, -.07])), b = cm.p(...world([x, top(x) - .01, .07])); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
+    c.strokeStyle = rgba('blue', la); c.lineWidth = 2; c.stroke();
+  }
+  // labels
+  const ba = 1 - smooth(seg(t, 3.6, 4.1));
+  const tip = cm.p(...world([1, 0, 0])), lace = cm.p(...world([0, .63, 0]));
+  leader(c, tip[0], tip[1], 1420, 360, seg(t, 1.2, 2.6), 'Prolate spheroid', '11 in long · 14–15 oz', { a: ba });
+  leader(c, lace[0], lace[1], 1420, 560, seg(t, 1.8, 3.2), 'Spiral', 'Spin about the long axis steadies flight', { a: ba });
+  const fl = env(t, 8.0, 8.4, 9.8, 10.4), corner = cm.p(-FX, 0, FZ);
+  leader(c, corner[0], corner[1], 120, 300, seg(t, 8.0, 9.4), 'The field', '120 × 53⅓ yards · hashes 18 ft 6 in apart', { a: fl });
+  const ha = 1 - smooth(seg(t, 9.6, 10.4));
+  kicker(c, 'FIG. 01 — FROM BALL TO FIELD', 120, 852, seg(t, 4.0, 5.0), ha);
+  headline(c, [['Every snap is a ', 'graphite'], ['dataset.', 'blue']], 120, 930, seg(t, 4.6, 6.0), { size: 66, a: ha });
+}
+
+/* =====================================================================
+   SCENE 03 data — one pass play  (snap 26.0, throw 28.4, catch 29.6)
+   ===================================================================== */
+const SNAP = 26.0, THROW = 28.4, CATCH = 29.6, LOS = yx(35);
+const OFFS = [ // start x, start z, route (dx,dz), speed m/s
+  [LOS - .5, 0, [[0, 0], [-1, 0]], 2], [LOS - .6, -1.4, [[0, 0], [-1.2, -.3]], 2], [LOS - .6, 1.4, [[0, 0], [-1.2, .3]], 2],
+  [LOS - .7, -2.8, [[0, 0], [-1.5, -.8]], 2], [LOS - .7, 2.8, [[0, 0], [-1.5, .8]], 2],
+  [LOS - 4.6, 0, [[0, 0], [-2.7, 0]], 3.5],                       // 5 QB
+  [LOS - 4.6, -1.6, [[0, 0], [1.5, -3], [4.5, -8]], 6],          // 6 RB
+  [LOS - .6, 4.3, [[0, 0], [6, 0], [5, -1.5]], 6.5],             // 7 TE
+  [LOS - .5, -20, [[0, 0], [32, 0]], 8.5],                        // 8 WR go
+  [LOS - .5, 18, [[0, 0], [11, 0], [26, -10]], 8.5],             // 9 WR post — the target
+  [LOS - 1.4, 12, [[0, 0], [8, 0], [8, 6]], 7.5],                // 10 slot out
+].map(([x, z, r, v]) => { const p = r.map(q => [x + q[0], z + q[1]]); return { x, z, p, cum: pathCum(p), v }; });
+function routeAt(i, t) { const O = OFFS[i], s = Math.max(0, t - SNAP) * O.v, q = pathAt(O.p, O.cum, Math.min(s, O.cum[O.cum.length - 1])); return [q[0], 0, q[1]]; }
+const CATCHP = routeAt(9, CATCH), YAC = [CATCHP[0] + 9, 0, CATCHP[2] - 4.5];
+function offPos(i, t) { if (i === 9 && t > CATCH) return lerp3(CATCHP, YAC, easeOut(seg(t, CATCH, CATCH + 1.8))); return routeAt(i, t); }
+const DEFS = [[LOS + 1, -1.2, 'rush'], [LOS + 1, 1.2, 'rush'], [LOS + 1, -3.8, 'rush'], [LOS + 1, 3.8, 'rush'], [LOS + 5, -3, 'zone'], [LOS + 5, 3, 'zone'],
+  [LOS + 6, -20, 'man', 8], [LOS + 6, 18, 'man', 9], [LOS + 5, 12, 'man', 10], [LOS + 15, -9, 'deep'], [LOS + 15, 9, 'deep']];
+function defPos(i, t) {
+  const [x, z, mode, ref] = DEFS[i], k = seg(t, SNAP, SNAP + 3.4);
+  if (mode === 'rush') { const q = offPos(5, t), e = ease(seg(t, SNAP, SNAP + 3.2)); return [lerp(x, q[0] + 1.6, e * .7), 0, lerp(z, q[2] + z * .4, e * .6)]; }
+  if (mode === 'zone') return [x + 4 * easeOut(k), 0, z + (offPos(9, t)[2] - z) * .15 * k];
+  if (mode === 'man') { const q = offPos(ref, t - .35), s = OFFS[ref]; return [q[0] + (x - s.x) * (1 - k * .7) + 1.2 * k, 0, q[2] + (ref === 9 ? 2.4 : .8) * k]; }
+  return [x + 6 * easeOut(k), 0, z * (1 - .4 * k) + offPos(9, t)[2] * .3 * k];
+}
+function ballPos(t) {
+  const start = [LOS - .3, .3, 0];
+  if (t < SNAP) return start;
+  if (t < SNAP + .3) { const q = offPos(5, t); return lerp3(start, [q[0], 1.4, q[2]], (t - SNAP) / .3); }
+  if (t < THROW) { const q = offPos(5, t); return [q[0] + .3, 1.6, q[2]]; }
+  if (t < CATCH) { const u = (t - THROW) / (CATCH - THROW), a = offPos(5, THROW); return [lerp(a[0], CATCHP[0], u), 1.8 + 9 * Math.sin(Math.PI * u) - .4 * u, lerp(a[2], CATCHP[2], u)]; }
+  const r = offPos(9, t); return [r[0] + .3, 1.1, r[2]];
+}
+const PLAY = (() => {
+  const w = offPos(9, THROW); let best = 1e9; for (let i = 0; i < 11; i++) { const d = defPos(i, THROW); best = Math.min(best, Math.hypot(d[0] - w[0], d[2] - w[2])); }
+  return { sepYd: best / YD, airYd: (CATCHP[0] - LOS) / YD, ttt: THROW - SNAP };
+})();
+const FIELDCAM = { yaw: .04, pitch: 1.12, dist: 112, f: 1000, tx: LOS + 10, ty: 0, tz: 0, cx: 780, cy: 530 };
+function fieldCam(t) { return cam(Object.assign({}, FIELDCAM, { yaw: lerp(-.12, .04, ease(seg(t, 24, 38))) })); }
+let _playDot = null;
+function playDot() { if (!_playDot) _playDot = fieldCam(24.6).p(...offPos(9, 24.6)); return _playDot; }
+
+/* =====================================================================
+   SCENE 02 — THE PLAYER  (10 – 24.6)
+   ===================================================================== */
+const PAD_CAPS = CAPS.map(cp => cp[0] === 'shL' && cp[1] === 'shR' ? ['shL', 'shR', .12, .12] : cp[0] === 'chest' && cp[1] === 'neck' ? ['chest', 'neck', .17, .09] : cp);
+function playerCam(t) {
+  const o = { yaw: lerp(-.55, .45, ease(seg(t, 10, 23))), pitch: .06, dist: lerp(3.25, 2.85, ease(seg(t, 10, 22.6))), f: 1000, tx: .05, ty: .95, tz: 0, cx: 900, cy: 500 };
+  const k = ease(seg(t, 22.8, 24.4));
+  if (k > 0) { const d = playDot(); o.dist *= 1 + 34 * k * k; o.pitch = lerp(.06, 1.15, k); o.cx = lerp(900, d[0], k); o.cy = lerp(500, d[1], k); }
+  return cam(o);
+}
+function sPlayer(c, t) {
+  const cm = playerCam(t), J = pose(t), pj = {};
+  for (const k in J) pj[k] = cm.p(J[k][0], J[k][1], J[k][2]);
+  const fwd = cm.p(J.chest[0] + .1, J.chest[1], J.chest[2]), fdx = fwd[0] - pj.chest[0], fdy = fwd[1] - pj.chest[1], fl = Math.hypot(fdx, fdy) || 1, fd = [fdx / fl, fdy / fl];
+  const exitK = seg(t, 22.8, 24.4), ov = 1 - smooth(seg(t, 22.4, 23.1)), figA = 1 - smooth(seg(t, 23.6, 24.3));
+  // turf disc
+  const fa = env(t, 10.4, 11.4, 22.4, 23.2);
+  if (fa > 0) {
+    const sh = cm.p(.05, 0, 0), shR = .42 * sh[3], g = c.createRadialGradient(sh[0], sh[1], 0, sh[0], sh[1], shR); g.addColorStop(0, rgba('graphite', .12 * fa)); g.addColorStop(1, rgba('graphite', 0));
+    c.save(); c.translate(sh[0], sh[1]); c.scale(1, .12); c.fillStyle = g; c.beginPath(); c.arc(0, 0, shR, 0, TAU); c.fill(); c.restore();
+    for (const r of [.4, .7]) { c.beginPath(); for (let i = 0; i <= 64; i++) { const a = i / 64 * TAU, q = cm.p(r * Math.cos(a), 0, r * Math.sin(a)); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.strokeStyle = rgba('mid', .55 * fa); c.lineWidth = 1; c.stroke(); }
+    c.beginPath(); for (const [a, b] of [[[-.9, 0, 0], [.9, 0, 0]], [[0, 0, -.7], [0, 0, .7]]]) { const p = cm.p(...a), q = cm.p(...b); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('mid', .35 * fa); c.stroke();
+  }
+  // layers: skin -> muscle -> skeleton
+  const scan1 = seg(t, 12.0, 14.0), scan2 = seg(t, 15.0, 17.0);
+  const topY = pj.head[1] - .15 * pj.head[3] - 10, botY = cm.p(0, 0, 0)[1] + 12, skinIn = smooth(seg(t, 10.0, 11.2)) * figA;
+  const L0 = () => drawSilhouette(c, pj, skinIn, PAD_CAPS, .135);
+  const L1 = () => { drawSilhouette(c, pj, .34 * skinIn, PAD_CAPS, .135); drawMuscles(c, pj, fd, figA); };
+  const L2 = () => { drawSilhouette(c, pj, .24 * skinIn, PAD_CAPS, .135); drawMuscles(c, pj, fd, .2 * figA); drawSkeleton(c, pj, fd, figA); };
+  const clipDraw = (y, above, fn) => { c.save(); c.beginPath(); above ? c.rect(0, 0, W, y) : c.rect(0, y, W, H - y); c.clip(); fn(); c.restore(); };
+  let scanY = null, scanName = '';
+  if (scan1 <= 0) L0();
+  else if (scan1 < 1) { scanY = lerp(topY, botY, ease(scan1)); scanName = 'PADS → MUSCLE'; clipDraw(scanY, false, L0); clipDraw(scanY, true, L1); }
+  else if (scan2 <= 0) L1();
+  else if (scan2 < 1) { scanY = lerp(topY, botY, ease(scan2)); scanName = 'MUSCLE → SKELETON'; clipDraw(scanY, false, L1); clipDraw(scanY, true, L2); }
+  else L2();
+  if (scanY !== null) {
+    const x0 = pj.pelvis[0] - 260, x1 = pj.pelvis[0] + 260, g = c.createLinearGradient(0, scanY - 40, 0, scanY);
+    g.addColorStop(0, rgba('cyan', 0)); g.addColorStop(1, rgba('cyan', .16)); c.fillStyle = g; c.fillRect(x0, scanY - 40, x1 - x0, 40);
+    c.beginPath(); c.moveTo(x0, scanY); c.lineTo(x1, scanY); glowStroke(c, 'cyan', .9, 1.4, 12);
+    txt(c, 'SCAN · ' + scanName, x0 - 14, scanY + 5, { size: 13, ls: 2, color: 'blue', align: 'right' });
+  }
+  // helmet facemask
+  const hd = pj.head, hr = .135 * hd[3];
+  c.beginPath();
+  for (const dy of [-.05, .22, .45]) { const cx0 = hd[0] + fd[0] * hr * .55, cy0 = hd[1] + hr * dy; c.moveTo(cx0, cy0); c.lineTo(cx0 + fd[0] * hr * .6, cy0 + hr * .08); }
+  c.moveTo(hd[0] + fd[0] * hr * 1.1, hd[1] - hr * .05); c.lineTo(hd[0] + fd[0] * hr * 1.05, hd[1] + hr * .55);
+  c.strokeStyle = rgba('graphite', .7 * figA); c.lineWidth = 1.6; c.stroke();
+  // RFID tags in the shoulder pads
+  const ga = env(t, 10.8, 11.5, 22.4, 23.1);
+  const tags = ['shL', 'shR'].map(k => cm.p(J[k][0], J[k][1] + .07, J[k][2]));
+  if (ga > 0) {
+    tags.forEach((q, i) => {
+      marker(c, q[0], q[1], ga, 10);
+      for (let r = 0; r < 2; r++) { const ph = ((t * 2 + r / 2 + i * .25) % 1); c.beginPath(); c.arc(q[0], q[1], 8 + 26 * ph, 0, TAU); c.strokeStyle = rgba('cyan', (1 - ph) * ga); c.lineWidth = 1.2; c.stroke(); }
+    });
+    ['kneeR', 'ankleR', 'haR', 'kneeL', 'ankleL'].forEach((k, i) => { const q = pj[k]; marker(c, q[0], q[1], .6 * ga * smooth(seg(t, 11.6 + i * .15, 12.1 + i * .15)) * (k.endsWith('L') ? .55 : 1), 7); });
+    const [tl, tr] = tags[0][2] > tags[1][2] ? [tags[0], tags[1]] : [tags[1], tags[0]];  // far, near
+    leader(c, tl[0], tl[1], 120, 320, seg(t, 16.6, 18.0), 'RFID tag', 'Far shoulder pad', { a: ov });
+    leader(c, tr[0], tr[1], 120, 460, seg(t, 17.1, 18.5), 'RFID tag', 'Near shoulder pad · ~10 reads / s', { a: ov });
+    const ham = cm.p(...lerp3(J.hipR, J.kneeR, .5));
+    leader(c, ham[0], ham[1], 120, 640, seg(t, 17.8, 19.2), 'Muscle load', 'Hamstring strain risk, tracked', { a: ov });
+  }
+  // orbiting data rings
+  const oa = env(t, 11.6, 12.6, 22.4, 23.1) * figA;
+  if (oa > 0) {
+    const rings = [[1.02, .62, .1, .7, ['21.3 mph', '2.8 yd sep.', '46 yd']], [1.62, .5, -.16, -.5, ['RFID 10 Hz', 'ROUTE: POST', 'LOAD ▲']]], dRef = cm.o.dist;
+    rings.forEach(([y, r, tilt, sp, tg], ri) => {
+      const pts = []; for (let i = 0; i <= 96; i++) { const a = i / 96 * TAU; pts.push(cm.p(r * Math.cos(a), y + tilt * Math.sin(a), r * Math.sin(a))); }
+      const dp = easeOut(seg(t, 11.6 + ri * .4, 13.0 + ri * .4)), vis = pts.slice(0, Math.max(2, Math.round(dp * 96) + 1));
+      c.setLineDash([3, 5]); strokeDepth(c, vis, dRef, rgba('blue', .7 * oa), 1, rgba('blue', .22 * oa), 1); c.setLineDash([]);
+      tg.forEach((s, k) => {
+        const a = t * sp + k * TAU / 3 + ri, q = cm.p(r * Math.cos(a), y + tilt * Math.sin(a), r * Math.sin(a)), front = q[2] < dRef, na = oa * dp * (front ? 1 : .35);
+        c.beginPath(); c.arc(q[0], q[1], front ? 4 : 3, 0, TAU); c.fillStyle = rgba('blue', na); c.fill();
+        c.beginPath(); c.moveTo(q[0] + 6, q[1] - 6); c.lineTo(q[0] + 18, q[1] - 18); c.strokeStyle = rgba('mid', na); c.lineWidth = 1; c.stroke();
+        txt(c, s, q[0] + 22, q[1] - 20, { size: 13, ls: 1, color: front ? 'graphite' : 'mid', a: na });
+      });
+    });
+  }
+  // right column — speed trace + rows
+  const pa = env(t, 12.6, 13.2, 22.4, 23.1), X = 1420;
+  if (pa > 0) {
+    kicker(c, 'TOP SPEED', X, 250, seg(t, 12.6, 13.2), pa);
+    const mph = 21.3 * easeOut(seg(t, 12.8, 16.5));
+    txt(c, fmt(mph, 1), X, 322, { w: 700, size: 64, color: 'blue', a: pa });
+    c.font = `700 64px ${FONT}`; const bw = c.measureText(fmt(mph, 1)).width; txt(c, 'mph', X + bw + 10, 322, { size: 22, a: pa });
+    const p = easeOut(seg(t, 12.8, 16.5));
+    c.beginPath(); for (let i = 0; i <= 80 * p; i++) { const u = i / 80, x = X + u * 380, y = 400 - 56 * (1 - Math.exp(-u * 4.2)); i ? c.lineTo(x, y) : c.moveTo(x, y); }
+    c.strokeStyle = rgba('blue', pa); c.lineWidth = 2; c.stroke();
+    c.fillStyle = rgba('light', pa); c.fillRect(X, 400, 380, 1);
+    txt(c, '0 → 40 yd', X, 422, { size: 13, color: 'mid', a: pa });
+    [['ACCELERATION', 4.8, 1, ' yd/s²', .6, 14.0], ['DISTANCE · THIS PLAY', 46, 0, ' yd', .46, 14.5], ['SEPARATION', 2.8, 1, ' yd', .35, 15.0]].forEach(([n, v, d, u, frac, t0], i) => {
+      const ra = env(t, t0, t0 + .5, 22.4, 23.1), y = 500 + i * 100, pp = easeOut(seg(t, t0, t0 + 1.4)); if (ra <= 0) return;
+      kicker(c, n, X, y, seg(t, t0, t0 + .6), ra);
+      txt(c, fmt(v * pp, d) + u, X, y + 40, { w: 700, size: 32, a: ra });
+      c.fillStyle = rgba('light', ra); c.fillRect(X, y + 56, 380, 3); c.fillStyle = rgba('blue', ra); c.fillRect(X, y + 56, 380 * frac * pp, 3);
+    });
+    txt(c, 'Values illustrative', X, 820, { size: 13, color: 'mid', a: pa * smooth(seg(t, 15.5, 16.5)) });
+  }
+  const da = smooth(seg(t, 23.5, 24.1));
+  if (da > 0) { const d = playDot(), q = [lerp(pj.pelvis[0], d[0], exitK), lerp(pj.pelvis[1], d[1], exitK)]; c.beginPath(); c.arc(q[0], q[1], 7, 0, TAU); c.fillStyle = rgba('blue', da); c.fill(); }
+  kicker(c, 'FIG. 02 — THE PLAYER, LAYER BY LAYER', 120, 862, seg(t, 11.0, 12.0), ov);
+  headline(c, [['Two RFID tags', 'blue'], [' in the shoulder pads track every player about 10 times a second.', 'graphite']], 120, 925, seg(t, 12.4, 15.0), { size: 44, maxW: 1100, a: ov });
+}
+
+/* =====================================================================
+   SCENE 03 — THE PLAY, DECODED  (24 – 40.6)
+   ===================================================================== */
+function sPlay(c, t) {
+  const cm = fieldCam(t), ia = smooth(seg(t, 24.0, 24.8));
+  drawField(c, cm, { a: ia, lines: i => easeOut(seg(t, 24.0 + i * .03, 25.0 + i * .03)) });
+  const P = (x, y, z) => cm.p(x, y, z);
+  const playA = 1 - smooth(seg(t, 32.0, 32.8));
+  // line of scrimmage + line to gain
+  const lineAt = (x, col, a, w) => { const p = P(x, 0, -FZ), q = P(x, 0, FZ); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.strokeStyle = rgba(col, a); c.lineWidth = w; c.stroke(); };
+  if (playA > 0) { lineAt(LOS, 'blue', .9 * ia * playA, 2.4); lineAt(LOS + 10 * YD, 'cyan', .95 * ia * playA, 3); }
+  // planned routes
+  const ra = smooth(seg(t, 24.6, 25.2)) * (1 - smooth(seg(t, 30.0, 31.0)));
+  if (ra > 0) for (const i of [6, 7, 8, 9, 10]) {
+    const O = OFFS[i], pr = O.p.map(q => P(q[0], 0, q[1]));
+    c.setLineDash([5, 6]); c.beginPath(); polyPartial(c, pr, easeOut(seg(t, 24.6 + (i - 6) * .15, 25.8 + (i - 6) * .15))); c.strokeStyle = rgba('blue', .6 * ra); c.lineWidth = 1.4; c.stroke(); c.setLineDash([]);
+    const a = pr[pr.length - 2], b = pr[pr.length - 1], ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
+    c.beginPath(); c.moveTo(b[0], b[1]); c.lineTo(b[0] - 9 * Math.cos(ang - .45), b[1] - 9 * Math.sin(ang - .45)); c.moveTo(b[0], b[1]); c.lineTo(b[0] - 9 * Math.cos(ang + .45), b[1] - 9 * Math.sin(ang + .45)); c.strokeStyle = rgba('blue', .7 * ra); c.lineWidth = 1.4; c.stroke();
+  }
+  // players with trails
+  if (playA > 0) {
+    for (let i = 0; i < 11; i++) {
+      const tr = []; for (let k = 0; k < 10; k++) tr.push(P(...defPos(i, t - k * .12)));
+      for (let k = 1; k < tr.length; k++) { c.beginPath(); c.moveTo(tr[k - 1][0], tr[k - 1][1]); c.lineTo(tr[k][0], tr[k][1]); c.strokeStyle = rgba('mid', ia * playA * (1 - k / 10) * .8); c.lineWidth = 1.2; c.stroke(); }
+      c.beginPath(); c.arc(tr[0][0], tr[0][1], 6, 0, TAU); c.strokeStyle = rgba('mid', ia * playA); c.lineWidth = 1.6; c.stroke();
+    }
+    for (let i = 0; i < 11; i++) {
+      const tr = []; for (let k = 0; k < 10; k++) tr.push(P(...offPos(i, t - k * .12)));
+      for (let k = 1; k < tr.length; k++) { c.beginPath(); c.moveTo(tr[k - 1][0], tr[k - 1][1]); c.lineTo(tr[k][0], tr[k][1]); c.strokeStyle = rgba('blue', ia * playA * (1 - k / 10) * .85); c.lineWidth = 2; c.stroke(); }
+      c.beginPath(); c.arc(tr[0][0], tr[0][1], i === 9 ? 8 : 6.5, 0, TAU); c.fillStyle = rgba('blue', ia * playA); c.fill();
+    }
+    // separation ring at the throw
+    const sa = env(t, THROW - .1, THROW + .2, 30.6, 31.2);
+    if (sa > 0) {
+      const w = offPos(9, Math.min(t, CATCH)), R = PLAY.sepYd * YD, ring = [];
+      for (let i = 0; i <= 48; i++) { const a = i / 48 * TAU; ring.push(P(w[0] + R * Math.cos(a), 0, w[2] + R * Math.sin(a))); }
+      c.beginPath(); ring.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.fillStyle = rgba('cyan', .15 * sa); c.fill(); c.strokeStyle = rgba('cyan', sa); c.lineWidth = 1.4; c.stroke();
+      const q = P(w[0], 0, w[2] + R); txt(c, fmt(PLAY.sepYd, 1) + ' yd', q[0] + 10, q[1] - 8, { w: 700, size: 16, color: 'blue', a: sa });
+    }
+    // ball
+    const b = ballPos(t), bq = P(...b), sq = P(b[0], 0, b[2]);
+    if (t > THROW && t < CATCH + .4) {
+      const pts = []; for (let k = 0; k <= 30; k++) { const tt = THROW + (CATCH - THROW) * k / 30; if (tt > t) break; pts.push(P(...ballPos(tt))); }
+      c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .9 * playA, 1.6, 8);
+    }
+    c.beginPath(); c.ellipse(sq[0], sq[1], 5, 2.5, 0, 0, TAU); c.fillStyle = rgba('graphite', .18 * playA); c.fill();
+    c.beginPath(); c.ellipse(bq[0], bq[1], 6, 4, -.4, 0, TAU); c.fillStyle = rgba('white', playA); c.fill(); c.strokeStyle = rgba('graphite', playA); c.lineWidth = 1.3; c.stroke();
+    const cpA = env(t, THROW, THROW + .2, CATCH + .4, CATCH + .9);
+    if (cpA > 0) { const cp = Math.round(41 * easeOut(seg(t, THROW, CATCH))); txt(c, 'COMPLETION PROBABILITY', bq[0] - 16, bq[1] - 30, { size: 12, ls: 2, color: 'mid', a: cpA, align: 'right' }); txt(c, cp + '%', bq[0] - 16, bq[1] - 4, { w: 700, size: 24, color: 'blue', a: cpA, align: 'right' }); }
+    if (t > CATCH && t < CATCH + .8) { const r = (t - CATCH) / .8, q = P(...CATCHP); c.beginPath(); c.arc(q[0], q[1], 8 + 40 * r, 0, TAU); c.strokeStyle = rgba('cyan', 1 - r); c.lineWidth = 2; c.stroke(); }
+  }
+  // right column — the tracked play
+  const X = 1440, ca = env(t, 26.2, 26.8, 31.8, 32.4);
+  if (ca > 0) {
+    kicker(c, 'THIS PLAY · TRACKING + MODEL', X, 250, seg(t, 26.2, 26.8), ca, 'blue');
+    [['TIME TO THROW', fmt(PLAY.ttt * easeOut(seg(t, SNAP, THROW)), 1) + ' s', 26.4], ['SEPARATION AT THROW', fmt(PLAY.sepYd * easeOut(seg(t, THROW, THROW + .8)), 1) + ' yd', THROW],
+      ['AIR YARDS', String(Math.round(PLAY.airYd * easeOut(seg(t, THROW, CATCH)))), THROW + .3], ['COMPLETION PROBABILITY', Math.round(41 * easeOut(seg(t, THROW, CATCH))) + '%', THROW + .6]].forEach(([n, v, t0], i) => {
+      const y = 320 + i * 104, a = ca * smooth(seg(t, t0, t0 + .4)); kicker(c, n, X, y, seg(t, t0, t0 + .6), a); txt(c, v, X - 2, y + 48, { w: 700, size: 40, color: i === 3 ? 'blue' : 'graphite', a });
+    });
+    txt(c, 'Probability from an illustrative model', X, 760, { size: 13, color: 'mid', a: ca * smooth(seg(t, THROW + .6, THROW + 1.2)) });
+  }
+  // fourth down
+  const fa = env(t, 32.6, 33.2, 39.8, 40.4);
+  if (fa > 0) {
+    const spot = yx(62), gain = yx(64);
+    lineAt(spot, 'blue', .9 * fa, 2.4); lineAt(gain, 'cyan', .95 * fa, 3);
+    const sp = P(spot, 0, -3); c.beginPath(); c.ellipse(sp[0], sp[1], 6, 4, -.4, 0, TAU); c.fillStyle = rgba('white', fa); c.fill(); c.strokeStyle = rgba('graphite', fa); c.stroke();
+    const arc = (to, h, p, col, dash) => { const pts = []; for (let k = 0; k <= 30; k++) { const u = k / 30; pts.push(P(lerp(spot, to[0], u), h * Math.sin(Math.PI * u) + (to[1] || 0) * u, lerp(-3, to[2], u))); } c.setLineDash(dash ? [6, 6] : []); c.beginPath(); polyPartial(c, pts, p); c.strokeStyle = rgba(col, fa); c.lineWidth = col === 'blue' ? 2.6 : 1.6; c.stroke(); c.setLineDash([]); return pts[30]; };
+    const g = arc([gain + 1.5, 0, -3], 0, easeOut(seg(t, 33.4, 34.2)), 'blue', false);
+    const fg = arc([FX + 1.2, 5, 0], 6, easeOut(seg(t, 33.9, 34.9)), 'mid', true);
+    const pu = arc([yx(90), 0, 8], 11, easeOut(seg(t, 34.4, 35.6)), 'mid', true);
+    txt(c, 'GO', g[0] + 10, g[1] + 22, { w: 700, size: 15, ls: 2, color: 'blue', a: fa * smooth(seg(t, 34.0, 34.4)) });
+    txt(c, 'FIELD GOAL', fg[0] - 18, fg[1] - 18, { size: 13, ls: 2, color: 'graphite', a: fa * smooth(seg(t, 34.7, 35.1)), align: 'right' });
+    txt(c, 'PUNT', pu[0] - 10, pu[1] - 14, { size: 13, ls: 2, color: 'graphite', a: fa * smooth(seg(t, 35.4, 35.8)) });
+    kicker(c, '4TH & 2 · OPPONENT 38', X, 250, seg(t, 33.0, 33.6), fa, 'blue');
+    kicker(c, 'WIN PROBABILITY · ILLUSTRATIVE MODEL', X, 280, seg(t, 33.2, 34.0), fa);
+    [['GO FOR IT', 54, 'blue'], ['FIELD GOAL', 47, 'mid'], ['PUNT', 45, 'mid']].forEach(([n, v, col], i) => {
+      const t0 = 34.0 + i * .35, p = easeOut(seg(t, t0, t0 + 1.2)), y = 350 + i * 86;
+      txt(c, n, X, y, { size: 15, ls: 1, color: 'graphite', a: fa * smooth(seg(t, t0, t0 + .3)) });
+      c.fillStyle = rgba('light', fa); c.fillRect(X, y + 14, 360, 10); c.fillStyle = rgba(col, fa); c.fillRect(X, y + 14, 360 * v / 60 * p, 10);
+      txt(c, Math.round(v * p) + '%', X + 360, y, { w: 700, size: 18, color: col === 'blue' ? 'blue' : 'graphite', a: fa * smooth(seg(t, t0, t0 + .3)), align: 'right' });
+    });
+    headline(c, [['Fourth-down attempts have risen sharply as coaches trust the models.', 'graphite']], X, 650, seg(t, 35.4, 37.0), { size: 20, w: 300, maxW: 360, lh: 1.4, a: fa });
+  }
+  kicker(c, 'FIG. 03 — ALL 22, TRACKED', 120, 902, seg(t, 24.6, 25.4), ia * (1 - smooth(seg(t, 39.6, 40.3))));
+  headline(c, [['The play, ', 'graphite'], ['decoded.', 'blue']], 120, 962, seg(t, 24.8, 25.9), { size: 44, a: 1 - smooth(seg(t, 32.0, 32.6)) });
+  headline(c, [['Analytics changed ', 'graphite'], ['fourth down.', 'blue']], 120, 962, seg(t, 33.0, 34.4), { size: 44, a: 1 - smooth(seg(t, 39.6, 40.3)) });
+}
+
+/* =====================================================================
+   SCENE 04 — THE STADIUM  (40 – 56.6)
+   ===================================================================== */
+function drawPetals(c, cm, dy, open, a, glow = 0) {
+  if (a <= 0) return;
+  const tw = .55 * open;
+  for (let i = 0; i < 8; i++) {
+    const th0 = i / 8 * TAU, th1 = (i + 1) / 8 * TAU, mid = (th0 + th1) / 2, pts = [[0, 50, 0]];
+    for (let k = 0; k <= 6; k++) { const q = ovPt(74, 56, lerp(th0, th1, k / 6)); pts.push([q[0], 46.2, q[1]]); }
+    const dir = ovPt(74, 56, mid), dl = Math.hypot(dir[0], dir[1]), out = 52 * open;
+    const pr = pts.map(([x, y, z]) => { const cx = x * Math.cos(tw) - z * Math.sin(tw), cz = x * Math.sin(tw) + z * Math.cos(tw); return cm.p(cx + dir[0] / dl * out, y + dy, cz + dir[1] / dl * out); });
+    c.beginPath(); pr.forEach((q, j) => j ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath();
+    c.fillStyle = rgba('white', .55 * a); c.fill(); c.strokeStyle = rgba('blue', .85 * a); c.lineWidth = 1.1; c.stroke();
+    c.beginPath(); for (let k = 1; k < 6; k += 2) { c.moveTo(pr[0][0], pr[0][1]); c.lineTo(pr[k + 1][0], pr[k + 1][1]); } c.strokeStyle = rgba('blue', .3 * a); c.lineWidth = .7; c.stroke();
+    if (glow > 0) { c.beginPath(); pr.forEach((q, j) => j ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); glowStroke(c, 'cyan', .6 * glow * a, 1.2 + 1.5 * glow, 18 * glow); }
+  }
+}
+const N4KEYS = [
+  Object.assign({ t: 40.0 }, FIELDCAM), Object.assign({ t: 40.4 }, FIELDCAM),
+  { t: 42.8, yaw: .55, pitch: .6, dist: 340, f: 1000, tx: 0, ty: 22, tz: 0, cx: 1040, cy: 560 },
+  { t: 44.6, yaw: .75, pitch: .55, dist: 370, f: 1000, tx: 0, ty: 26, tz: 0, cx: 1080, cy: 560 },
+  { t: 47.0, yaw: 1.0, pitch: .42, dist: 470, f: 1000, tx: 0, ty: 62, tz: 0, cx: 1140, cy: 545 },
+  { t: 49.6, yaw: .7, pitch: .42, dist: 480, f: 1000, tx: 0, ty: 62, tz: 0, cx: 1140, cy: 545 },
+  { t: 51.6, yaw: -.15, pitch: .62, dist: 440, f: 1000, tx: 20, ty: 18, tz: 0, cx: 1000, cy: 500 },
+  { t: 56.6, yaw: -.5, pitch: .62, dist: 500, f: 1000, tx: 70, ty: 14, tz: 0, cx: 1000, cy: 480 },
+];
+function sArena(c, t) {
+  const cm = cam(camKeys(N4KEYS, t));
+  const e = ease(seg(t, 44.6, 46.8)) * (1 - ease(seg(t, 49.8, 51.4)));
+  const pr = { roof: seg(t, 41.2, 43.0), bowl: seg(t, 41.4, 43.0), circ: seg(t, 42.0, 43.4), sys: seg(t, 42.4, 43.8), skin: seg(t, 42.8, 44.2), found: seg(t, 43.2, 44.4) };
+  const tray = ease(seg(t, 53.2, 55.8)), lift = .8 * Math.sin(Math.PI * tray);
+  const fieldO = { a: 1, dx: 175 * tray, lift, posts: 1 - smooth(seg(t, 52.6, 53.2)) };
+  if (tray <= 0) drawField(c, cm, fieldO);
+  drawStadium(c, cm, t, { e, pr, pitchA: 0 });
+  if (tray > 0) drawField(c, cm, fieldO);
+  drawPetals(c, cm, OFF.roof * e, ease(seg(t, 51.6, 53.6)), smooth(seg(t, 42.4, 43.6)));
+  const la = 1 - smooth(seg(t, 49.4, 50.0));
+  if (t > 46.2 && la > 0) {
+    const seats = fmt(Math.round(70000 * easeOut(seg(t, 47.6, 48.8))));
+    const items = [['Roof', 'Ring truss + aperture petals', ringP(cm, 124, 104, 48 + OFF.roof * e), 46.4], ['Skin', 'Façade envelope', ringP(cm, 121, 101, 21 + OFF.skin * e), 46.8],
+      ['Systems', 'Power, air, data, RF tracking', ringP(cm, 110, 92, 30 + OFF.sys * e), 47.2], ['Circulation', 'Concourses, vomitories', ringP(cm, 115, 97, 20 + OFF.circ * e), 47.6],
+      ['Bowl', `${seats} seats`, ringP(cm, 106, 88, 25), 48.0], ['Foundations', 'Piles, ground beams', ringP(cm, 121, 101, -3 + OFF.found * e), 48.4]];
+    let lastY = -1e9;
+    items.forEach(([title, sub, pts, ts]) => { const q = leftmost(pts), ty = Math.max(q[1] + 8, lastY + 74); lastY = ty; leader(c, q[0], q[1], 120, ty, seg(t, ts, ts + 1.4), title, sub, { a: la }); });
+  }
+  const pa = env(t, 52.0, 52.4, 55.8, 56.4);
+  const pc = cm.p(0, 50, 0); leader(c, pc[0], pc[1], 120, 330, seg(t, 52.0, 53.4), 'Atlanta', 'An eight-petal roof opens like a camera aperture', { a: pa });
+  const fq = cm.p(175 * tray - FX, lift, -FZ); leader(c, fq[0], fq[1], 120, 500, seg(t, 53.4, 54.8), 'Las Vegas', 'The natural-grass field rolls outside on a tray to grow', { a: pa });
+  kicker(c, 'FIG. 04 — COMPOSITE STADIUM, EXPLODED', 120, 902, seg(t, 44.8, 45.8), 1 - smooth(seg(t, 55.8, 56.4)));
+  headline(c, [['A stadium is a ', 'graphite'], ['machine.', 'blue']], 120, 962, seg(t, 46.8, 48.2), { size: 50, a: 1 - smooth(seg(t, 51.0, 51.6)) });
+  headline(c, [['It opens its roof', 'blue'], [' and moves its own field.', 'graphite']], 120, 962, seg(t, 52.2, 54.0), { size: 50, maxW: 1500, a: 1 - smooth(seg(t, 55.8, 56.4)) });
+}
+
+/* =====================================================================
+   SCENE 05 — SOUND & SIGHT  (56 – 68.6)
+   ===================================================================== */
+function sRoar(c, t) {
+  const O = [960, 770], k = 4.8, X = m => O[0] + m * k, Y = m => O[1] - m * k;
+  const ia = smooth(seg(t, 56.0, 56.7)), fo = 1 - smooth(seg(t, 62.0, 62.6)), lvl = ease(seg(t, 57.0, 60.2));
+  c.save(); c.globalAlpha = ia;
+  c.beginPath(); c.moveTo(X(-56), Y(0)); c.lineTo(X(56), Y(0)); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
+  c.beginPath(); for (let i = 0; i <= 24; i++) { const x = -54.86 + i * 4.572; c.moveTo(X(x), Y(0)); c.lineTo(X(x), Y(0) + 6); } c.strokeStyle = rgba('mid', .7); c.lineWidth = 1; c.stroke();
+  txt(c, 'FIELD', X(-8), Y(0) + 28, { size: 13, ls: 3, color: 'mid' });
+  for (const s of [-1, 1]) {
+    const pts = [[s * 57, 0], [s * 57, 2]]; for (let i = 0; i < 52; i++) { pts.push([s * (58 + i * .95), 2 + i * .64]); pts.push([s * (58.95 + i * .95), 2 + i * .64]); }
+    pts.push([s * 112, 2 + 51 * .64], [s * 112, 0]);
+    c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); c.closePath(); c.fillStyle = rgba('light', 1); c.fill();
+    c.save(); c.clip(); c.beginPath(); for (let h = -900; h < 900; h += 12) { c.moveTo(O[0] + h, Y(0)); c.lineTo(O[0] + h + 500, Y(0) - 500); } c.strokeStyle = rgba('mid', .25); c.lineWidth = 1; c.stroke(); c.restore();
+    c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); c.closePath(); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1; c.stroke();
+    c.fillStyle = rgba('blue', .6);
+    for (let i = 0; i < 52; i += 1) { const bx = X(s * (58.5 + i * .95)), by = Y(2 + i * .64 + .9 + (.15 + .5 * lvl) * Math.max(0, Math.sin(t * (8 + 6 * lvl) + i * .7))); c.beginPath(); c.arc(bx, by, 2.2, 0, TAU); c.fill(); }
+  }
+  c.restore();
+  // converging sound waves
+  const wa = smooth(seg(t, 56.8, 57.6)) * fo;
+  if (wa > 0) {
+    c.save(); c.beginPath(); c.rect(X(-57), Y(48), X(57) - X(-57), Y(0) - Y(48)); c.clip();
+    const per = lerp(.9, .4, lvl), spd = 32;
+    for (const s of [-1, 1]) for (const i of [6, 18, 30, 42]) {
+      const sx = s * (58.5 + i * .95), sy = 2 + i * .64 + 1;
+      for (let e = 0; e < 6; e++) {
+        const te = Math.floor((t - 56.8) / per) * per + 56.8 - e * per, r = (t - te) * spd; if (r <= 0 || te < 56.7) continue;
+        const al = (1 - r / (spd * per * 6)) * wa * (.35 + .65 * lvl); if (al <= 0) continue;
+        c.beginPath(); c.arc(X(sx), Y(sy), r * k, s > 0 ? Math.PI * .5 : -Math.PI * .5, s > 0 ? Math.PI * 1.5 : Math.PI * .5); c.strokeStyle = rgba(e % 2 ? 'cyan' : 'blue', .55 * al); c.lineWidth = 1.2; c.stroke();
+      }
+    }
+    c.restore();
+  }
+  // decibel meter
+  const ma = env(t, 56.6, 57.2, 62.0, 62.6), MX = 1640, MT = 380, MB = 760;
+  if (ma > 0) {
+    const db = 142.2 * lvl, h = (MB - MT) * db / 150;
+    kicker(c, 'CROWD ROAR', 1560, 250, seg(t, 56.6, 57.2), ma);
+    txt(c, fmt(db, 1), 1556, 322, { w: 700, size: 60, color: 'blue', a: ma });
+    c.font = `700 60px ${FONT}`; txt(c, 'dB', 1556 + c.measureText(fmt(db, 1)).width + 8, 322, { size: 22, a: ma });
+    c.fillStyle = rgba('light', ma); c.fillRect(MX, MT, 22, MB - MT); c.fillStyle = rgba('blue', ma); c.fillRect(MX, MB - h, 22, h);
+    for (const v of [60, 90, 120, 142.2]) { const y = MB - (MB - MT) * v / 150; c.fillStyle = rgba('mid', ma); c.fillRect(MX + 26, y, 10, 1); txt(c, v === 142.2 ? '142.2' : String(v), MX + 42, y + 5, { size: 13, color: v === 142.2 ? 'blue' : 'mid', a: ma }); }
+  }
+  const la = env(t, 57.4, 57.8, 62.0, 62.6), sf = [X(-58.5 - 20 * .95), Y(2 + 20 * .64 + 1)];
+  leader(c, sf[0], sf[1], 120, 330, seg(t, 57.6, 59.0), 'Steep stands', 'Fans close to the field, noise kept in the bowl', { a: la });
+  const ha = 1 - smooth(seg(t, 62.0, 62.6));
+  vignetteTag(c, '01', 'CROWD NOISE', t, 56.4, ha, '02');
+  headline(c, [['Kansas City, 2014:', 'blue'], [' a 142.2 dB crowd roar — a Guinness World Record.', 'graphite']], 120, 920, seg(t, 57.0, 59.0), { size: 42, maxW: 1300, a: ha });
+}
+function sBoard(c, t) {
+  const cm = cam({ yaw: .55 + .05 * (t - 62), pitch: .36, dist: 330, f: 1000, tx: 0, ty: 22, tz: 0, cx: 880, cy: 560 });
+  const ia = smooth(seg(t, 62.0, 62.7));
+  drawField(c, cm, { a: .8 * ia, posts: 1 });
+  drawStadium(c, cm, t, { e: 0, a: ia, fill: .7, pitchA: 0, pr: { roof: 1 } });
+  // the hanging double-sided ring board
+  const bp = easeOut(seg(t, 62.4, 63.6)), y0 = 30, y1 = 30 + 7 * bp, o = oval(54.9, 21);
+  const bot = o.map(q => cm.p(q[0], y0, q[1])), top = o.map(q => cm.p(q[0], y1, q[1]));
+  for (let i = 0; i < NS; i++) { c.beginPath(); c.moveTo(bot[i][0], bot[i][1]); c.lineTo(top[i][0], top[i][1]); c.lineTo(top[i + 1][0], top[i + 1][1]); c.lineTo(bot[i + 1][0], bot[i + 1][1]); c.closePath(); c.fillStyle = rgba('blue', .16 * ia); c.fill(); }
+  for (const R of [bot, top]) { c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'blue', .9 * ia, 1.4, 10); }
+  for (let s = 0; s < 3; s++) { const yy = y0 + ((t * 2.2 + s / 3) % 1) * (y1 - y0), R = o.map(q => cm.p(q[0], yy, q[1])); c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', .45 * ia); c.lineWidth = 1; c.stroke(); }
+  c.beginPath(); for (let i = 0; i < NS; i += 12) { const a = cm.p(o[i][0], y1, o[i][1]), q = ovPt(74, 56, i / NS * TAU), b = cm.p(q[0], 46, q[1]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } c.strokeStyle = rgba('graphite', .45 * ia); c.lineWidth = .8; c.stroke();
+  // sightlines from seats to the board
+  const sa = env(t, 63.4, 64.0, 68.0, 68.6);
+  if (sa > 0) {
+    c.beginPath();
+    for (const ti of [2, 5, 8]) { const ov_ = oval(lerp(62, 106, ti / 9), lerp(44, 88, ti / 9)); for (let i = 0; i < NS; i += 8) { if ((i / NS + ti * .1) % 1 > easeOut(seg(t, 63.4, 65.4))) continue; const a = cm.p(ov_[i][0], 1 + ti * 2.7, ov_[i][1]), b = cm.p(o[i][0], (y0 + y1) / 2, o[i][1]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } }
+    c.strokeStyle = rgba('cyan', .5 * sa); c.lineWidth = 1; c.stroke();
+  }
+  const la = env(t, 63.0, 63.4, 68.0, 68.6), bl = leftmost(top);
+  leader(c, bl[0], bl[1], 120, 360, seg(t, 63.2, 64.6), 'Double-sided ring', 'Hung from the roof over the field', { a: la });
+  const ca = env(t, 63.0, 63.5, 68.0, 68.6), Xr = 1490;
+  if (ca > 0) {
+    kicker(c, 'BOARD LENGTH', Xr, 300, seg(t, 63.0, 63.6), ca);
+    txt(c, Math.round(120 * easeOut(seg(t, 63.2, 64.6))) + ' yd', Xr - 3, 372, { w: 700, size: 62, color: 'blue', a: ca });
+    kicker(c, 'VIEWING FACES', Xr, 450, seg(t, 63.6, 64.2), ca);
+    txt(c, '2', Xr - 2, 506, { w: 700, size: 44, a: ca * smooth(seg(t, 63.8, 64.2)) });
+  }
+  const ha = 1 - smooth(seg(t, 68.0, 68.6));
+  vignetteTag(c, '02', 'SIGHT', t, 62.4, ha, '02');
+  headline(c, [['Los Angeles:', 'blue'], [' a 120-yard, double-sided video board hangs from the roof.', 'graphite']], 120, 920, seg(t, 62.8, 64.8), { size: 42, maxW: 1300, a: ha });
+}
+
+/* =====================================================================
+   SCENE 06 — SAFETY BY DESIGN: the 2024 kickoff  (68 – 80.6)
+   ===================================================================== */
+const KICK = 70.8, LAND = 73.2;
+const KT = [...Array(10)].map((_, i) => [yx(40) + (i % 2) * .4, 0, -21 + i * (42 / 9)]);              // kicking team at the receiving 40
+const RT = [...Array(9)].map((_, i) => [yx(i % 2 ? 31 : 34), 0, -20 + i * 5]);                         // setup zone, receiving 30–35
+const RET = [[yx(4), 0, 5], [yx(4), 0, -5]];
+const KICKER = [yx(65) + 1, 0, 0], LANDP = [yx(7), 0, 3];
+function returner(t) {
+  if (t < LAND) return RET[0];
+  if (t < LAND + .5) return lerp3(RET[0], LANDP, (t - LAND) / .5);
+  return lerp3(LANDP, [yx(31), 0, -6], easeOut(seg(t, LAND + .5, LAND + 3.6)));
+}
+function kickBall(t) {
+  if (t < KICK) return [KICKER[0] - 1, .3, 0];
+  if (t < LAND) { const u = (t - KICK) / (LAND - KICK); return [lerp(KICKER[0] - 1, LANDP[0], u), .3 + 26 * Math.sin(Math.PI * u), lerp(0, LANDP[2], u)]; }
+  const r = returner(t); return [r[0] + .4, 1.1, r[2]];
+}
+function sKickoff(c, t) {
+  const cm = cam({ yaw: -.06 + .015 * (t - 68), pitch: 1.05, dist: 118, f: 1000, tx: -12, ty: 0, tz: 0, cx: 800, cy: 520 }), P = (x, y, z) => cm.p(x, y, z);
+  const ia = smooth(seg(t, 68.0, 68.7));
+  drawField(c, cm, { a: ia });
+  const quad = (x0, x1, col, a) => { const q = [[x0, -FZ], [x1, -FZ], [x1, FZ], [x0, FZ]].map(p => P(p[0], 0, p[1])); c.beginPath(); q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = rgba(col, a); c.fill(); };
+  // before 2024 (ghost)
+  const ga = env(t, 68.4, 68.9, 69.9, 70.5);
+  if (ga > 0) {
+    c.setLineDash([4, 6]); c.beginPath();
+    for (let i = 0; i < 10; i++) { const z = -21 + i * 4.67, a = P(yx(64), 0, z), b = P(yx(36), 0, z * .5); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
+    for (let i = 0; i < 9; i++) { const z = -20 + i * 5, a = P(yx(20), 0, z), b = P(yx(34), 0, z * .5); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
+    c.strokeStyle = rgba('mid', .8 * ga); c.lineWidth = 1.2; c.stroke(); c.setLineDash([]);
+    const q = P(yx(35), 0, 0); c.beginPath(); c.arc(q[0], q[1], 22, 0, TAU); c.strokeStyle = rgba('mid', ga); c.stroke();
+    txt(c, 'BEFORE 2024 · THE LINES MET AT FULL SPEED', q[0] - 160, q[1] - 34, { size: 13, ls: 2, color: 'graphite', a: ga });
+  }
+  const fa = smooth(seg(t, 70.0, 70.6));
+  if (fa > 0) {
+    quad(yx(0), yx(20), 'cyan', .22 * fa); quad(yx(30), yx(35), 'blue', .08 * fa);
+    // 5-yard separation dimension
+    const d0 = P(yx(35), 0, -FZ - 3), d1 = P(yx(40), 0, -FZ - 3);
+    c.beginPath(); c.moveTo(d0[0], d0[1]); c.lineTo(d1[0], d1[1]); c.moveTo(d0[0], d0[1] - 6); c.lineTo(d0[0], d0[1] + 6); c.moveTo(d1[0], d1[1] - 6); c.lineTo(d1[0], d1[1] + 6); c.strokeStyle = rgba('blue', fa); c.lineWidth = 1.6; c.stroke();
+    txt(c, '5 yd', (d0[0] + d1[0]) / 2, d0[1] + 26, { w: 700, size: 18, color: 'blue', a: fa, align: 'center' });
+    const hold = t > KICK && t < LAND, pulse = hold ? .5 + .5 * Math.sin(t * 12) : 0;
+    const mv = ease(seg(t, LAND, LAND + 3.4)), r = returner(t);
+    KT.forEach((p, i) => { const tgt = [r[0] + 2 + (i % 3), 0, r[2] + (i - 4.5) * 1.3], q = P(...lerp3(p, tgt, mv * .82)); if (hold) { c.beginPath(); c.arc(q[0], q[1], 10 + 4 * pulse, 0, TAU); c.strokeStyle = rgba('cyan', .7 * fa); c.lineWidth = 1; c.stroke(); } c.beginPath(); c.arc(q[0], q[1], 6.5, 0, TAU); c.fillStyle = rgba('blue', fa); c.fill(); });
+    RT.forEach((p, i) => { const q = P(...lerp3(p, [p[0] - 5, 0, p[2] + (r[2] - p[2]) * .35], mv)); if (hold) { c.beginPath(); c.arc(q[0], q[1], 10 + 4 * pulse, 0, TAU); c.strokeStyle = rgba('cyan', .7 * fa); c.lineWidth = 1; c.stroke(); } c.beginPath(); c.arc(q[0], q[1], 6, 0, TAU); c.strokeStyle = rgba('graphite', fa); c.lineWidth = 1.6; c.stroke(); });
+    [r, RET[1]].forEach(p => { const q = P(...p); c.beginPath(); c.arc(q[0], q[1], 6, 0, TAU); c.strokeStyle = rgba('graphite', fa); c.lineWidth = 1.6; c.stroke(); });
+    const kq = P(...KICKER); c.beginPath(); c.arc(kq[0], kq[1], 6.5, 0, TAU); c.fillStyle = rgba('blue', fa); c.fill();
+    // ball flight
+    const b = kickBall(t), bq = P(...b), sq = P(b[0], 0, b[2]);
+    if (t > KICK) { const pts = []; for (let k = 0; k <= 40; k++) { const tt = KICK + (LAND - KICK) * k / 40; if (tt > t) break; pts.push(P(...kickBall(tt))); } c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .8 * fa, 1.6, 8); }
+    c.beginPath(); c.ellipse(sq[0], sq[1], 5, 2.5, 0, 0, TAU); c.fillStyle = rgba('graphite', .2 * fa); c.fill();
+    c.beginPath(); c.ellipse(bq[0], bq[1], 6, 4, -.4, 0, TAU); c.fillStyle = rgba('white', fa); c.fill(); c.strokeStyle = rgba('graphite', fa); c.lineWidth = 1.3; c.stroke();
+    if (t > LAND && t < LAND + .8) { const rr = (t - LAND) / .8, q = P(...LANDP); c.beginPath(); c.arc(q[0], q[1], 8 + 46 * rr, 0, TAU); c.strokeStyle = rgba('cyan', 1 - rr); c.lineWidth = 2; c.stroke(); }
+    if (hold) txt(c, 'NO ONE MOVES UNTIL THE BALL LANDS', 800, 200, { size: 15, ls: 3, color: 'blue', a: fa * (.6 + .4 * pulse), align: 'center' });
+  }
+  // labels
+  const la = env(t, 70.6, 71.0, 79.8, 80.4);
+  const kl = P(yx(40), 0, FZ); leader(c, kl[0], kl[1], 120, 330, seg(t, 70.6, 72.0), 'Kicking team', 'Lined up at the receiving 40', { a: la * (1 - smooth(seg(t, LAND, LAND + .6))) });
+  const sz = P(yx(32.5), 0, FZ); leader(c, sz[0], sz[1], 120, 480, seg(t, 71.0, 72.4), 'Setup zone', 'Receiving 30 to 35', { a: la });
+  const lz = P(yx(4), 0, -10); leader(c, lz[0], lz[1], 120, 630, seg(t, 71.4, 72.8), 'Landing zone', 'Goal line to the 20', { a: la });
+  const ca = env(t, 70.4, 70.9, 79.8, 80.4), Xr = 1490;
+  if (ca > 0) [['LINE SEPARATION', 'as little as 5 yd'], ['LANDING ZONE', 'Goal line → 20'], ['MOVEMENT STARTS', 'Ball lands']].forEach(([n, v], i) => {
+    const t0 = 70.6 + i * .4, y = 300 + i * 112; kicker(c, n, Xr, y, seg(t, t0, t0 + .6), ca); txt(c, typed(v, seg(t, t0 + .2, t0 + 1)), Xr, y + 42, { w: 700, size: 28, color: i === 2 ? 'blue' : 'graphite', a: ca });
+  });
+  const ha = 1 - smooth(seg(t, 79.8, 80.4));
+  kicker(c, 'FIG. 06 — SAFETY BY DESIGN', 120, 862, seg(t, 68.4, 69.2), ha);
+  headline(c, [['2024 dynamic kickoff:', 'blue'], [' the two lines start as little as 5 yards apart — redesigned around injury data.', 'graphite']], 120, 925, seg(t, 70.4, 72.6), { size: 42, maxW: 1300, a: ha });
+}
+
+/* =====================================================================
+   SCENE 07 — CLOSING  (80 – 90)
+   ===================================================================== */
+const N7KEYS = [
+  { t: 80.0, yaw: 1.7, pitch: .62, dist: 470, f: 1000, tx: 0, ty: 18, tz: 0, cx: 960, cy: 520 },
+  { t: 83.6, yaw: 2.1, pitch: .5, dist: 440, f: 1000, tx: 0, ty: 24, tz: 0, cx: 960, cy: 500 },
+  { t: 90, yaw: 2.4, pitch: .56, dist: 700, f: 1000, tx: 0, ty: 20, tz: 0, cx: 960, cy: 470 },
+];
+function sFinal(c, t) {
+  const cm = cam(camKeys(N7KEYS, t));
+  const e = .6 * (1 - ease(seg(t, 80.2, 83.2)));
+  const pulse = heartPulse(t, 84.0, 88.3), g = smooth(seg(t, 83.4, 84.2)) * (.35 + .65 * pulse);
+  if (t > 84) {
+    const n = Math.floor((t - 84) / BEAT);
+    for (let k = Math.max(0, n - 2); k <= n; k++) { const bt = 84 + k * BEAT; if (bt > 88.3) continue; const r = (t - bt) / 2.2; if (r > 1) continue; const s = 1 + r * .9, R = ringP(cm, 121 * s, 101 * s, 0); c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', .6 * (1 - r)); c.lineWidth = 1.4; c.stroke(); }
+  }
+  drawField(c, cm, { a: 1 });
+  drawStadium(c, cm, t, { e, fill: lerp(1, 1.5, smooth(seg(t, 82, 84))), glow: g, pitchA: 0 });
+  drawPetals(c, cm, OFF.roof * e, 1 - ease(seg(t, 80.4, 83.2)), 1, g);
+  const ta = 1 - smooth(seg(t, 88.2, 89.2));
+  kicker(c, 'FIG. 07 — ASSEMBLY', 120, 862, seg(t, 84.0, 84.8), ta);
+  headline(c, [['Every yard is ', 'graphite'], ['designed by data.', 'blue']], 120, 940, seg(t, 84.5, 86.3), { size: 76, maxW: 1600, a: ta });
+}
+
+/* =====================================================================
+   TIMELINE, CHROME, COMPOSITING
+   ===================================================================== */
+const SCENES = [
+  { a: 0, b: 10.6, f: sBall }, { a: 10.0, b: 24.6, f: sPlayer }, { a: 24.0, b: 40.6, f: sPlay }, { a: 40.0, b: 56.6, f: sArena },
+  { a: 56.0, b: 62.6, f: sRoar }, { a: 62.0, b: 68.6, f: sBoard }, { a: 68.0, b: 80.6, f: sKickoff }, { a: 80.0, b: 90.01, f: sFinal },
+];
+const CHAPTERS = [{ t: 0, n: '01', name: 'Ball to Field' }, { t: 10, n: '02', name: 'The Player' }, { t: 24, n: '03', name: 'The Play, Decoded' }, { t: 40, n: '04', name: 'The Stadium' }, { t: 56, n: '05', name: 'Sound & Sight' }, { t: 68, n: '06', name: 'Safety by Design' }, { t: 80, n: '07', name: 'Closing' }];
+const chapterAt = t => { let ch = CHAPTERS[0]; for (const c of CHAPTERS) if (t >= c.t) ch = c; return ch; };
+const tc = t => { const s = Math.floor(t), f = Math.floor((t - s) * 25); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f).padStart(2, '0')}`; };
+
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const layer = document.createElement('canvas'), lctx = layer.getContext('2d');
+const sil = document.createElement('canvas'), silCtx = sil.getContext('2d');
+const bg = document.createElement('canvas'), bgCtx = bg.getContext('2d');
+let SC = 1;
+const EXPORT = new URLSearchParams(location.search).has('export');
+let forceFull = EXPORT;
+function resize() {
+  let pw;
+  if (forceFull) pw = 1920;
+  else { const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1); pw = Math.min(2880, Math.max(640, Math.round(r.width * dpr))); }
+  const ph = Math.round(pw * 9 / 16);
+  for (const k of [cv, layer, sil, bg]) { k.width = pw; k.height = ph; }
+  SC = pw / W;
+  bgCtx.setTransform(SC, 0, 0, SC, 0, 0);
+  bgCtx.fillStyle = rgba('mid', .3);
+  for (let x = 72; x < W; x += 48) for (let y = 60; y < H; y += 48) { bgCtx.beginPath(); bgCtx.arc(x, y, .9, 0, TAU); bgCtx.fill(); }
+  draw(curT());
+}
+function drawBackground(c, t) {
+  c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
+  const g = c.createRadialGradient(960, 520, 240, 960, 520, 1250); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(238,241,244,1)');
+  c.fillStyle = g; c.fillRect(0, 0, W, H);
+  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 87, 89)));
+  if (reveal > 0) { c.save(); c.beginPath(); c.rect(0, 0, W * reveal, H); c.clip(); c.globalAlpha = ga; c.drawImage(bg, 0, 0, W, H); c.restore(); }
+}
+function drawChrome(c, t) {
+  const a = env(t, .6, 2.0, 87.4, 88.8); if (a <= 0) return;
+  c.save(); c.globalAlpha = a;
+  txt(c, 'ANATOMY OF THE GAME', 120, 92, { w: 700, size: 15, ls: 4 });
+  txt(c, 'Vol. II — American football', 120, 116, { size: 15, color: 'mid' });
+  const ch = chapterAt(t);
+  txt(c, `PLATE ${ch.n} / 07`, 1800, 92, { size: 15, ls: 4, align: 'right' });
+  txt(c, typed(ch.name.toUpperCase(), seg(t, ch.t, ch.t + .9)), 1800, 116, { size: 15, ls: 2, align: 'right', color: 'blue' });
+  txt(c, tc(t), 1800, 1036, { size: 13, ls: 2, align: 'right', color: 'mid' });
+  txt(c, 'SCALE — 1 : 1  /  1 : 200  /  1 : 2000', 120, 1036, { size: 13, ls: 2, color: 'mid' });
+  c.fillStyle = rgba('light', 1); c.fillRect(120, 1006, 1680, 1); c.fillStyle = rgba('blue', 1); c.fillRect(120, 1006, 1680 * t / DUR, 1);
+  for (const [x, y] of [[60, 60], [1860, 60], [60, 1020], [1860, 1020]]) { c.strokeStyle = rgba('mid', .7); c.lineWidth = 1; c.beginPath(); c.moveTo(x - 9, y); c.lineTo(x + 9, y); c.moveTo(x, y - 9); c.lineTo(x, y + 9); c.stroke(); }
+  c.restore();
+}
+function draw(t) {
+  t = clamp(t, 0, DUR);
+  ctx.setTransform(SC, 0, 0, SC, 0, 0);
+  drawBackground(ctx, t);
+  const act = [];
+  SCENES.forEach((s, i) => { if (t < s.a || t > s.b) return; const fi = i === 0 ? 1 : smooth(seg(t, s.a, s.a + .6)), fo = i === SCENES.length - 1 ? 1 : 1 - smooth(seg(t, s.b - .6, s.b)); const al = Math.min(fi, fo); if (al > 0) act.push([s, al]); });
+  for (const [s, al] of act) {
+    if (al >= .999) { ctx.save(); s.f(ctx, t); ctx.restore(); continue; }
+    lctx.setTransform(1, 0, 0, 1, 0, 0); lctx.clearRect(0, 0, layer.width, layer.height); lctx.setTransform(SC, 0, 0, SC, 0, 0);
+    lctx.save(); s.f(lctx, t); lctx.restore();
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = al; ctx.drawImage(layer, 0, 0); ctx.restore();
+  }
+  ctx.setTransform(SC, 0, 0, SC, 0, 0);
+  drawChrome(ctx, t);
+  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 88.0, 89.7)));
+  if (white > 0) { ctx.fillStyle = `rgba(255,255,255,${white})`; ctx.fillRect(0, 0, W, H); }
+}
+
+/* =====================================================================
+   SOUND — generative score (Web Audio), shared by live playback,
+   WebM export and offline WAV rendering
+   ===================================================================== */
+const PINGS = [1.4, 2.0, 4.6, 8.0, 11.0, 12.6, 13.4, 14.0, 14.5, 15.0, 16.6, 17.1, 17.8, 24.8, 26.4, 28.4, 29.6, 33.0, 34.0, 34.35, 34.7, 35.4, 46.4, 46.8, 47.2, 47.6, 48.0, 48.4, 52.0, 53.4, 57.0, 57.6, 62.8, 63.2, 70.4, 70.6, 71.0, 71.4, 84.5];
+const WHOOSH = [[3.4, 3.4], [12.0, 2.0], [15.0, 2.0], [22.8, 1.6], [40.2, 2.6], [44.6, 2.2], [49.8, 1.6], [51.6, 2.0], [53.2, 2.6], [61.9, .9], [67.9, .9], [79.9, 3.0]];
+const CHORDS = [[0, [110, 164.81, 246.94, 277.18]], [10, [92.5, 138.59, 220, 329.63]], [24, [73.42, 110, 185, 277.18]], [40, [82.41, 123.47, 207.65, 311.13]], [56, [98, 146.83, 220, 293.66]], [68, [87.31, 130.81, 196, 329.63]], [80, [110, 164.81, 207.65, 277.18]]];
+const PING_NOTES = [1318.5, 1479.98, 1760, 1661.22, 2217.46];
+function noiseBuffer(ac, secs, seed) { const r = rng(seed), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); let p = 0; for (let i = 0; i < d.length; i++) { const w = r() * 2 - 1; p = .97 * p + .03 * w; d[i] = w * .5 + p * 3; } } return b; }
+function impulse(ac, secs) { const r = rng(99), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / d.length, 3.2); } return b; }
+function buildScore(ac, out, offset, offline) {
+  const now = ac.currentTime + (offline ? 0 : .06), T = x => now + (x - offset), nodes = [];
+  const valAt = (keys, x) => { if (x <= keys[0][0]) return keys[0][1]; for (let i = 1; i < keys.length; i++) if (x <= keys[i][0]) return lerp(keys[i - 1][1], keys[i][1], (x - keys[i - 1][0]) / (keys[i][0] - keys[i - 1][0])); return keys[keys.length - 1][1]; };
+  const auto = (param, keys) => { param.setValueAtTime(valAt(keys, offset), now); for (const [k, v] of keys) if (k > offset) param.linearRampToValueAtTime(v, T(k)); };
+  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [88, .9], [89.9, 0]]);
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 3; comp.connect(master);
+  const rev = ac.createConvolver(); rev.buffer = impulse(ac, 3.2); const revG = ac.createGain(); revG.gain.value = .45; rev.connect(revG); revG.connect(comp);
+  const dry = ac.createGain(); dry.connect(comp);
+  const send = ac.createGain(); send.gain.value = 1; send.connect(rev);
+  // pad
+  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [10, 900], [24, 1300], [40, 900], [56, 1200], [68, 1400], [80, 1600], [90, 700]]);
+  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [84, .1], [89.5, 0]]);
+  padLP.connect(padG); padG.connect(dry); padG.connect(send);
+  const lfo = ac.createOscillator(); lfo.frequency.value = .07; const lfoG = ac.createGain(); lfoG.gain.value = 160; lfo.connect(lfoG); lfoG.connect(padLP.frequency); lfo.start(now); nodes.push(lfo);
+  let ci = 0; for (let i = 0; i < CHORDS.length; i++) if (CHORDS[i][0] <= offset) ci = i;
+  for (let v = 0; v < 4; v++) for (const [type, det, gv] of [['sine', 0, .55], ['triangle', 5, .35], ['sine', -7, .25]]) {
+    const o = ac.createOscillator(); o.type = type; o.detune.value = det; o.frequency.setValueAtTime(CHORDS[ci][1][v] * (type === 'sine' && det < 0 ? 2 : 1), now);
+    for (let i = ci + 1; i < CHORDS.length; i++) o.frequency.setTargetAtTime(CHORDS[i][1][v] * (type === 'sine' && det < 0 ? 2 : 1), T(CHORDS[i][0]), .35);
+    const g = ac.createGain(); g.gain.value = gv / 4; o.connect(g); g.connect(padLP); o.start(now); nodes.push(o);
+  }
+  // heart / data pulse
+  const pulse = (time, gain, f = 56) => { if (time < offset) return; const t0 = T(time), o = ac.createOscillator(), g = ac.createGain(), lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220; o.frequency.setValueAtTime(f * 2.2, t0); o.frequency.exponentialRampToValueAtTime(f, t0 + .09); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + .006); g.gain.exponentialRampToValueAtTime(.0001, t0 + .5); o.connect(lp); lp.connect(g); g.connect(dry); o.start(t0); o.stop(t0 + .55); };
+  for (const [bt, gn] of [[SNAP, .5], [CATCH, .35], [KICK, .45], [LAND, .4], [53.6, .3]]) { pulse(bt, gn); }
+  for (let k = 0; ; k++) { const bt = 84.0 + k * BEAT; if (bt > 88.3) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
+  // reveal pings (with a soft pulse underneath)
+  PINGS.forEach((pt, i) => {
+    if (pt < offset) return; const t0 = T(pt), f = PING_NOTES[i % PING_NOTES.length];
+    for (const [mul, gv] of [[1, .045], [2, .012]]) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f * mul; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gv, t0 + .004); g.gain.exponentialRampToValueAtTime(.0001, t0 + .9); o.connect(g); g.connect(dry); g.connect(send); o.start(t0); o.stop(t0 + 1); }
+    if (pt > 10 && pt < 84) pulse(pt, .12, 70);
+  });
+  // whooshes on layer peels / transitions
+  const nb = noiseBuffer(ac, 4, 5);
+  WHOOSH.forEach(([wt, d]) => {
+    if (wt + d < offset) return; const st = Math.max(wt, offset), t0 = T(st), src = ac.createBufferSource(); src.buffer = nb;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = .9; const k0 = (st - wt) / d;
+    bp.frequency.setValueAtTime(lerp(280, 2600, k0), t0); bp.frequency.exponentialRampToValueAtTime(2600, T(wt + d));
+    const g = ac.createGain(); g.gain.setValueAtTime(.0001, t0); g.gain.linearRampToValueAtTime(.05, T(wt + d * .6)); g.gain.linearRampToValueAtTime(.0001, T(wt + d));
+    src.connect(bp); bp.connect(g); g.connect(dry); g.connect(send); src.start(t0, 0, d + .1);
+  });
+  // crowd ambience rising toward the end
+  const crowd = ac.createBufferSource(); crowd.buffer = noiseBuffer(ac, 6, 21); crowd.loop = true;
+  const cb = ac.createBiquadFilter(); cb.type = 'bandpass'; cb.frequency.value = 850; cb.Q.value = .5;
+  const cl = ac.createBiquadFilter(); cl.type = 'lowshelf'; cl.frequency.value = 300; cl.gain.value = 6;
+  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [54, 0], [56.5, .04], [58.5, .16], [60.2, .22], [61.6, .2], [63, .04], [68, .02], [80, .03], [84, .06], [87, .11], [88.6, .12], [89.9, 0]]);
+  const am = ac.createOscillator(); am.frequency.value = .31; const amG = ac.createGain(); amG.gain.value = .012; am.connect(amG); amG.connect(cg.gain);
+  crowd.connect(cb); cb.connect(cl); cl.connect(cg); cg.connect(dry); cg.connect(send); crowd.start(now); am.start(now); nodes.push(crowd, am);
+  return { now, stop() { try { master.gain.cancelScheduledValues(ac.currentTime); master.gain.setTargetAtTime(0, ac.currentTime, .03); } catch (e) {} setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) {} }); master.disconnect(); }, 200); } };
+}
+function wavBase64(buf) {
+  const n = buf.length, ch = buf.numberOfChannels, sr = buf.sampleRate, bytes = 44 + n * ch * 2, ab = new ArrayBuffer(bytes), v = new DataView(ab);
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, 'RIFF'); v.setUint32(4, bytes - 8, true); ws(8, 'WAVE'); ws(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, ch, true); v.setUint32(24, sr, true); v.setUint32(28, sr * ch * 2, true); v.setUint16(32, ch * 2, true); v.setUint16(34, 16, true); ws(36, 'data'); v.setUint32(40, n * ch * 2, true);
+  const data = [...Array(ch)].map((_, i) => buf.getChannelData(i)); let o = 44;
+  for (let i = 0; i < n; i++) for (let c = 0; c < ch; c++) { const s = clamp(data[c][i], -1, 1); v.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7FFF, true); o += 2; }
+  let bin = ''; const u8 = new Uint8Array(ab); for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
+/* =====================================================================
+   PLAYER
+   ===================================================================== */
+let playing = false, tHold = 0, startT = 0, startClock = 0, ac = null, score = null, soundOn = true, recorder = null, recDest = null, recBus = null;
+const clockNow = () => (soundOn && ac) ? ac.currentTime : performance.now() / 1000;
+function curT() { if (!playing) return tHold; return clamp(startT + Math.max(0, clockNow() - startClock), 0, DUR); }
+function ensureAC() { if (!ac) { ac = new (window.AudioContext || window.webkitAudioContext)(); recBus = ac.createGain(); recBus.connect(ac.destination); } if (ac.state === 'suspended') ac.resume(); }
+function play() {
+  if (playing) return; if (tHold >= DUR - .05) tHold = 0;
+  startT = tHold; playing = true;
+  if (soundOn) { ensureAC(); score = buildScore(ac, recBus, startT, false); startClock = score.now; } else startClock = performance.now() / 1000;
+  ui();
+}
+function pause() { if (!playing) return; tHold = curT(); playing = false; if (score) { score.stop(); score = null; } ui(); }
+function seek(t) { const was = playing; if (was) pause(); tHold = clamp(t, 0, DUR); draw(tHold); if (was) play(); ui(); }
+const $ = id => document.getElementById(id);
+function ui() {
+  $('pp').textContent = playing ? 'Pause' : (curT() >= DUR - .05 ? 'Replay' : 'Play');
+  $('snd').textContent = soundOn ? 'Sound on' : 'Sound off'; $('snd').classList.toggle('on', soundOn);
+}
+let lastUi = -1;
+function loop() {
+  const t = curT();
+  if (!EXPORT) draw(t);
+  if (playing && t >= DUR) { tHold = DUR; pause(); if (recorder) recorder.stop(); }
+  if (Math.abs(t - lastUi) > .03) {
+    lastUi = t; $('sc').value = t.toFixed(2);
+    const f = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    $('tc').textContent = `${f(t)} / 01:30`;
+    const ch = chapterAt(t); document.querySelectorAll('.chapters button').forEach(b => b.classList.toggle('on', b.dataset.n === ch.n));
+  }
+  requestAnimationFrame(loop);
+}
+
+if (EXPORT) {
+  document.body.classList.add('export');
+  window.__render = t => draw(t);
+  window.__renderAudio = async () => { const oac = new OfflineAudioContext(2, 48000 * DUR, 48000); buildScore(oac, oac.destination, 0, true); const buf = await oac.startRendering(); return wavBase64(buf); };
+  resize(); window.__ready = true;
+} else {
+  CHAPTERS.forEach(ch => { const b = document.createElement('button'); b.type = 'button'; b.dataset.n = ch.n; b.innerHTML = `<b>${ch.n}</b>${ch.name}`; b.onclick = () => { $('start').classList.add('hidden'); seek(ch.t + .01); if (!playing) play(); }; $('chapters').appendChild(b); const tk = document.createElement('span'); tk.style.left = (ch.t / DUR * 100) + '%'; $('ticks').appendChild(tk); });
+  tHold = 43.9;
+  resize(); window.addEventListener('resize', resize);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw(curT()));
+  $('start').onclick = () => { $('start').classList.add('hidden'); tHold = 0; play(); };
+  $('pp').onclick = () => { $('start').classList.add('hidden'); playing ? pause() : play(); };
+  $('sc').oninput = e => { $('start').classList.add('hidden'); seek(parseFloat(e.target.value)); };
+  $('snd').onclick = () => { const was = playing; if (was) pause(); soundOn = !soundOn; if (was) play(); ui(); };
+  $('fs').onclick = () => { const f = $('frame'); (document.fullscreenElement ? document.exitFullscreen() : (f.requestFullscreen || f.webkitRequestFullscreen).call(f)); };
+  document.addEventListener('keydown', e => { if (e.target.tagName === 'INPUT' && e.code !== 'Space') return; if (e.code === 'Space') { e.preventDefault(); $('start').classList.add('hidden'); playing ? pause() : play(); } if (e.code === 'ArrowRight') seek(curT() + 2); if (e.code === 'ArrowLeft') seek(curT() - 2); });
+  $('rec').onclick = () => {
+    if (recorder) return;
+    if (!window.MediaRecorder || !cv.captureStream) { alert('Recording is not supported in this browser.'); return; }
+    $('start').classList.add('hidden'); pause(); soundOn = true; ensureAC();
+    forceFull = true; resize();
+    recDest = ac.createMediaStreamDestination(); recBus.connect(recDest);
+    const stream = new MediaStream([...cv.captureStream(60).getVideoTracks(), ...recDest.stream.getAudioTracks()]);
+    const type = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'].find(m => MediaRecorder.isTypeSupported(m)) || '';
+    recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 16e6 }); const chunks = [];
+    recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+    recorder.onstop = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(chunks, { type: 'video/webm' })); a.download = 'anatomy-of-the-game-football.webm'; a.click(); recBus.disconnect(recDest); recorder = null; forceFull = false; resize(); $('rec').textContent = 'Export WebM'; $('rec').classList.remove('on'); };
+    recorder.start(250); $('rec').textContent = 'Recording…'; $('rec').classList.add('on');
+    tHold = 0; play();
+  };
+  ui(); requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>
