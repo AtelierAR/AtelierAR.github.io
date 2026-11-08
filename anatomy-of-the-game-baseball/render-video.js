@@ -1,5 +1,5 @@
 /*
-  Renders the animation in index.html to an MP4 (1920x1080, 30 fps, with the generated score).
+  Renders the animation in index.html to an MP4 (1080x1350, 4:5, 30 fps, with the generated score).
   Requires Node, Playwright (Chromium) and ffmpeg on PATH.
 
     node render-video.js [out.mp4] [fps]
