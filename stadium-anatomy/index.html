@@ -815,16 +815,17 @@ const PROFILE = (() => {
   const sY1 = Math.round(((sY2 + eyeH) * D1 / D2 - eyeH - 0.33) * 24) / 24;
   const SU = rakeTier({ r0: sR0, y0: sY1, rows: 2, T: sT, eyeH, C: 0.33, guard: { r: 229, y: sY1 + 2.17 }, minR: 0.5 });
   // mezzanine rail seats: five 30 in rows, standing eye height
-  //   (safe-standing rake capped at 35°)
-  const MZ = rakeTier({ r0: 266.6, y0: lv.upper + 1, rows: 5, T: 2.5, eyeH: 5.25, C: 0.3, guard: { r: 266.3, y: lv.upper + 1 + 3.5 }, minR: 0.8, maxR: 2.5 * Math.tan(35 * DEG) });
-  // upper deck: 32 in treads, risers from C ≥ 2.5 in, clamped to a 32°–36° rake (≈34° average)
+  //   front row sits directly above the suite glass line, with no terrace or aisle in front;
+  //   being this close and high, the rake is allowed up to 40° to hold the C-values
+  const MZ = rakeTier({ r0: 237, y0: lv.upper + 1, rows: 5, T: 2.5, eyeH: 5.25, C: 0.3, guard: { r: 236.7, y: lv.upper + 1 + 3.5 }, minR: 0.8, maxR: 2.5 * Math.tan(40 * DEG) });
+  // upper deck: 32 in treads, risers from C ≥ 2.5 in, clamped to a 32°–40° rake
   const uT = 32 / 12, mzL = MZ[MZ.length - 1];
-  const uR0 = mzL.r + mzL.T + 8, uD1   // 8 ft cross-aisle behind the rail seats
+  const uR0 = mzL.r + mzL.T + 1.5, uD1   // 18 in step wall straight behind the rail seats, no aisle
     = uR0 + uT * 0.45 - FOCUS.r;
   const uY0 = Math.ceil((((mzL.eyeY - FOCUS.y) + 0.25) * uD1 / (mzL.eyeR - FOCUS.r) - 3.9 + FOCUS.y) * 24) / 24;
   const UP = rakeTier({ r0: uR0, y0: uY0, rows: 22, T: uT, eyeH: 3.9, C: 0.21,
     cross: { after: 8, width: 6, lift: 2.2 }, guard: { r: mzL.eyeR, y: mzL.eyeY },
-    minR: uT * Math.tan(32 * DEG), maxR: uT * Math.tan(36 * DEG) });
+    minR: uT * Math.tan(32 * DEG), maxR: uT * Math.tan(40 * DEG) });
   const upEnd = UP[21].r + UP[21].T;
   const rk = UP.filter((r) => r.i > 0 && r.i !== 8);
   const upRake = rk.reduce((m, r) => m + Math.atan(r.riser / r.T) / DEG, 0) / rk.length;   // excludes the cross-aisle wall
@@ -1097,7 +1098,7 @@ function partsSuites() {
 function partsMezz() {
   return [
     { id: "mezz", name: "Rail seats", offset: [0, 52, 0],
-      info: { type: "Rail seats for safe standing, flip-up seat per place", cap: "", dims: "5 rows · 30 in row depth · rail at 3 ft 6 in" },
+      info: { type: "Rail seats for safe standing, flip-up seat per place", cap: "", dims: `5 rows · 30 in row depth · ${Math.round(Math.atan(MZ[2].riser / MZ[2].T) / DEG)}° rake · rail at 3 ft 6 in` },
       build(k) {
         for (const row of MZ) {
           seatRow(k, SEATS.railSeat, row.r + row.T - 0.55, row.y, { aisle: 2.2 });
@@ -1105,15 +1106,7 @@ function partsMezz() {
           const n = 10;
           for (let i = 0; i <= n; i++) k.pbox("dark", row.r + 0.41, -HALF + 2 * HALF * i / n, row.y, 0.12, 3.4, 0.12);
         }
-        k.glassGuard(266.4, MZ[0].y, 3.5);
-      } },
-    { id: "terrace", name: "Mezzanine terrace", offset: [0, 46, 0],
-      info: { type: "Open terrace on the suite roof with drink rail", cap: "≈ 180 standing", dims: "30 ft deep · glass guard 42 in" },
-      build(k) {
-        k.ring("tint", 236.2, 266.6, LV.upper - 1, LV.upper);
-        k.glassGuard(236.6, LV.upper, 3.5);
-        k.ring("base", 241.5, 242.7, LV.upper + 3.4, LV.upper + 3.6);
-        for (let i = 0; i <= 10; i++) k.pbox("dark", 242.1, -HALF + 2 * HALF * i / 10, LV.upper, 0.12, 3.4, 0.12);
+        k.glassGuard(MZ[0].r - 0.2, MZ[0].y, 3.5);
       } },
   ];
 }
@@ -1258,7 +1251,7 @@ function partsStructure() {
         run(MZ.concat(UP), 3.5, 3, 4);
       } },
     { id: "columns", name: "Columns", offset: [0, 0, 0],
-      info: { type: "Cast-in-place concrete columns on frame lines", cap: "16 columns · 8 per frame", dims: "30 in × 30 in · up to 120 ft tall" },
+      info: { type: "Cast-in-place concrete columns on frame lines", cap: "14 columns · 7 per frame", dims: "30 in × 30 in · up to 120 ft tall" },
       build(k) {
         const cols = [
           [162, 0, tierYAt(LB, 162) - 3.2],
@@ -1268,7 +1261,6 @@ function partsStructure() {
           [266, 0, LV.upper - 6.5],
           [289.5, 0, upSoffit(289.5)],
           [314, 0, upSoffit(314)],
-          [338, LV.upper, upSoffit(338)],
         ];
         for (const th of [-FRAME_TH, FRAME_TH]) {
           for (const [r, y0, y1] of cols) {
@@ -1279,7 +1271,6 @@ function partsStructure() {
           k.beam("accent", th, PROFILE.lbEnd, LV.conc - 1, PROFILE.facade.r0 - 1, LV.conc - 1, 2.5, 1.25);
           k.beam("accent", th, 228.4, LV.club - 1, PROFILE.rFac(LV.club) - 1.2, LV.club - 1, 2.5, 1.25);
           k.beam("accent", th, 236.2, LV.suite - 1, 278, LV.suite - 1, 2.2, 1.25);
-          k.beam("accent", th, 236.2, LV.upper - 1, 266.6, LV.upper - 1, 2.2, 1.25);
           k.beam("accent", th, 290, LV.upper - 1, PROFILE.rFac(LV.upper) - 1, LV.upper - 1, 2.5, 1.25);
         }
       } },
@@ -1511,9 +1502,9 @@ const COMPONENTS = [
     caption: "Loge box — 4 and 6 swivel seats, drink rail" },
   { key: "suites", n: 5, name: "Suite level", cat: "premium", delay: 0.38, parts: partsSuites, labelPart: "suite2", anchor: [250, HALF * 0.8, LV.suite + 10],
     caption: "Suite — 12 ft floor-to-floor, 40 in rows" },
-  { key: "mezz", n: 6, name: "Mezzanine", cat: "seating", delay: 0.32, parts: partsMezz, labelPart: "mezz", anchor: [272, -HALF * 0.8, MZ[2].y + 3],
+  { key: "mezz", n: 6, name: "Mezzanine", cat: "seating", delay: 0.32, parts: partsMezz, labelPart: "mezz", anchor: [MZ[2].r + 1, -HALF * 0.8, MZ[2].y + 3],
     caption: "Rail seats — safe standing, 30 in rows" },
-  { key: "upper", n: 7, name: "Upper deck", cat: "seating", delay: 0.24, parts: partsUpper, labelPart: "upper", anchor: [318, -HALF * 0.7, tierYAt(UP, 318) + 3],
+  { key: "upper", n: 7, name: "Upper deck", cat: "seating", delay: 0.24, parts: partsUpper, labelPart: "upper", anchor: [UP[14].r, -HALF * 0.7, UP[14].y + 3],
     caption: `Upper deck — ${PROFILE.upRake.toFixed(0)}° rake, 32 in tread` },
   { key: "access", n: 8, name: "Accessibility", cat: "access", delay: 0.5, parts: partsAccess, labelPart: "acc1", anchor: [226, -HALF * 0.85, LV.conc + 2],
     caption: "Wheelchair platform — 3 bays + companions, 2 levels" },
