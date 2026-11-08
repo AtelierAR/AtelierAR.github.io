@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LFF The Nest West Section</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Interactive section study of the west stand: field lowered 4 ft, field suites and clubs, suite levels, club mid bowl, upper bowl and a new solar canopy.">
+<meta name="description" content="Interactive section study of the west stand: field lowered 4 ft, field suites and clubs, suites, club mid bowl, reduced upper bowl with terraces, and a solar canopy.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -25,13 +25,14 @@
 
   /* level tones: midnight green → kelly green, with silver and gray for existing work */
   --l1: #5e9e62;
-  --l2: #004c54;
+  --l2: #3f8f6b;
   --l3: #2f7a6f;
-  --l4: #0d3b3f;
+  --l4: #004c54;
   --l5: #3f9478;
-  --l6: #276a70;
-  --l7: #6fae8d;
-  --l8: #2f8f46;
+  --l6: #0d3b3f;
+  --l7: #276a70;
+  --l8: #6fae8d;
+  --l9: #2f8f46;
   --l-exist: #a5acaf;
   --l-build: #8b9396;
 
@@ -45,6 +46,7 @@
   --m-cut: #d7eedc;
   --m-cutline: #2fae4e;
   --m-solar: #22403e;
+  --m-mirror: #eef4f5;
   --m-glow: #f2fff6;
   --m-ray: #142024;
 
@@ -65,13 +67,14 @@
     --accent: #5fb7a8;
     --kelly: #5cc46b;
     --l1: #7cbc7f;
-    --l2: #3e9aa2;
+    --l2: #6cbb9b;
     --l3: #5aa596;
-    --l4: #8fc9c0;
-    --l5: #6cbb9b;
-    --l6: #4f9aa0;
-    --l7: #9ccdb2;
-    --l8: #5cc46b;
+    --l4: #3e9aa2;
+    --l5: #7fc4a9;
+    --l6: #8fc9c0;
+    --l7: #4f9aa0;
+    --l8: #9ccdb2;
+    --l9: #5cc46b;
     --l-exist: #8d9699;
     --l-build: #6f797c;
     --m-base: #273133;
@@ -84,6 +87,7 @@
     --m-cut: #24493a;
     --m-cutline: #5cc46b;
     --m-solar: #9cc8c0;
+    --m-mirror: #a9bcbe;
     --m-glow: #e6fff0;
     --m-ray: #e5ecea;
     color-scheme: dark;
@@ -101,13 +105,14 @@
   --accent: #5fb7a8;
   --kelly: #5cc46b;
   --l1: #7cbc7f;
-  --l2: #3e9aa2;
+  --l2: #6cbb9b;
   --l3: #5aa596;
-  --l4: #8fc9c0;
-  --l5: #6cbb9b;
-  --l6: #4f9aa0;
-  --l7: #9ccdb2;
-  --l8: #5cc46b;
+  --l4: #3e9aa2;
+  --l5: #7fc4a9;
+  --l6: #8fc9c0;
+  --l7: #4f9aa0;
+  --l8: #9ccdb2;
+  --l9: #5cc46b;
   --l-exist: #8d9699;
   --l-build: #6f797c;
   --m-base: #273133;
@@ -120,6 +125,7 @@
   --m-cut: #24493a;
   --m-cutline: #5cc46b;
   --m-solar: #9cc8c0;
+  --m-mirror: #a9bcbe;
   --m-glow: #e6fff0;
   --m-ray: #e5ecea;
   color-scheme: dark;
@@ -169,11 +175,12 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
 #stack summary .h { font: 500 10px var(--font-mono); color: var(--muted); }
 #levels { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 2px; position: relative; }
 #levels::before { content: ""; position: absolute; left: 13px; top: 10px; bottom: 10px; width: 1px; background: var(--rule); }
-.lv { position: relative; display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: start; padding: 6px 6px 6px 0; border-radius: 3px; cursor: pointer; }
+.lv { position: relative; display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: start; padding: 4px 6px 4px 0; border-radius: 3px; cursor: pointer; }
 .lv:hover { background: color-mix(in srgb, var(--sw) 8%, transparent); }
 .lv .n { position: relative; z-index: 1; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 600 11px var(--font-mono); color: var(--muted); background: var(--panel-solid); border: 1.5px solid var(--rule); transition: background 0.3s, color 0.3s, border-color 0.3s; }
 .lv .t { font: 700 13px/1.2 var(--font-narrow); letter-spacing: 0.01em; }
-.lv .d { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.lv .d { font-size: 11px; line-height: 1.35; color: var(--muted); margin-top: 1px; display: none; }
+.lv.on .d, .lv:hover .d, .lv:focus-visible .d { display: block; }
 .lv .el { font: 500 10px var(--font-mono); color: var(--muted); margin-top: 3px; letter-spacing: 0.04em; }
 .lv.done .n { border-color: var(--sw); color: var(--sw); }
 .lv.on .n { background: var(--sw); border-color: var(--sw); color: var(--panel-solid); }
@@ -273,10 +280,10 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
     </div>
     <div class="grp scrub-grp">
       <div class="scrub-wrap">
-        <input id="scrub" type="range" min="0" max="45" step="0.01" value="0" aria-label="Timeline position in seconds">
+        <input id="scrub" type="range" min="0" max="48.5" step="0.01" value="0" aria-label="Timeline position in seconds">
         <div class="phases" id="phases"></div>
       </div>
-      <output id="time" class="tnum" for="scrub">00.0 / 45 s</output>
+      <output id="time" class="tnum" for="scrub">00.0 / 48.5 s</output>
       <span id="phase">Proposed</span>
     </div>
     <div class="grp explode-grp">
@@ -292,7 +299,7 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
     <ol id="levels" reversed></ol>
     <div class="keys">
       <span><i class="cut"></i>Section cut</span>
-      <span><i style="--sw: var(--l-exist)"></i>Existing lower bowl</span>
+      <span><i style="--sw: var(--l-exist)"></i>Existing lower bowl and upper suites</span>
       <span><i style="--sw: var(--l-build)"></i>Structure, concourses, facade</span>
     </div>
   </details>
@@ -319,7 +326,7 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); heigh
     <div class="intro-kicker"><span>West section</span><span>LFF</span></div>
     <h2 class="intro-word" id="introWord"></h2>
     <div class="intro-rule"></div>
-    <div class="intro-meta"><span>Field lowered 4 ft</span><span>Field suites &amp; clubs</span><span>Solar canopy</span></div>
+    <div class="intro-meta"><span>Field lowered 4 ft</span><span>Field suites &amp; clubs</span><span>Terraces</span><span>Solar canopy</span></div>
   </div>
   <div class="intro-skip">Click or press any key to skip</div>
 </div>
@@ -348,23 +355,16 @@ if (!window.THREE) {
    0. CONSTANTS
    Units are feet. +x runs from the field centreline toward the west
    facade, +y is up, +z runs along the sideline. The section is a
-   straight 150 ft slice cut at z = ±75 (the cut faces read green).
+   straight 150 ft slice cut at z = ±75 (cut faces read green).
    New field level is y = 0; the existing field and plaza are at +4.
    ===================================================================== */
 const DEG = Math.PI / 180;
 const L = 150, HZ = L / 2;
 const FOCUS = { r: 80, y: 0 };          // near touchline (C-value point of focus)
 const GRADE = 4;                        // existing field / plaza level
-const LOOP = 45;
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 const lerp = (a, b, t) => a + (b - a) * t;
-const ft = (v) => {
-  const s = v < 0 ? "−" : ""; v = Math.abs(v);
-  let f = Math.floor(v), i = Math.round((v - f) * 12);
-  if (i === 12) { f += 1; i = 0; }
-  return i ? `${s}${f} ft ${i} in` : `${s}${f} ft`;
-};
 const fmt = (n) => Math.round(n).toLocaleString("en-US");
 
 /* =====================================================================
@@ -377,11 +377,10 @@ const unitCyl = (seg) => CYL[seg] || (CYL[seg] = new THREE.CylinderGeometry(0.5,
 const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _c = new THREE.Vector3(), _e1 = new THREE.Vector3(), _e2 = new THREE.Vector3(), _nn = new THREE.Vector3();
 
 class Kit {
-  constructor() { this.bufs = {}; this.stack = [new THREE.Matrix4()]; this.seats = 0; this.n = {}; }
+  constructor() { this.bufs = {}; this.stack = [new THREE.Matrix4()]; this.seats = 0; this.n = {}; this.ymin = Infinity; }
   get M() { return this.stack[this.stack.length - 1]; }
   push(m) { this.stack.push(this.M.clone().multiply(m)); return this; }
   pop() { this.stack.pop(); return this; }
-  at(x, y, z, ry = 0) { return this.push(new THREE.Matrix4().makeTranslation(x, y, z).multiply(new THREE.Matrix4().makeRotationY(ry))); }
   buf(slot) { return this.bufs[slot] || (this.bufs[slot] = { p: [], n: [], c: [] }); }
   tris(slot, pos, ao, m) {
     const M = m ? this.M.clone().multiply(m) : this.M, B = this.buf(slot);
@@ -391,6 +390,7 @@ class Kit {
       _c.set(pos[i + 6], pos[i + 7], pos[i + 8]).applyMatrix4(M);
       _e1.subVectors(_b, _a); _e2.subVectors(_c, _a); _nn.crossVectors(_e1, _e2).normalize();
       B.p.push(_a.x, _a.y, _a.z, _b.x, _b.y, _b.z, _c.x, _c.y, _c.z);
+      this.ymin = Math.min(this.ymin, _a.y, _b.y, _c.y);
       for (let k = 0; k < 3; k++) { B.n.push(_nn.x, _nn.y, _nn.z); const s = ao[i / 3 + k]; B.c.push(s, s, s); }
     }
   }
@@ -399,11 +399,10 @@ class Kit {
     for (let i = 0; i < ao.length; i++) ao[i] = aoLow + (1 - aoLow) * (src[i * 3 + 1] + 0.5);
     this.tris(slot, src, ao, m);
   }
-  box(slot, cx, cy, cz, sx, sy, sz, ry = 0, rz = 0, rx = 0) {
+  box(slot, cx, cy, cz, sx, sy, sz, ry = 0, rz = 0) {
     const m = new THREE.Matrix4().makeTranslation(cx, cy, cz);
     if (ry) m.multiply(new THREE.Matrix4().makeRotationY(ry));
     if (rz) m.multiply(new THREE.Matrix4().makeRotationZ(rz));
-    if (rx) m.multiply(new THREE.Matrix4().makeRotationX(rx));
     m.multiply(new THREE.Matrix4().makeScale(sx, sy, sz));
     this.unit(slot, UNIT_BOX, m);
   }
@@ -458,7 +457,7 @@ class Kit {
 /* split [z0, z1] around gaps [[centre, half-width], …] */
 function segments(z0, z1, gaps) {
   const out = []; let a = z0;
-  for (const [c, h] of [...gaps].sort((p, q) => p[0] - q[0])) {
+  for (const [c, h] of [...gaps].filter((g) => g[1] > 0).sort((p, q) => p[0] - q[0])) {
     if (c - h > a) out.push([a, c - h]);
     a = Math.max(a, c + h);
   }
@@ -491,170 +490,241 @@ const tierYAt = (tier, x) => { let y = tier[0].y; for (const row of tier) if (x 
 const rakeOf = (tier) => { const a = tier.filter((r) => r.i > 0).map((r) => Math.atan(r.riser / r.T) / DEG); return a.reduce((s, v) => s + v, 0) / a.length; };
 
 const P = (() => {
-  // existing lower bowl (geometry unchanged; sightlines measured to the new, lower field)
-  const LB = rakeTier({ r0: 130, y0: 12.5, rows: 34, T: 33 / 12, eyeH: 3.9, C: 0.3, guard: { r: 129.6, y: 12.5 + 2.4 }, minR: 0.6, maxR: 2.0 });
+  // four new front rows, stepping down toward the lowered field
+  const FR = rakeTier({ r0: 119, y0: 8.7, rows: 4, T: 33 / 12, eyeH: 3.9, C: 0.3, guard: { r: 118.9, y: 8.7 + 2.6 }, minR: 1.2, maxR: 1.2 });
+  const frL = FR[3];
+  // existing lower bowl (sightlines measured over the new front rows)
+  const LB = rakeTier({ r0: 130, y0: 13.5, rows: 34, T: 33 / 12, eyeH: 3.9, C: 0.3, guard: { r: frL.eyeR, y: frL.eyeY }, minR: 0.6, maxR: 2.0 });
   const lbEnd = LB[33].r + LB[33].T, lbTop = LB[33].y;
-  // front-row C before and after lowering the field 4 ft
-  const r0 = LB[0], g = { r: 129.6, y: 12.5 + 2.4 };
-  const cAt = (fy) => { const E = r0.eyeY - fy, D = r0.eyeR - FOCUS.r, Eg = g.y - fy, Dg = g.r - FOCUS.r; return (E * Dg / D - Eg) * 12; };
-  const cBefore = cAt(GRADE), cAfter = cAt(0);
   const xs = lbEnd + 4;                                  // suite glass line, behind a 4 ft cross-aisle
   const LS = Math.round(lbTop + 2), PS = LS + 13;
   const CM = rakeTier({ r0: xs - 1, y0: PS + 14.5, rows: 13, T: 3, eyeH: 3.9, C: 0.3, guard: { r: xs - 1.4, y: PS + 14.5 + 2.2 }, minR: 0.8, maxR: 2.6 });
   const cmEnd = CM[12].r + CM[12].T, cmTop = CM[12].y;
   const US = Math.round(cmTop + 1.5);
   const uT = 32 / 12;
-  const UB = rakeTier({ r0: cmEnd + 1, y0: US + 14, rows: 28, T: uT, eyeH: 3.9, C: 0.22, guard: { r: cmEnd + 0.6, y: US + 14 + 2.2 }, minR: uT * Math.tan(30 * DEG), maxR: uT * Math.tan(40 * DEG) });
-  const ubEnd = UB[27].r + UB[27].T, ubTop = UB[27].y;
-  const xf = ubEnd + 4;                                   // facade line
+  // existing upper bowl: 28 rows; the proposal keeps 20 and turns the back into a terrace
+  const UBall = rakeTier({ r0: cmEnd + 1, y0: US + 14, rows: 28, T: uT, eyeH: 3.9, C: 0.22, guard: { r: cmEnd + 0.6, y: US + 14 + 2.2 }, minR: uT * Math.tan(30 * DEG), maxR: uT * Math.tan(40 * DEG) });
+  const UB = UBall.slice(0, 20), UBx = UBall.slice(20);
+  const ubEnd = UB[19].r + uT, ubTop = UB[19].y;
+  const ubEndOld = UBall[27].r + uT;
+  const xf = ubEndOld + 4;                                // facade line (unchanged footprint)
   const UC = US + 13;                                     // upper concourse
-  const canopy = { x0: 168, x1: ubEnd + 16, y: Math.round(ubTop + 30), t: 5 };
-  return { LB, CM, UB, lbEnd, lbTop, xs, LS, PS, cmEnd, cmTop, US, UC, ubEnd, ubTop, xf, canopy, cBefore, cAfter };
+  const terrY = ubTop + 0.6;                              // terrace deck on the removed rows
+  const cy = Math.round(ubTop + 36);
+  const canopy = { x0: 168, x1: xf + 16, y: cy, deck: 0.8, depth: 7, back: 12 };
+  canopy.soffitAt = (x) => {
+    // underside line: thin at the leading edge, 7 ft deep from 40 ft back, turned down at the rear
+    if (x < canopy.x0 + 40) return cy - lerp(1.4, canopy.depth, clamp((x - canopy.x0) / 40));
+    if (x < canopy.x1 - 18) return cy - canopy.depth;
+    return cy - lerp(canopy.depth, canopy.back + 0.6, clamp((x - (canopy.x1 - 18)) / 18));
+  };
+  return { FR, LB, CM, UB, UBx, UBall, lbEnd, lbTop, xs, LS, PS, cmEnd, cmTop, US, UC, ubEnd, ubTop, ubEndOld, xf, terrY, canopy };
 })();
-const { LB, CM, UB } = P;
+const { FR, LB, CM, UB, UBx } = P;
 
 /* =====================================================================
-   3. SEATS
+   3. SEATS, TREADS, VOMITORIES
    ===================================================================== */
-/* continuous seat strip (pan + back) along z with arm standards at each seat */
-function seatStrip(k, slot, xb, y, z0, z1, kind = "std") {
+const VOM_OLD = { voms: [-52, -17, 17, 52], rows: [13, 18], half: 4, aisle: true };
+const VOM_NEW = { voms: [-34.5, 34.5], rows: [4, 9], half: 3.5, aisle: false };
+const inRows = (row, set) => row.i >= set.rows[0] && row.i <= set.rows[1];
+function gapsFor(row, sets, seat) {
+  const g = [];
+  for (const s of sets) for (const c of s.voms) {
+    if (inRows(row, s)) g.push([c, s.half + (seat ? 1 : 0.5)]);
+    else if (seat && s.aisle) g.push([c, 2]);
+  }
+  return g;
+}
+/* continuous seat strip (pan + back) along z */
+function seatStrip(k, xb, y, z0, z1, kind = "std") {
   const c = kind === "club";
   const pitch = c ? 22 / 12 : 20 / 12;
   const bt = c ? 0.3 : 0.18, pt = c ? 0.32 : 0.18, top = c ? 2.95 : 2.75;
-  k.ext(slot, [[xb - 1.45, y + 1.3], [xb, y + 1.3], [xb, y + top], [xb - bt, y + top], [xb - bt, y + 1.3 + pt], [xb - 1.45, y + 1.3 + pt]], z0, z1);
-  const n = Math.floor((z1 - z0) / pitch);
-  k.seats += n;
+  k.ext("seat", [[xb - 1.45, y + 1.3], [xb, y + 1.3], [xb, y + top], [xb - bt, y + top], [xb - bt, y + 1.3 + pt], [xb - 1.45, y + 1.3 + pt]], z0, z1);
+  k.seats += Math.floor((z1 - z0) / pitch);
 }
-/* seat rows on a tier, broken at aisles beside each vomitory */
-function seatTier(k, tier, opt) {
-  for (const row of tier) {
-    const gaps = opt.voms.map((c) => [c, row.i >= opt.vomRows[0] && row.i <= opt.vomRows[1] ? opt.vomHalf + 1 : 2]);
-    for (const [a, b] of segments(-HZ + 2, HZ - 2, gaps)) seatStrip(k, "seat", row.r + row.T - 0.55, row.y, a, b, opt.kind);
+function seatRows(k, rows, sets, kind, only) {
+  for (const row of rows) {
+    const segs = only ? only(row) : segments(-HZ + 2, HZ - 2, gapsFor(row, sets, true));
+    for (const [a, b] of segs) seatStrip(k, row.r + row.T - 0.55, row.y, a, b, kind);
   }
 }
-/* precast tread / riser L-units with gaps at the vomitory portals */
-function treads(k, tier, opt) {
+/* precast tread / riser L-units */
+function treadProfile(tier, i, first) {
+  const row = tier[i];
+  const rEnd = i < tier.length - 1 ? tier[i + 1].r : row.r + row.T;
+  const yPrev = i ? tier[i - 1].y : row.y - first;
+  return [[row.r, yPrev - 0.6], [row.r + 0.5, yPrev - 0.6], [row.r + 0.5, row.y - 0.6], [rEnd, row.y - 0.6], [rEnd, row.y], [row.r, row.y]];
+}
+function treads(k, tier, sets, first = 2) {
   for (let i = 0; i < tier.length; i++) {
-    const row = tier[i];
-    const rEnd = i < tier.length - 1 ? tier[i + 1].r : row.r + row.T;
-    const yPrev = i ? tier[i - 1].y : row.y - (opt.first ?? 2);
-    const prof = [[row.r, yPrev - 0.6], [row.r + 0.5, yPrev - 0.6], [row.r + 0.5, row.y - 0.6], [rEnd, row.y - 0.6], [rEnd, row.y], [row.r, row.y]];
-    const inVom = i >= opt.vomRows[0] && i <= opt.vomRows[1];
-    const gaps = inVom ? opt.voms.map((c) => [c, opt.vomHalf + 0.5]) : [];
-    for (const [a, b] of segments(-HZ, HZ, gaps)) k.ext("tint", prof, a, b);
+    const prof = treadProfile(tier, i, first);
+    for (const [a, b] of segments(-HZ, HZ, gapsFor(tier[i], sets, false))) k.ext("tint", prof, a, b);
   }
 }
-/* vomitory portals: side walls, rails, floor and a short tunnel under the rows behind */
-function voms(k, tier, opt) {
-  const a = tier[opt.vomRows[0]], b = tier[Math.min(tier.length - 1, opt.vomRows[1] + 1)];
+/* vomitory portals with a short level tunnel under the rows behind */
+function vomPortals(k, tier, set, tunnel) {
+  const a = tier[set.rows[0]], b = tier[Math.min(tier.length - 1, set.rows[1] + 1)];
   const floorY = a.y - 0.6;
-  for (const c of opt.voms) {
+  for (const c of set.voms) {
     for (const sgn of [-1, 1]) {
-      const z = c + sgn * (opt.vomHalf + 0.25);
-      for (let i = opt.vomRows[0]; i <= opt.vomRows[1]; i++) {
+      const z = c + sgn * (set.half + 0.25);
+      for (let i = set.rows[0]; i <= set.rows[1]; i++) {
         const row = tier[i];
         k.box("base", row.r + row.T / 2, (floorY + row.y + 3.2) / 2, z, row.T, row.y + 3.2 - floorY, 0.5);
         k.box("dark", row.r + row.T / 2, row.y + 3.4, z, row.T, 0.12, 0.12);
       }
-      k.box("base", b.r + opt.tunnel / 2, floorY + 4.6, z, opt.tunnel, 9.2, 0.5);
+      k.box("base", b.r + tunnel / 2, floorY + 4.6, z, tunnel, 9.2, 0.5);
     }
-    k.slab("tint", a.r, b.r + opt.tunnel, floorY - 0.5, floorY, c - opt.vomHalf, c + opt.vomHalf);
-    k.box("base", b.r + opt.tunnel / 2, floorY + 9.3, c, opt.tunnel, 0.6, 2 * opt.vomHalf + 1);
-    k.box("base", b.r + opt.tunnel - 0.25, floorY + 4.6, c, 0.5, 9.2, 2 * opt.vomHalf + 1);
+    k.slab("tint", a.r, b.r + tunnel, floorY - 0.5, floorY, c - set.half, c + set.half);
+    k.box("base", b.r + tunnel / 2, floorY + 9.3, c, tunnel, 0.6, 2 * set.half + 1);
+    k.box("base", b.r + tunnel - 0.25, floorY + 4.6, c, 0.5, 9.2, 2 * set.half + 1);
   }
 }
 
 /* =====================================================================
-   4. LEVEL BUILDERS — one function per level, each returns parts
+   4. BUILDERS — each level returns parts; a part's "mode" sets how it
+   appears in its step: highlight, lower, grow, remove or drop
    ===================================================================== */
 function partsField() {
-  return [{ id: "field", name: "Playing field, lowered 4 ft",
-    info: { type: "Natural turf field, sideline border and team area", cap: "Team benches and sideline", dims: `Lowered 4 ft · team area ${118 - 86} ft deep` },
+  return [{ id: "field", mode: "lower", name: "Playing field, lowered 4 ft",
+    info: { type: "Natural turf field, sideline border and team area", cap: "Team benches and sideline", dims: "Lowered 4 ft · team area 32 ft deep" },
     build(k) {
       k.slab("turf", 6, 80, -0.6, 0);
       k.slab("white", 80, 86, -0.6, 0.02);
       k.slab("turf", 86, 118, -0.6, -0.02);
-      k.slab("white", 92, 92.33, -0.02, 0.0);                 // restraining line
-      for (let z = -HZ; z <= HZ + 0.01; z += 15) k.box("white", 43, 0.02, z, 74, 0.04, 0.33);   // 5-yard lines
-      for (let z = -HZ + 3; z < HZ; z += 3) {                   // 1-yard ticks at sideline and hash marks
+      k.slab("white", 92, 92.33, -0.02, 0.0);
+      for (let z = -HZ; z <= HZ + 0.01; z += 15) k.box("white", 43, 0.02, z, 74, 0.04, 0.33);
+      for (let z = -HZ + 3; z < HZ; z += 3) {
         if (Math.abs((z + HZ) % 15) < 0.01) continue;
         k.box("white", 78.3, 0.02, z, 2, 0.04, 0.33);
         k.box("white", 9.25, 0.02, z, 2, 0.04, 0.33);
       }
-      // team benches
       for (const z of [-40, -20, 0, 20, 40]) k.box("dark", 100, 0.9, z, 1.6, 1.8, 14);
     } }];
 }
-
-function partsFieldSuites() {
-  return [{ id: "fieldSuites", name: "Field suites",
-    info: { type: "Field-level suites behind glass with sideline patios", cap: "", dims: "10 suites × 15 ft · 24 ft deep · 11 ft 6 in clear" },
-    build(k) {
-      k.slab("tint", 118, 152, -0.6, 0);
-      k.slab("base", 118, 118.6, 0, 3);                                        // patio front wall
-      k.slab("glass", 128, 128.3, 0, 11.5);                                    // glass frontage
-      k.slab("base", 128, 152, 11.5, 12.2);                                    // ceiling under row 1
-      for (let z = -HZ + 15; z < HZ; z += 15) {
-        k.box("base", 135, 5.75, z, 14, 11.5, 0.35);                          // suite partitions
-        k.box("base", 123, 1.5, z, 10, 3, 0.3);                               // patio dividers
-      }
-      for (let z = -HZ; z < HZ; z += 5) k.box("dark", 128.15, 5.75, z, 0.3, 11.5, 0.25);   // mullions
-      for (let z = -HZ + 7.5; z < HZ; z += 15) {
-        k.box("seat", 121.5, 0.8, z - 3, 2.4, 1.6, 2.4); k.box("seat", 121.5, 0.8, z + 3, 2.4, 1.6, 2.4);   // patio lounge chairs
-        k.box("base", 121.5, 0.6, z, 2, 1.2, 2.2);
-        k.box("seat", 141, 0.75, z, 2.6, 1.5, 8); k.box("seat", 142.2, 1.6, z, 0.5, 3.2, 8);                // sofa
-        k.box("base", 137.5, 0.6, z, 2.4, 1.2, 4);
-        k.box("accent", 149.5, 1.75, z, 2.2, 3.5, 9);                       // suite bar
-      }
-      k.slab("base", 151.6, 152, 0, 11.5);
-      k.n.suites = 10;
-    } },
-  { id: "fieldClub", name: "Field club",
-    info: { type: "Club lounge under the lower bowl, bar and dining", cap: "≈ 450 guests", dims: "44 ft deep × 150 ft · ceiling follows the rake above" },
-    build(k) {
-      k.slab("tint", 152, 196, -0.6, 0);
-      k.slab("base", 195.6, 196, 0, tierYAt(LB, 196) - 3.5);
-      k.slab("base", 170, 173, 0, 3.6, -50, 50);                               // long bar
-      k.slab("accent", 169.8, 173.2, 3.6, 3.85, -50, 50);
-      k.slab("dark", 192, 193.4, 0, 7.5, -48, 48);                             // back bar
-      for (let z = -60; z <= 60; z += 12) for (const x of [160, 182]) {
-        if (x === 182 && Math.abs(z) < 54) continue;
-        k.cyl("dark", x, 0, z, 0.12, 3.4); k.cyl("base", x, 3.4, z, 1.4, 0.15);
-        for (const [dx, dz] of [[1.9, 0], [-1.9, 0], [0, 1.9], [0, -1.9]]) { k.cyl("dark", x + dx, 0, z + dz, 0.08, 2.4); k.cyl("seat", x + dx, 2.4, z + dz, 0.55, 0.2); }
-      }
-    } }];
+function partsFrontRows() {
+  return [
+    { id: "frontRows", mode: "grow", name: "New front rows",
+      info: { type: "Four new rows on precast treads, glass guard at the field wall", cap: "", dims: "4 rows · 33 in tread · 14 in risers" },
+      build(k) {
+        treads(k, FR, [], 0.6);
+        seatRows(k, FR, [], "std");
+        k.glassGuard(119.1, FR[0].y, 2.6);
+        k.slab("tint", FR[3].r + FR[3].T, LB[0].r, FR[3].y - 0.6, FR[3].y);       // closer to the existing first row
+      } },
+    { id: "oldGuard", mode: "remove", name: "Existing front guard",
+      info: { type: "Existing guard at the old first row", cap: "Removed", dims: "2 ft 5 in" },
+      build(k) { k.glassGuard(129.8, LB[0].y, 2.4); k.slab("base", 129.3, 130, -0.6, LB[0].y - 0.6); } },
+  ];
 }
-
-const LB_OPT = { voms: [-52, -17, 17, 52], vomRows: [13, 18], vomHalf: 4, tunnel: 14, kind: "std" };
+function partsVomStairs() {
+  const S = VOM_NEW;
+  return [
+    { id: "vomStairs", mode: "grow", name: "Vomitory stairs to the field club",
+      info: { type: "Two new vomitories with stairs down to the field club", cap: "≈ 600 persons per stair at egress width", dims: "7 ft wide · 31 risers to the club floor" },
+      build(k) {
+        const a = LB[S.rows[0]], floor = -2;
+        const rise = a.y - floor, n = Math.ceil(rise / 0.6), h = rise / n, tr = 0.92, x0 = a.r + 0.5;
+        for (const c of S.voms) {
+          for (let i = 0; i < n; i++) {
+            const x = x0 + i * tr + tr / 2, top = a.y - (i + 1) * h;
+            k.box("tint", x, top - 0.3, c, tr, 0.6, 2 * S.half);
+            for (const sgn of [-1, 1]) {
+              const wallTop = Math.min(tierYAt(LB, x) + 3.2, top + 11);
+              k.box("base", x, (top + wallTop) / 2, c + sgn * (S.half + 0.25), tr, wallTop - top, 0.5);
+            }
+          }
+          k.beam("base", c, x0, a.y - 0.6, x0 + n * tr, floor - 0.6, 1.2, 2 * S.half, "center");
+          for (const sgn of [-1, 1]) k.beam("dark", c + sgn * (S.half - 0.3), x0, a.y + 3, x0 + n * tr, floor + 3, 0.14, 0.14, "center");
+          k.slab("tint", x0 + n * tr, x0 + n * tr + 5, floor - 0.6, floor, c - S.half, c + S.half);
+          for (let i = S.rows[0]; i <= S.rows[1]; i++) {
+            const row = LB[i];
+            for (const sgn of [-1, 1]) k.box("dark", row.r + row.T / 2, row.y + 3.4, c + sgn * (S.half + 0.25), row.T, 0.12, 0.12);
+          }
+        }
+      } },
+    { id: "vomFill", mode: "remove", name: "Existing rows at the new vomitories",
+      info: { type: "Seats and treads removed to open the stairs", cap: "", dims: "6 rows × 2 openings" },
+      build(k) {
+        for (const row of LB.filter((r) => inRows(r, S))) {
+          const prof = treadProfile(LB, row.i, 0.7);
+          for (const c of S.voms) {
+            k.ext("tint", prof, c - S.half - 0.5, c + S.half + 0.5);
+            seatStrip(k, row.r + row.T - 0.55, row.y, c - S.half - 1, c + S.half + 1);
+          }
+        }
+      } },
+  ];
+}
+function partsFieldSuites() {
+  return [
+    { id: "fieldSuites", mode: "grow", name: "Field suites",
+      info: { type: "Sunken suites behind glass at the touchline, under the new front rows", cap: "", dims: "10 suites × 15 ft · 21 ft deep · 10 ft clear" },
+      build(k) {
+        const fl = -2;
+        k.slab("tint", 118.5, 140, fl - 0.6, fl);
+        k.slab("glass", 118.5, 118.8, fl, 8.0);
+        for (let z = -HZ; z < HZ; z += 5) k.box("dark", 118.65, 3, z, 0.3, 10, 0.25);
+        k.slab("base", 118.5, 140, 8.0, 8.4);
+        k.slab("base", 139.6, 140, fl, 8.0);
+        for (let z = -HZ + 15; z < HZ; z += 15) k.box("base", 129.2, 3, z, 21, 10, 0.35);
+        for (let z = -HZ + 7.5; z < HZ; z += 15) {
+          k.box("seat", 128, fl + 0.75, z, 2.6, 1.5, 8); k.box("seat", 129.2, fl + 1.6, z, 0.5, 3.2, 8);
+          k.box("base", 124.2, fl + 0.6, z, 2.4, 1.2, 4);
+          k.box("accent", 137.6, fl + 1.75, z, 2.2, 3.5, 9);
+          k.box("seat", 121.6, fl + 0.8, z - 4.5, 2.2, 1.6, 2.2); k.box("seat", 121.6, fl + 0.8, z + 4.5, 2.2, 1.6, 2.2);
+        }
+        k.n.suites = 10;
+        // steps down from the sideline to the sunken suite fronts
+        for (let i = 0; i < 4; i++) k.slab("tint", 114 + i * 1.1, 118.5, -0.5 * (i + 1) - 0.4, -0.5 * (i + 1));
+      } },
+    { id: "fieldClub", mode: "grow", name: "Field club",
+      info: { type: "Club lounge under the lower bowl, reached by the new vomitory stairs", cap: "≈ 500 guests", dims: "56 ft deep × 150 ft · ceiling follows the rake" },
+      build(k) {
+        const fl = -2;
+        k.slab("tint", 140, 196, fl - 0.6, fl);
+        k.slab("base", 195.6, 196, fl, tierYAt(LB, 196) - 3.5);
+        k.slab("base", 176, 179, fl, fl + 3.6, -48, 48);
+        k.slab("accent", 175.8, 179.2, fl + 3.6, fl + 3.85, -48, 48);
+        k.slab("dark", 192, 193.4, fl, fl + 7.5, -46, 46);
+        for (let z = -66; z <= 66; z += 12) for (const x of [186, 168]) {
+          if (x === 186 && Math.abs(z) < 52) continue;
+          if (x === 168 && VOM_NEW.voms.some((c) => Math.abs(z - c) < 7)) continue;
+          k.cyl("dark", x, fl, z, 0.12, 3.4); k.cyl("base", x, fl + 3.4, z, 1.4, 0.15);
+          for (const [dx, dz] of [[1.9, 0], [-1.9, 0], [0, 1.9], [0, -1.9]]) { k.cyl("dark", x + dx, fl, z + dz, 0.08, 2.4); k.cyl("seat", x + dx, fl + 2.4, z + dz, 0.55, 0.2); }
+        }
+      } },
+  ];
+}
 function partsLowerBowl() {
   return [{ id: "lowerBowl", name: "Lower bowl (existing)",
-    info: { type: "Existing lower bowl, seats on precast treads", cap: "", dims: `34 rows · 33 in tread · ${rakeOf(LB).toFixed(0)}° average rake` },
+    info: { type: "Existing lower bowl on precast treads", cap: "", dims: `34 rows · 33 in tread · ${rakeOf(LB).toFixed(0)}° average rake` },
     build(k) {
-      treads(k, LB, Object.assign({ first: 0.7 }, LB_OPT));
-      voms(k, LB, LB_OPT);
-      seatTier(k, LB, LB_OPT);
-      k.glassGuard(129.8, LB[0].y, 2.4);
+      treads(k, LB, [VOM_OLD, VOM_NEW], 0.7);
+      vomPortals(k, LB, VOM_OLD, 14);
+      seatRows(k, LB, [VOM_OLD, VOM_NEW], "std");
       k.rail("dark", P.lbEnd + 0.3, P.lbTop, 3.4, -HZ, HZ, 8);
-      k.slab("tint", P.lbEnd, P.xs, P.lbTop - 0.6, P.lbTop + 0.4);              // top cross-aisle
+      k.slab("tint", P.lbEnd, P.xs, P.lbTop - 0.6, P.lbTop + 0.4);
     } }];
 }
-
 /* suite band: floor with fascia, glass front with mullions, partitions, furniture */
-function suiteBand(k, y, x0, depth, bay, opt = {}) {
+function suiteBand(k, y, x0, depth, bay, dining) {
   k.ext("tint", [[x0 - 1.2, y - 1.4], [x0 + depth, y - 1.4], [x0 + depth, y], [x0 - 1.2, y], [x0 - 1.2, y - 0.6]]);
-  k.slab("base", x0 - 1.4, x0 - 0.4, y - 2.4, y + 0.3);                      // fascia band
+  k.slab("base", x0 - 1.4, x0 - 0.4, y - 2.4, y + 0.3);
   k.slab("glass", x0, x0 + 0.3, y, y + 11.4);
   for (let z = -HZ; z <= HZ; z += 4) k.box("dark", x0 + 0.15, y + 5.7, z, 0.3, 11.4, 0.22);
-  k.slab("base", x0, x0 + 0.5, y + 11.4, y + 12.2);                          // head of glazing
+  k.slab("base", x0, x0 + 0.5, y + 11.4, y + 12.2);
   k.slab("base", x0 + depth - 0.5, x0 + depth, y, y + 11.4);
   let n = 0;
   for (let z = -HZ; z < HZ - 0.1; z += bay) {
     if (z > -HZ + 0.1) k.box("base", x0 + depth / 2, y + 5.7, z, depth - 1, 11.4, 0.35);
-    const zc = z + bay / 2;
-    k.box("seat", x0 + 8, y + 0.75, zc, 2.6, 1.5, Math.min(9, bay - 4)); k.box("seat", x0 + 9.2, y + 1.6, zc, 0.5, 3.0, Math.min(9, bay - 4));
+    const zc = z + bay / 2, w = Math.min(9, bay - 4);
+    k.box("seat", x0 + 8, y + 0.75, zc, 2.6, 1.5, w); k.box("seat", x0 + 9.2, y + 1.6, zc, 0.5, 3.0, w);
     k.box("base", x0 + 4.6, y + 0.6, zc, 2.4, 1.2, 4);
     k.box("accent", x0 + depth - 3, y + 1.75, zc, 2.4, 3.5, Math.min(10, bay - 5));
-    if (opt.exterior) {                                                       // presidential: dining table + chairs
+    if (dining) {
       k.box("base", x0 + 15, y + 2.5, zc, 4, 0.2, 10); k.box("dark", x0 + 15, y + 1.2, zc, 0.4, 2.4, 0.4);
       for (const dz of [-3.5, 0, 3.5]) for (const dx of [-2.8, 2.8]) k.box("seat", x0 + 15 + dx, y + 1.4, zc + dz, 1.6, 2.8, 1.6);
     }
@@ -664,92 +734,143 @@ function suiteBand(k, y, x0, depth, bay, opt = {}) {
 }
 function partsLowerSuites() {
   return [{ id: "lowerSuites", name: "Lower suites",
-    info: { type: "Private suites at the top of the lower bowl", cap: "", dims: `10 suites × 15 ft · 30 ft deep · 13 ft floor-to-floor` },
+    info: { type: "Renovated suites at the top of the lower bowl; new suites at the southwest corner", cap: "", dims: "15 ft bays · 30 ft deep · 13 ft floor-to-floor" },
     build(k) { suiteBand(k, P.LS, P.xs, 30, 15); } }];
 }
 function partsPresSuites() {
   return [{ id: "presSuites", name: "Presidential suites",
-    info: { type: "Large suites with lounge, dining and bar", cap: "", dims: `5 suites × 30 ft · 34 ft deep · 13 ft floor-to-floor` },
-    build(k) { suiteBand(k, P.PS, P.xs, 34, 30, { exterior: true }); } }];
+    info: { type: "Renovated and new presidential suites, 14 in total on the east side", cap: "14 suites (east side)", dims: "30 ft bays · 34 ft deep · lounge, dining, bar" },
+    build(k) { suiteBand(k, P.PS, P.xs, 34, 30, true); } }];
 }
-
-const CM_OPT = { voms: [-52, -17, 17, 52], vomRows: [3, 7], vomHalf: 3.5, tunnel: 10, kind: "club" };
 function partsClubMid() {
+  const set = { voms: [-52, -17, 17, 52], rows: [3, 7], half: 3.5, aisle: true };
   return [{ id: "clubMid", name: "Club mid bowl",
-    info: { type: "Padded club seats with cupholders, club lounge behind", cap: "", dims: `13 rows · 36 in row depth · 22 in seats · ${rakeOf(CM).toFixed(0)}° rake` },
+    info: { type: "Padded club seats; club seating extended into the north and south corners and the end zone", cap: "", dims: `13 rows · 36 in rows · 22 in seats · ${rakeOf(CM).toFixed(0)}° rake` },
     build(k) {
-      treads(k, CM, Object.assign({ first: 2.4 }, CM_OPT));
-      voms(k, CM, CM_OPT);
-      seatTier(k, CM, CM_OPT);
+      treads(k, CM, [set], 2.4);
+      vomPortals(k, CM, set, 10);
+      seatRows(k, CM, [set], "club");
       k.glassGuard(P.xs - 1.2, CM[0].y, 2.2);
     } }];
 }
 function partsUpperSuites() {
-  return [{ id: "upperSuites", name: "Upper suites",
-    info: { type: "Suite level between the club bowl and the upper bowl", cap: "", dims: `10 suites × 15 ft · 26 ft deep · 13 ft floor-to-floor` },
+  return [{ id: "upperSuites", name: "Upper suites (existing)",
+    info: { type: "Existing suite level between the club bowl and the upper bowl", cap: "", dims: "15 ft bays · 26 ft deep · 13 ft floor-to-floor" },
     build(k) { suiteBand(k, P.US, P.cmEnd + 1, 26, 15); } }];
 }
-const UB_OPT = { voms: [-62.5, -37.5, -12.5, 12.5, 37.5, 62.5], vomRows: [0, 4], vomHalf: 3, tunnel: 8, kind: "std" };
-function partsUpperBowl() {
-  return [{ id: "upperBowl", name: "Upper bowl",
-    info: { type: "Upper bowl seating, vomitories at the front rows", cap: "", dims: `28 rows · 32 in tread · ${rakeOf(UB).toFixed(0)}° average rake` },
-    build(k) {
-      treads(k, UB, Object.assign({ first: 2.4 }, UB_OPT));
-      voms(k, UB, UB_OPT);
-      // vom head boxes along the front, as in the reference section
-      for (const c of UB_OPT.voms) k.box("base", UB[5].r + 2.5, UB[5].y + 2, c, 5, 4, 2 * UB_OPT.vomHalf + 1.5);
-      seatTier(k, UB, UB_OPT);
-      k.glassGuard(UB[0].r - 0.2, UB[0].y, 2.2);
-      k.slab("base", P.ubEnd - 0.4, P.ubEnd, P.ubTop, P.ubTop + 4);           // back parapet
-    } }];
+const VOM_UP = { voms: [-62.5, -37.5, -12.5, 12.5, 37.5, 62.5], rows: [0, 4], half: 3, aisle: true };
+function partsUpper() {
+  return [
+    { id: "upperBowl", name: "Upper bowl, reduced to 20 rows",
+      info: { type: "Upper bowl kept to 20 rows, vomitories at the front", cap: "", dims: `20 rows (was 28) · 32 in tread · ${rakeOf(UB).toFixed(0)}° average rake` },
+      build(k) {
+        treads(k, UB, [VOM_UP], 2.4);
+        vomPortals(k, UB, VOM_UP, 8);
+        for (const c of VOM_UP.voms) k.box("base", UB[5].r + 2.5, UB[5].y + 2, c, 5, 4, 2 * VOM_UP.half + 1.5);
+        seatRows(k, UB, [VOM_UP], "std");
+        k.glassGuard(UB[0].r - 0.2, UB[0].y, 2.2);
+      } },
+    { id: "upperRemoved", mode: "remove", name: "Upper bowl rows 21–28 (removed)",
+      info: { type: "Existing back rows taken out", cap: "", dims: "8 rows" },
+      build(k) {
+        for (let i = 0; i < UBx.length; i++) {
+          const prof = treadProfile(UBx, i, UBx[0].riser);
+          k.ext("tint", prof);
+        }
+        seatRows(k, UBx, [VOM_UP], "std");
+        k.slab("base", P.ubEndOld - 0.4, P.ubEndOld, UBx[7].y, UBx[7].y + 4);
+      } },
+    { id: "upperConcourse", name: "Upper concourse, enlarged",
+      info: { type: "Deeper upper concourse under the reduced bowl", cap: "Concessions and circulation", dims: `${Math.round(P.xf - P.cmEnd - 18)} ft deep (was ${Math.round(P.xf - P.cmEnd - 27)} ft)` },
+      build(k) {
+        k.slab("tint", P.cmEnd + 18, P.xf, P.UC - 1.4, P.UC);
+        for (const z of [-48, 8]) { k.box("base", P.cmEnd + 28, P.UC + 5, z, 12, 10, 18); k.box("accent", P.cmEnd + 21.4, P.UC + 1.75, z, 1.2, 3.5, 17); }
+      } },
+    { id: "terrace", mode: "grow", name: "Corner terrace",
+      info: { type: "Open terrace deck on the removed rows, drink rails and high-tops", cap: "≈ 350 standing in this section", dims: `${Math.round(P.xf - P.ubEnd)} ft deep · under the canopy` },
+      build(k) {
+        const y = P.terrY;
+        k.ext("tint", [[P.ubEnd, y - 1.4], [P.xf + 1, y - 1.4], [P.xf + 1, y], [P.ubEnd, y]]);
+        k.glassGuard(P.xf + 0.6, y, 3.5);
+        k.slab("base", P.ubEnd + 4, P.ubEnd + 5.2, y + 3.4, y + 3.65);
+        for (let z = -HZ + 4; z <= HZ - 4; z += 8) k.box("dark", P.ubEnd + 4.6, y + 1.7, z, 0.15, 3.4, 0.15);
+        for (let z = -66; z <= 66; z += 12) for (const x of [P.ubEnd + 11, P.ubEnd + 19]) {
+          k.cyl("dark", x, y, z, 0.12, 3.4); k.cyl("base", x, y + 3.4, z, 1.3, 0.15);
+          k.cyl("seat", x + 1.8, y + 2.4, z, 0.5, 0.2); k.cyl("dark", x + 1.8, y, z, 0.08, 2.4);
+          k.cyl("seat", x - 1.8, y + 2.4, z, 0.5, 0.2); k.cyl("dark", x - 1.8, y, z, 0.08, 2.4);
+        }
+      } },
+  ];
 }
 function partsCanopy() {
-  const c = P.canopy;
-  let panels = 0;
-  return [{ id: "canopy", name: "Canopy with solar array",
-    info: { type: "New cantilevered canopy with a photovoltaic array", cap: "", dims: `${Math.round(c.x1 - c.x0)} ft deep · ${Math.round(P.ubEnd - 1.5 - c.x0)} ft cantilever past the posts` },
-    build(k) {
-      // plate with tapered leading edge (cut faces read green)
-      k.ext("tint", [[c.x0, c.y - 1.2], [c.x0, c.y], [c.x1, c.y], [c.x1, c.y - c.t], [c.x0 + 30, c.y - c.t]]);
-      // underside ribs
-      for (let z = -HZ + 7.5; z < HZ; z += 15) k.beam("dark", z, c.x0 + 2, c.y - 1.3, c.x1 - 2, c.y - c.t - 0.2, 1.2, 0.8, "center");
-      // PV modules (≈ 6 ft 6 in × 3 ft 4 in, tilted 10° toward the field)
-      for (let x = c.x0 + 6; x < c.x1 - 6; x += 7.6) {
-        for (let z = -HZ + 2.2; z < HZ - 2; z += 3.5) { k.box("solar", x, c.y + 0.75, z, 6.5, 0.15, 3.3, 0, 10 * DEG); panels++; }
-        k.box("dark", x + 2.6, c.y + 0.35, 0, 0.25, 0.7, L - 3);
-      }
-      k.n.panels = panels;
-      // masts at both ends (cut through at the near end, reading green) and posts on the upper bowl
-      const mx = P.ubEnd + 10, top = c.y + 16;
-      for (const [z0, z1] of [[HZ - 8, HZ], [-HZ, -HZ + 8]]) k.ext("accent", [[mx - 3.5, GRADE], [mx + 3.5, GRADE], [mx + 3.5, top], [mx - 3.5, top]], z0, z1);
-      for (const zc of [HZ - 4, -HZ + 4]) k.beam("dark", zc, mx, top - 1, c.x0 + 40, c.y + 0.5, 0.8, 0.8, "center");   // stays
-      for (let z = -HZ + 15; z < HZ; z += 30) k.box("dark", P.ubEnd - 1.5, (P.ubTop + 4 + c.y - c.t) / 2, z, 1.2, c.y - c.t - P.ubTop - 4, 1.2);
-    } }];
+  const c = P.canopy, xb = c.x1 - 18;
+  const topLine = [[c.x0, c.y], [xb, c.y], [c.x1, c.y - c.back]];
+  return [
+    { id: "canopyDeck", mode: "drop", xo: [0, 34, 0], name: "Canopy deck with solar panels",
+      info: { type: "Canopy roof deck carrying a photovoltaic array", cap: "", dims: `${Math.round(c.x1 - c.x0)} ft deep · panels tilted 10°` },
+      build(k) {
+        k.ext("tint", [[c.x0, c.y - c.deck], ...topLine, [c.x1, c.y - c.back - c.deck], [xb - 0.4, c.y - c.deck]]);
+        k.slab("base", c.x0, c.x0 + 0.6, c.soffitAt(c.x0), c.y);              // leading edge fascia
+        let panels = 0;
+        for (let x = c.x0 + 6; x < xb - 5; x += 7.6) {
+          for (let z = -HZ + 2.2; z < HZ - 2; z += 3.5) { k.box("solar", x, c.y + 0.75, z, 6.5, 0.15, 3.3, 0, 10 * DEG); panels++; }
+          k.box("dark", x + 2.6, c.y + 0.35, 0, 0.25, 0.7, L - 3);
+        }
+        k.n.panels = panels;
+      } },
+    { id: "canopyTruss", mode: "drop", xo: [0, 16, 0], name: "Hidden canopy trusses",
+      info: { type: "Slim steel trusses concealed between deck and underside", cap: "Spans to the back mast line", dims: "Trusses at 15 ft · up to 6 ft deep · 6 in members" },
+      build(k) {
+        const x0 = c.x0 + 1.5, x1 = xb + 6;
+        const topY = (x) => (x <= xb ? c.y - c.deck - 0.3 : c.y - c.deck - 0.3 - (x - xb) / 18 * c.back);
+        const botY = (x) => c.soffitAt(x) + 0.7;
+        for (let z = -HZ + 7.5; z < HZ; z += 15) {
+          const xs = []; for (let x = x0; x <= x1 + 0.01; x += 10) xs.push(Math.min(x, x1));
+          for (let i = 0; i < xs.length - 1; i++) {
+            const a = xs[i], b = xs[i + 1];
+            k.beam("accent", z, a, topY(a), b, topY(b), 0.5, 0.5, "center");
+            k.beam("accent", z, a, botY(a), b, botY(b), 0.5, 0.5, "center");
+            k.beam("accent", z, a, botY(a), a, topY(a), 0.4, 0.4, "center");
+            if (i % 2) k.beam("accent", z, a, topY(a), b, botY(b), 0.35, 0.35, "center");
+            else k.beam("accent", z, a, botY(a), b, topY(b), 0.35, 0.35, "center");
+          }
+        }
+        for (let x = x0 + 10; x < x1; x += 20) k.slab("accent", x - 0.25, x + 0.25, (botY(x) + topY(x)) / 2 - 0.25, (botY(x) + topY(x)) / 2 + 0.25);   // purlins
+      } },
+    { id: "canopySoffit", mode: "drop", xo: [0, 0, 0], name: "Reflective underside",
+      info: { type: "Reflective metal soffit panels under the canopy", cap: "Bounces light down to the seating bowl", dims: "Continuous underside, panels at 5 ft" },
+      build(k) {
+        const pts = []; for (let x = c.x0 + 0.6; x <= c.x1 - 0.5; x += 4) pts.push([x, c.soffitAt(x)]);
+        pts.push([c.x1 - 0.5, c.soffitAt(c.x1 - 0.5)]);
+        const prof = pts.map(([x, y]) => [x, y]).concat(pts.slice().reverse().map(([x, y]) => [x, y + 0.35]));
+        k.ext("mirror", prof);
+        for (let x = c.x0 + 5; x < c.x1 - 3; x += 5) k.box("dark", x, c.soffitAt(x) - 0.02, 0, 0.12, 0.05, L - 0.5);
+      } },
+  ];
 }
-
-/* structure, back-of-house floors, vertical circulation, facade and plaza */
+/* structure, back-of-house floors, vertical circulation, facade, mast and plaza */
 function partsBuilding() {
-  const xf = P.xf, upSoffit = (x) => tierYAt(UB, x) - 4;
+  const xf = P.xf, c = P.canopy;
+  const upSoffit = (x) => (x < P.ubEnd ? tierYAt(UB, x) - 4 : P.terrY - 2.4);
   return [
     { id: "floors", name: "Concourse floors",
-      info: { type: "Back-of-house concourses at each level", cap: "Concessions, restrooms, circulation", dims: `${Math.round(xf - P.xs - 30)}–${Math.round(xf - 196)} ft deep · 13 ft floor-to-floor` },
+      info: { type: "Back-of-house concourses at each level", cap: "Concessions, restrooms, circulation", dims: "13 ft floor-to-floor" },
       build(k) {
         k.slab("tint", 196, xf, GRADE - 1, GRADE);
         k.slab("tint", P.xs + 30, xf, P.LS - 1.4, P.LS);
         k.slab("tint", P.xs + 34, xf, P.PS - 1.4, P.PS);
         k.slab("tint", P.cmEnd + 27, xf, P.US - 1.4, P.US);
-        k.slab("tint", P.cmEnd + 27, xf, P.UC - 1.4, P.UC);
-        // concession and restroom blocks
-        for (const [y, x0] of [[GRADE, 230], [P.LS, P.xs + 34], [P.US, P.cmEnd + 31], [P.UC, P.cmEnd + 31]]) {
+        for (const [y, x0] of [[GRADE, 230], [P.LS, P.xs + 34], [P.US, P.cmEnd + 31]]) {
           for (const z of [-48, 8]) { k.box("base", x0 + 6, y + 5, z, 12, 10, 18); k.box("accent", x0 - 0.6, y + 1.75, z, 1.2, 3.5, 17); }
         }
       } },
     { id: "frame", name: "Structural frame",
-      info: { type: "Columns on a 30 ft grid, raker beams under each tier", cap: "Supports all levels", dims: "30 in columns · 3 ft rakers" },
+      info: { type: "Columns on a 30 ft grid, raker beams under each tier", cap: "Supports all levels; nothing rises above the bowl", dims: "30 in columns · 3 ft rakers" },
       build(k) {
+        const xc = P.xs + 30;
         for (let z = -HZ + 15; z < HZ; z += 30) {
-          const cols = [[160, 0, tierYAt(LB, 160) - 3.4], [196, 0, tierYAt(LB, 196) - 3.4], [P.lbEnd - 1, 0, P.LS - 1.4],
-            [P.xs + 30, GRADE, P.UC - 1.4], [P.cmEnd + 27, GRADE, upSoffit(P.cmEnd + 27)], [xf - 3, GRADE, upSoffit(xf - 3)]];
+          const cols = [[160, -2, tierYAt(LB, 160) - 3.4], [196, -2, tierYAt(LB, 196) - 3.4], [P.lbEnd - 1, 0, P.LS - 1.4],
+            [xc, GRADE, Math.min(P.UC - 1.4, tierYAt(CM, xc) - 3.4)], [P.cmEnd + 27, GRADE, upSoffit(P.cmEnd + 27)], [xf - 3, GRADE, upSoffit(xf - 3)]];
           for (const [x, y0, y1] of cols) k.box("accent", x, (y0 + y1) / 2, z, 2.5, y1 - y0, 2.5);
           for (const [tier, d] of [[LB, 3], [CM, 2.5], [UB, 3.5]]) {
             for (let i = 0; i < tier.length - 1; i += 3) {
@@ -759,14 +880,25 @@ function partsBuilding() {
           }
         }
       } },
+    { id: "mast", name: "Canopy masts and stair tower",
+      info: { type: "Back masts carry the canopy; they stop at its underside", cap: "Two masts, one stair tower", dims: `7 ft × 7 ft masts · ${Math.round(c.soffitAt(xf + 4) - GRADE)} ft tall` },
+      build(k) {
+        const mx = xf + 4, top = c.soffitAt(mx) - 0.4;
+        for (const [z0, z1] of [[HZ - 7, HZ], [-HZ, -HZ + 7]]) k.ext("tint", [[mx - 3.5, GRADE], [mx + 3.5, GRADE], [mx + 3.5, top], [mx - 3.5, top]], z0, z1);
+        // stair tower beside the near mast, topped below the canopy
+        const t0 = xf + 2, t1 = xf + 20, tz0 = HZ - 34, tz1 = HZ - 12, tt = c.soffitAt(t1) - 1;
+        k.box("base", (t0 + t1) / 2, (GRADE + tt) / 2, (tz0 + tz1) / 2, t1 - t0, tt - GRADE, tz1 - tz0);
+        for (let y = GRADE + 13; y < tt; y += 13) k.box("dark", t0 - 0.05, y, (tz0 + tz1) / 2, 0.1, 0.25, tz1 - tz0);
+        k.box("glass", t0 - 0.1, (GRADE + tt) / 2, (tz0 + tz1) / 2, 0.1, tt - GRADE - 4, 4);
+      } },
     { id: "vcirc", name: "Stairs and escalators",
-      info: { type: "Escalator bank and egress stair near the facade", cap: "≈ 6,000 persons / hour per escalator", dims: "30° escalators · 13 ft rises" },
+      info: { type: "Escalator bank near the facade", cap: "≈ 6,000 persons / hour per escalator", dims: "30° escalators · 13 ft rises" },
       build(k) {
         const x = xf - 12, levels = [GRADE, P.LS, P.PS, P.US, P.UC];
         for (let i = 0; i < levels.length - 1; i++) {
           const y0 = levels[i], y1 = levels[i + 1], run = (y1 - y0) / Math.tan(30 * DEG);
           const dir = i % 2 ? -1 : 1, zA = 38, zB = zA + dir * run;
-          const za = dir > 0 ? zA : zB, zb = dir > 0 ? zB : zA;
+          const za = Math.min(zA, zB), zb = Math.max(zA, zB);
           k.push(new THREE.Matrix4().makeTranslation(x, (y0 + y1) / 2 - 1.5, (za + zb) / 2).multiply(new THREE.Matrix4().makeRotationY(-Math.PI / 2)));
           k.box("accent", 0, 0, 0, run + 4, 3, 4.4, 0, dir * 30 * DEG);
           k.box("glass", 0, 3.4, 2.1, run + 2, 3, 0.1, 0, dir * 30 * DEG);
@@ -775,12 +907,12 @@ function partsBuilding() {
         }
       } },
     { id: "facade", name: "West facade",
-      info: { type: "Glazed facade with vertical fins", cap: "Entry and concourse daylight", dims: `${Math.round(P.ubTop + 4 - GRADE)} ft tall · fins at 6 ft` },
+      info: { type: "Glazed facade with vertical fins", cap: "Entry and concourse daylight", dims: `${Math.round(P.terrY - GRADE)} ft to the terrace · fins at 6 ft` },
       build(k) {
-        const top = P.ubTop + 4;
+        const top = P.terrY - 1.4;
         k.slab("glass", xf, xf + 0.3, GRADE, top);
         for (let z = -HZ; z <= HZ; z += 6) k.box("dark", xf + 1, (GRADE + top) / 2, z, 2, top - GRADE, 0.4);
-        for (const y of [P.LS, P.PS, P.US, P.UC, top - 0.6]) k.slab("base", xf - 0.2, xf + 2.2, y - 1.4, y);
+        for (const y of [P.LS, P.PS, P.US, P.UC]) k.slab("base", xf - 0.2, xf + 2.2, y - 1.4, y);
       } },
     { id: "plaza", name: "Plaza",
       info: { type: "Entry plaza at existing grade", cap: "Gate approach", dims: "Existing grade, 4 ft above the new field" },
@@ -789,30 +921,33 @@ function partsBuilding() {
 }
 
 /* =====================================================================
-   5. LEVEL REGISTRY — the eight levels and actions, bottom to top
+   5. LEVEL REGISTRY — nine levels and actions, bottom to top
    ===================================================================== */
 const LEVELS = [
-  { key: "field", css: "--l1", title: "Lowering the field 4 ft", parts: partsField, mode: "lower", focus: [90, 4], offset: [-60, -4, 0], anchor: [60, 0, HZ - 30] },
-  { key: "fieldSuites", css: "--l2", title: "Adding field suites and clubs", parts: partsFieldSuites, mode: "grow", focus: [150, 10], offset: [-34, -2, 0], anchor: [140, 11, HZ - 10] },
-  { key: "lowerSuites", css: "--l3", title: "Lower suites", parts: partsLowerSuites, mode: "highlight", focus: [P.xs + 15, P.LS + 6], offset: [44, 10, 0], anchor: [P.xs + 5, P.LS + 9, HZ - 10] },
-  { key: "presSuites", css: "--l4", title: "Presidential suites", parts: partsPresSuites, mode: "highlight", focus: [P.xs + 17, P.PS + 6], offset: [44, 28, 0], anchor: [P.xs + 5, P.PS + 9, HZ - 10] },
-  { key: "clubMid", css: "--l5", title: "Club mid bowl", parts: partsClubMid, mode: "highlight", focus: [(P.xs + P.cmEnd) / 2, (CM[0].y + P.cmTop) / 2], offset: [0, 46, 0], anchor: [CM[6].r, CM[6].y + 3, HZ - 30] },
-  { key: "upperSuites", css: "--l6", title: "Upper suites", parts: partsUpperSuites, mode: "highlight", focus: [P.cmEnd + 14, P.US + 6], offset: [44, 64, 0], anchor: [P.cmEnd + 6, P.US + 9, HZ - 10] },
-  { key: "upperBowl", css: "--l7", title: "Upper bowl", parts: partsUpperBowl, mode: "highlight", focus: [(UB[0].r + P.ubEnd) / 2, (UB[0].y + P.ubTop) / 2], offset: [0, 88, 0], anchor: [UB[14].r, UB[14].y + 3, HZ - 30] },
-  { key: "canopy", css: "--l8", title: "New canopy with solar panels", parts: partsCanopy, mode: "drop", focus: [(P.canopy.x0 + P.canopy.x1) / 2, P.canopy.y - 20], offset: [0, 135, 0], anchor: [200, P.canopy.y + 1, HZ - 30] },
+  { key: "field", css: "--l1", title: "Lowering the field 4 ft", parts: partsField, focus: [90, 4], offset: [-62, -6, 0], anchor: [60, 0, HZ - 30] },
+  { key: "frontRows", css: "--l2", title: "Adding 4 front rows", parts: partsFrontRows, focus: [125, 10], offset: [-40, 4, 0], anchor: [124, 11, HZ - 12] },
+  { key: "vomStairs", css: "--l3", title: "Vomitory stairs to the field club", parts: partsVomStairs, focus: [150, 10], offset: [-12, -2, 0], anchor: [150, 9, 34.5] },
+  { key: "fieldSuites", css: "--l4", title: "New field suites and field clubs", parts: partsFieldSuites, focus: [150, 4], offset: [-30, -12, 0], anchor: [128, 4, HZ - 10] },
+  { key: "lowerSuites", css: "--l5", title: "Lower suites, southwest corner", parts: partsLowerSuites, focus: [P.xs + 15, P.LS + 6], offset: [44, 10, 0], anchor: [P.xs + 5, P.LS + 9, HZ - 10] },
+  { key: "presSuites", css: "--l6", title: "14 presidential suites, east side", parts: partsPresSuites, focus: [P.xs + 17, P.PS + 6], offset: [44, 28, 0], anchor: [P.xs + 5, P.PS + 9, HZ - 10] },
+  { key: "clubMid", css: "--l7", title: "Club mid bowl, corners and end zone", parts: partsClubMid, focus: [(P.xs + P.cmEnd) / 2, (CM[0].y + P.cmTop) / 2], offset: [0, 46, 0], anchor: [CM[6].r, CM[6].y + 3, HZ - 30] },
+  { key: "upper", css: "--l8", title: "Upper bowl, concourse and corner terraces", parts: partsUpper, focus: [(UB[0].r + P.xf) / 2, (UB[0].y + P.terrY) / 2], offset: [0, 84, 0], anchor: [P.ubEnd + 12, P.terrY + 4, HZ - 30] },
+  { key: "canopy", css: "--l9", title: "Canopy: reflective underside, solar on top", parts: partsCanopy, focus: [(P.canopy.x0 + P.canopy.x1) / 2, P.canopy.y - 24], offset: [0, 120, 0], anchor: [210, P.canopy.y + 1, HZ - 30] },
 ];
 const CONTEXT = [
   { key: "lowerBowl", css: "--l-exist", title: "Lower bowl (existing)", parts: partsLowerBowl, offset: [0, 0, 0] },
+  { key: "upperSuites", css: "--l-exist", title: "Upper suites (existing)", parts: partsUpperSuites, offset: [44, 64, 0] },
   { key: "building", css: "--l-build", title: "Structure, concourses & facade", parts: partsBuilding, offset: [96, 0, 0] },
 ];
 const GROUPS = [...LEVELS, ...CONTEXT];
+const G = Object.fromEntries(GROUPS.map((g) => [g.key, g]));
 
 /* =====================================================================
    6. MATERIALS (from CSS tokens)
    ===================================================================== */
 const rootEl = document.documentElement;
 const cssVar = (n) => getComputedStyle(rootEl).getPropertyValue(n).trim();
-const SLOTS = ["base", "tint", "accent", "seat", "dark", "glass", "turf", "white", "cut", "solar", "glow"];
+const SLOTS = ["base", "tint", "accent", "seat", "dark", "glass", "turf", "white", "cut", "solar", "mirror", "glow"];
 const MAT = {}, HL = {};
 const LINE = new THREE.LineBasicMaterial({ transparent: true });
 const LINE_GLASS = new THREE.LineBasicMaterial({ transparent: true });
@@ -825,7 +960,7 @@ for (const g of GROUPS) {
   for (const s of SLOTS) {
     if (s === "glow") { MAT[g.key][s] = HL[g.key][s] = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }); continue; }
     const gl = s === "glass";
-    MAT[g.key][s] = lam(gl ? { transparent: true, opacity: 0.3, depthWrite: false } : {});
+    MAT[g.key][s] = lam(gl ? { transparent: true, opacity: 0.3, depthWrite: false } : s === "mirror" ? { emissive: 0x000000 } : {});
     HL[g.key][s] = lam(gl ? { transparent: true, opacity: 0.45, depthWrite: false } : {});
   }
   LINE_HL[g.key] = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.95 });
@@ -835,7 +970,7 @@ const numberMats = [];
 function applyTheme() {
   const c = (n) => new THREE.Color(cssVar(n) || "#888");
   const base = c("--m-base"), dark = c("--m-dark"), glass = c("--m-glass"), turf = c("--m-turf"), white = c("--m-white");
-  const cut = c("--m-cut"), cutLine = c("--m-cutline"), solar = c("--m-solar"), glow = c("--m-glow");
+  const cut = c("--m-cut"), cutLine = c("--m-cutline"), solar = c("--m-solar"), glow = c("--m-glow"), mirror = c("--m-mirror");
   const lineCol = c("--m-line"), lineA = parseFloat(cssVar("--m-line-alpha")) || 0.5;
   LINE.color.copy(lineCol); LINE.opacity = lineA;
   LINE_GLASS.color.copy(lineCol); LINE_GLASS.opacity = lineA * 0.5;
@@ -844,9 +979,10 @@ function applyTheme() {
   const tintBase = base.clone().lerp(c("--l-build"), 0.16);
   for (const g of GROUPS) {
     const acc = c(g.css);
-    const set = { base, tint: tintBase, accent: acc, seat: base.clone().lerp(acc, 0.32), dark, glass, turf, white, cut, solar, glow };
+    const set = { base, tint: tintBase, accent: acc, seat: base.clone().lerp(acc, 0.32), dark, glass, turf, white, cut, solar, mirror, glow };
     for (const s of SLOTS) MAT[g.key][s].color.copy(set[s]);
-    const h = { base: base.clone().lerp(acc, 0.4), tint: base.clone().lerp(acc, 0.55), accent: acc.clone(), seat: acc.clone(), dark: acc.clone().lerp(dark, 0.4), glass: glass.clone().lerp(acc, 0.6), turf: turf.clone().lerp(acc, 0.55), white: base.clone().lerp(acc, 0.25), cut: cut.clone().lerp(acc, 0.5), solar, glow };
+    MAT[g.key].mirror.emissive.copy(mirror).multiplyScalar(0.25);
+    const h = { base: base.clone().lerp(acc, 0.4), tint: base.clone().lerp(acc, 0.55), accent: acc.clone(), seat: acc.clone(), dark: acc.clone().lerp(dark, 0.4), glass: glass.clone().lerp(acc, 0.6), turf: turf.clone().lerp(acc, 0.55), white: base.clone().lerp(acc, 0.25), cut: cut.clone().lerp(acc, 0.5), solar, mirror: mirror.clone().lerp(acc, 0.35), glow };
     for (const s of SLOTS) if (s !== "glow") HL[g.key][s].color.copy(h[s]);
     LINE_HL[g.key].color.copy(acc.clone().lerp(lineCol, 0.25));
   }
@@ -866,6 +1002,7 @@ const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 6000);
 scene.add(new THREE.HemisphereLight(0xffffff, 0x8f948f, 0.8));
 const sun = new THREE.DirectionalLight(0xffffff, 0.48); sun.position.set(-0.5, 1, 0.55); scene.add(sun);
 const fill = new THREE.DirectionalLight(0xffffff, 0.15); fill.position.set(0.6, 0.3, -0.8); scene.add(fill);
+const under = new THREE.DirectionalLight(0xffffff, 0.22); under.position.set(-0.2, -1, 0.3); scene.add(under);   // lights the reflective soffit
 
 const PARTS = [], pickables = [];
 let SEATS = 0, PANELS = 0;
@@ -897,22 +1034,21 @@ for (const g of GROUPS) {
       }
     }
     g.root.add(group);
-    g.seats += k.seats; SEATS += k.seats;
+    const counts = def.mode !== "remove";
+    if (counts) { g.seats += k.seats; SEATS += k.seats; }
     if (k.n.suites) g.suites += k.n.suites;
     if (k.n.panels) PANELS += k.n.panels;
     const info = Object.assign({}, def.info);
     if (!info.cap) info.cap = k.seats ? `${fmt(k.seats)} seats in this section` : g.suites ? `${g.suites} suites in this section` : "—";
-    const part = { g, id: def.id, name: def.name, info, group, meshes };
+    const part = { g, id: def.id, name: def.name, info, group, meshes, mode: def.mode || "highlight", xo: def.xo || [0, 0, 0], baseY: isFinite(k.ymin) ? k.ymin : 0 };
     for (const m of meshes) if (!m.userData.isLine) { m.userData.part = part; pickables.push(m); }
     PARTS.push(part); g.partObjs.push(part);
   }
 }
 const kW = Math.round(PANELS * 0.4);
-const presInfo = PARTS.find((p) => p.id === "presSuites"); if (presInfo) presInfo.info.cap = `${GROUPS[3].suites} suites in this section`;
-const canopyPart = PARTS.find((p) => p.id === "canopy"); if (canopyPart) canopyPart.info.cap = `${fmt(PANELS)} PV modules ≈ ${kW} kW`;
+PARTS.find((p) => p.id === "canopyDeck").info.cap = `${fmt(PANELS)} PV modules ≈ ${kW} kW`;
 
 /* yard numbers on the field (canvas-drawn, outlined like the line drawing) */
-const fieldRoot = GROUPS[0].root;
 function numberMesh(txt, z, arrowDir) {
   const cv = document.createElement("canvas"); cv.width = 512; cv.height = 256;
   const tex = new THREE.CanvasTexture(cv);
@@ -936,7 +1072,7 @@ function numberMesh(txt, z, arrowDir) {
   const m = new THREE.Mesh(new THREE.PlaneGeometry(13, 6.5), mat);
   m.rotation.order = "YXZ"; m.rotation.x = -Math.PI / 2; m.rotation.y = Math.PI / 2;
   m.position.set(44, 0.05, z);
-  fieldRoot.add(m);
+  G.field.partObjs[0].group.add(m);
 }
 numberMesh("30", -60, 1); numberMesh("40", -30, 1); numberMesh("50", 0, 0); numberMesh("40", 30, -1); numberMesh("30", 60, -1);
 
@@ -953,26 +1089,29 @@ document.getElementById("tbPV").textContent = `≈ ${kW} kW`;
 
 /* descriptions for the stack, computed from the model */
 const DESC = {
-  field: `Turf, sideline and team area drop 4 ft, freeing headroom for suites and a club at field level.`,
-  fieldSuites: `${GROUPS[1].suites} field suites with sideline patios, and a club lounge tucked under the lower bowl.`,
-  lowerSuites: `${GROUPS[2].suites} suites at the top of the lower bowl, 30 ft deep.`,
-  presSuites: `${GROUPS[3].suites} larger suites on 30 ft bays with lounge and dining.`,
-  clubMid: `13 rows of 22 in padded seats, ${fmt(GROUPS[4].seats)} seats in this section.`,
-  upperSuites: `${GROUPS[5].suites} suites between the club bowl and the upper bowl.`,
-  upperBowl: `28 rows, 32 in treads, ${rakeOf(UB).toFixed(0)}° average rake, ${fmt(GROUPS[6].seats)} seats.`,
-  canopy: `${Math.round(P.canopy.x1 - P.canopy.x0)} ft deep canopy, ${fmt(PANELS)} PV modules ≈ ${kW} kW in this section.`,
+  field: "Turf, sideline and team area drop 4 ft, freeing headroom for field suites and the new front rows.",
+  frontRows: `Four new 33 in rows step down toward the field, ${fmt(G.frontRows.seats)} seats in this section.`,
+  vomStairs: "Two new vomitories with stairs that run under the bowl straight into the field club.",
+  fieldSuites: `${G.fieldSuites.suites} sunken field suites behind glass, and a field club under the lower bowl.`,
+  lowerSuites: "Lower suites renovated; new suites added at the southwest corner.",
+  presSuites: "Presidential suites renovated and added, 14 in total on the east side.",
+  clubMid: "Club mid bowl extended into the north and south corners and the end zone.",
+  upper: `Upper bowl cut from 28 to 20 rows; a deeper upper concourse and corner terraces take the space.`,
+  canopy: `Slim hidden trusses between a reflective underside and a solar deck: ${fmt(PANELS)} modules ≈ ${kW} kW in this section.`,
 };
 const ELEV = {
-  field: "EL 0 · was +4 ft", fieldSuites: "EL 0 to +12 ft", lowerSuites: `EL +${P.LS} ft`, presSuites: `EL +${P.PS} ft`,
-  clubMid: `EL +${Math.round(CM[0].y)} to +${Math.round(P.cmTop)} ft`, upperSuites: `EL +${P.US} ft`, upperBowl: `EL +${Math.round(UB[0].y)} to +${Math.round(P.ubTop)} ft`, canopy: `EL +${P.canopy.y} ft`,
+  field: "EL 0 · was +4 ft", frontRows: `EL +${FR[0].y.toFixed(0)} to +${FR[3].y.toFixed(0)} ft`, vomStairs: `EL +${Math.round(LB[VOM_NEW.rows[0]].y)} ft to −2 ft`,
+  fieldSuites: "EL −2 to +8 ft", lowerSuites: `EL +${P.LS} ft`, presSuites: `EL +${P.PS} ft`,
+  clubMid: `EL +${Math.round(CM[0].y)} to +${Math.round(P.cmTop)} ft`, upper: `EL +${Math.round(UB[0].y)} to +${Math.round(P.terrY)} ft`, canopy: `EL +${P.canopy.y} ft`,
 };
 LEVELS.forEach((lv, i) => { lv.n = i + 1; lv.desc = DESC[lv.key]; lv.elev = ELEV[lv.key]; });
 
 /* =====================================================================
-   8. TIMELINE — proposed → existing → eight actions → explode → reassemble
+   8. TIMELINE — proposed → existing → nine actions → explode → reassemble
    ===================================================================== */
 const STEP0 = 4.5, STEP = 3.5;
-const T_EXP = STEP0 + LEVELS.length * STEP;          // 32.5
+const T_EXP = STEP0 + LEVELS.length * STEP;          // 36
+const LOOP = T_EXP + 12.5;                            // 48.5
 const PHASES = [
   { t0: 0, t1: 2.5, name: "Proposed" }, { t0: 2.5, t1: STEP0, name: "Existing" },
   { t0: STEP0, t1: T_EXP, name: "Levels & actions" }, { t0: T_EXP, t1: T_EXP + 4, name: "Explode" },
@@ -980,7 +1119,7 @@ const PHASES = [
 ];
 const stepStart = (i) => STEP0 + i * STEP;
 const activeStep = (t) => (t >= STEP0 && t < T_EXP ? Math.floor((t - STEP0) / STEP) : -1);
-/* how "built" an action level is (0 = existing condition, 1 = proposed) */
+/* how far an action has progressed (0 = existing condition, 1 = proposed) */
 function built(i, t) {
   if (t < 2.5) return 1;
   if (t < STEP0) return 1 - ease(clamp((t - 2.5) / 1.6));
@@ -991,7 +1130,7 @@ function explodeAt(t, d) {
   if (t < T_EXP + 8.5) return ease(clamp((t - T_EXP - d * 1.2) / 2.6));
   return 1 - ease(clamp((t - T_EXP - 8.5 - (1 - d) * 1.0) / 2.6));
 }
-const CAM_KEYS = [[0, 112, 24], [STEP0, 118, 24], [T_EXP, 146, 22], [T_EXP + 4, 156, 28], [T_EXP + 8.5, 196, 30], [LOOP, 112, 24]];
+const CAM_KEYS = [[0, 112, 24], [STEP0, 118, 24], [T_EXP, 148, 22], [T_EXP + 4, 156, 28], [T_EXP + 8.5, 196, 30], [LOOP, 112, 24]];
 function camAt(t) {
   for (let i = 0; i < CAM_KEYS.length - 1; i++) {
     const a = CAM_KEYS[i], b = CAM_KEYS[i + 1];
@@ -1004,25 +1143,29 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 if (reduceMotion) state.t = T_EXP + 6;
 const introCam = { start: null };
 
-/* apply the timeline to every level group */
+function applyPart(p, b, e) {
+  const g = p.group;
+  g.position.set(p.xo[0] * e, p.xo[1] * e, p.xo[2] * e);
+  g.scale.set(1, 1, 1); g.visible = true;
+  if (p.mode === "lower") g.position.y += GRADE * (1 - b);
+  else if (p.mode === "grow" || p.mode === "remove") {
+    const s = Math.max(0.001, p.mode === "grow" ? b : 1 - b);
+    g.scale.y = s; g.position.y += p.baseY * (1 - s); g.visible = s > 0.01;
+  } else if (p.mode === "drop") { g.position.y += 160 * (1 - b); g.visible = b > 0.01; }
+}
 function applyTimeline(t) {
   LEVELS.forEach((lv, i) => {
     const b = built(i, t), e = explodeAt(t, i / LEVELS.length) * state.amount;
-    const r = lv.root;
-    r.visible = catVisible[lv.key];
-    r.position.set(lv.offset[0] * e, lv.offset[1] * e, lv.offset[2] * e);
-    r.scale.set(1, 1, 1);
-    if (lv.mode === "lower") r.position.y += GRADE * (1 - b);
-    else if (lv.mode === "grow") { r.scale.y = Math.max(0.001, b); r.visible = r.visible && b > 0.01; }
-    else if (lv.mode === "drop") { r.position.y += 160 * (1 - b); r.visible = r.visible && b > 0.01; }
+    lv.root.visible = catVisible[lv.key];
+    lv.root.position.set(lv.offset[0] * e, lv.offset[1] * e, lv.offset[2] * e);
+    for (const p of lv.partObjs) applyPart(p, b, e);
   });
-  CONTEXT.forEach((cx, i) => {
+  for (const cx of CONTEXT) {
     const e = explodeAt(t, 0.5) * state.amount;
     cx.root.visible = catVisible[cx.key];
     cx.root.position.set(cx.offset[0] * e, cx.offset[1] * e, cx.offset[2] * e);
-  });
-  const g = (t >= 2.5 && t < stepStart(0) + 2.2) ? 1 : 0;
-  ghost.visible = g > 0 && catVisible.field;
+  }
+  ghost.visible = t >= 2.5 && t < stepStart(0) + 2.2 && catVisible.field;
   GHOST.opacity = 0.9;
 }
 
@@ -1031,15 +1174,15 @@ function applyTimeline(t) {
    ===================================================================== */
 const user = { daz: 0, del: 0, zoom: 1, pan: new THREE.Vector3() };
 const camState = { tgt: new THREE.Vector3(205, 100, 0), size: 400 };
-let viewH = 330;
+let viewH = 400;
+const stackEl = document.getElementById("stack");
 function updateCamera(t, dt) {
   const c = camAt(t);
   const iz = reduceMotion ? 1 : introCam.start === null ? 0 : ease(clamp((performance.now() - introCam.start - 200) / 1900));
   const az = (c.az + user.daz - 30 * (1 - iz)) * DEG, el = clamp(c.el + user.del + 10 * (1 - iz), 2, 88) * DEG;
-  // desired framing: whole section, or the active level during the action steps
   const eG = explodeAt(t, 0.5) * state.amount;
   const s = activeStep(t);
-  let tx = 205 - 10 * eG, ty = 100 + 85 * eG, size = lerp(400, 800, eG);
+  let tx = 205 - 10 * eG, ty = 100 + 105 * eG, size = lerp(400, 860, eG);
   if (s >= 0) { const f = LEVELS[s].focus; tx = lerp(205, f[0], 0.45); ty = lerp(100, f[1], 0.45); size = 320; }
   const k = 1 - Math.exp(-dt * 2.2);
   camState.tgt.x += (tx - camState.tgt.x) * k; camState.tgt.y += (ty - camState.tgt.y) * k; camState.size += (size - camState.size) * k;
@@ -1051,8 +1194,7 @@ function updateCamera(t, dt) {
   let base = camState.size;
   if (aspect < 1.25) base *= lerp(1, 2.1, clamp((1.25 - aspect) / 0.8));
   viewH = base * lerp(0.62, 1, iz) / user.zoom;
-  // keep the drawing clear of the level stack on wide screens
-  const stackW = w > 900 && document.getElementById("stack").open ? document.getElementById("stack").offsetWidth + 16 : 0;
+  const stackW = w > 900 && stackEl.open ? stackEl.offsetWidth + 16 : 0;
   const shiftW = -(stackW / 2) * viewH / h;
   camera.top = viewH / 2; camera.bottom = -viewH / 2;
   camera.left = -viewH * aspect / 2 + shiftW; camera.right = viewH * aspect / 2 + shiftW;
@@ -1085,7 +1227,7 @@ function updateLabels(t) {
   const items = [];
   LEVELS.forEach((lv, i) => {
     const Lb = lv.lbl;
-    const vis = catVisible[lv.key] && ((t >= stepStart(i) + 0.4 && t < T_EXP + 8.6));
+    const vis = catVisible[lv.key] && t >= stepStart(i) + 0.4 && t < T_EXP + 8.6;
     Lb.el.classList.toggle("show", vis); Lb.el.classList.toggle("on", s === i);
     Lb.g.style.opacity = vis ? 1 : 0;
     if (!vis) return;
@@ -1094,8 +1236,7 @@ function updateLabels(t) {
     const sc = toScreen(p);
     items.push({ L: Lb, ax: sc.x, ay: sc.y });
   });
-  const stackW = W > 900 && document.getElementById("stack").open ? document.getElementById("stack").offsetWidth + 24 : 0;
-  // callouts stack in a column to the right of the drawing, sorted by height
+  const stackW = W > 900 && stackEl.open ? stackEl.offsetWidth + 24 : 0;
   const colX = Math.min(W - 16, W * 0.5 + stackW / 2 + Math.min(420, W * 0.28));
   items.sort((a, b) => a.ay - b.ay);
   const top = 92, bottom = H - 200;
@@ -1112,10 +1253,8 @@ function updateLabels(t) {
     it.L.ln.setAttribute("points", `${it.ax.toFixed(1)},${it.ay.toFixed(1)} ${(x - 16).toFixed(1)},${ey.toFixed(1)} ${x.toFixed(1)},${ey.toFixed(1)}`);
     it.L.dot.setAttribute("cx", it.ax.toFixed(1)); it.L.dot.setAttribute("cy", it.ay.toFixed(1));
   }
-  // field drop chip
-  const showDrop = ghost.visible;
-  dropChip.classList.toggle("show", showDrop);
-  if (showDrop) { const sc = toScreen(new THREE.Vector3(118, GRADE, HZ)); dropChip.style.transform = `translate(${(sc.x + 10).toFixed(1)}px, ${(sc.y - 10).toFixed(1)}px)`; }
+  dropChip.classList.toggle("show", ghost.visible);
+  if (ghost.visible) { const sc = toScreen(new THREE.Vector3(118, GRADE, HZ)); dropChip.style.transform = `translate(${(sc.x + 10).toFixed(1)}px, ${(sc.y - 10).toFixed(1)}px)`; }
 }
 
 /* =====================================================================
@@ -1125,6 +1264,7 @@ const playBtn = document.getElementById("play"), scrub = document.getElementById
 const timeOut = document.getElementById("time"), phaseOut = document.getElementById("phase");
 const explode = document.getElementById("explode"), explodeVal = document.getElementById("explodeVal");
 const phasesEl = document.getElementById("phases");
+scrub.max = String(LOOP);
 for (const ph of PHASES) { const s = document.createElement("span"); s.style.left = `${ph.t0 / LOOP * 100}%`; s.textContent = ph.name; phasesEl.appendChild(s); ph.el = s; }
 PHASES[1].el.textContent = ""; PHASES[4].el.textContent = ""; PHASES[5].el.textContent = "";
 function setPlaying(p) {
@@ -1147,6 +1287,7 @@ window.addEventListener("keydown", (e) => { if (e.code === "Space" && e.target =
 const catVisible = {};
 for (const g of GROUPS) catVisible[g.key] = true;
 const levelsEl = document.getElementById("levels");
+let hoverLevel = null;
 for (let i = LEVELS.length - 1; i >= 0; i--) {                 // top of the list = top of the building
   const lv = LEVELS[i];
   const li = document.createElement("li");
@@ -1160,17 +1301,17 @@ for (let i = LEVELS.length - 1; i >= 0; i--) {                 // top of the lis
   levelsEl.appendChild(li);
   lv.li = li;
 }
-if (window.matchMedia("(max-width: 720px)").matches) document.getElementById("stack").removeAttribute("open");
+if (window.matchMedia("(max-width: 720px)").matches) stackEl.removeAttribute("open");
 
 const card = document.getElementById("card");
 const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
-let hovered = null, hoverLevel = null, mouse = null, needPick = false;
+let hovered = null, mouse = null, needPick = false;
 function pick() {
   needPick = false;
   if (!mouse) { hovered = null; card.hidden = true; return; }
   ndc.set(mouse.x / canvas.clientWidth * 2 - 1, -(mouse.y / canvas.clientHeight) * 2 + 1);
   ray.setFromCamera(ndc, camera);
-  const list = pickables.filter((m) => m.userData.part.g.root.visible && m.userData.slot !== "glow");
+  const list = pickables.filter((m) => { const p = m.userData.part; return p.g.root.visible && p.group.visible && m.userData.slot !== "glow"; });
   const hit = ray.intersectObjects(list, false)[0];
   hovered = hit ? hit.object.userData.part : null;
   if (hovered) {
@@ -1189,7 +1330,7 @@ function pick() {
     card.style.transform = `translate(${Math.max(8, x)}px, ${Math.max(8, y)}px)`;
   } else card.hidden = true;
 }
-/* material state: hover > hovered level in the stack > active step > normal */
+/* material state: hovered part > hovered level in the stack > active step > normal */
 let matSig = "";
 function applyMaterials(t) {
   const s = activeStep(t), act = s >= 0 ? LEVELS[s].key : null;
@@ -1286,11 +1427,12 @@ function tick(now) {
   timeOut.textContent = `${t.toFixed(1).padStart(4, "0")} / ${LOOP} s`;
   const pi = PHASES.findIndex((ph) => t >= ph.t0 && t < ph.t1);
   if (pi !== lastPhase) { lastPhase = pi; phaseOut.textContent = PHASES[pi] ? PHASES[pi].name : ""; PHASES.forEach((ph, i) => ph.el.classList.toggle("on", i === pi)); }
-  const s = activeStep(t), done = t >= T_EXP ? LEVELS.length : t < 2.5 ? LEVELS.length : s;
-  if (s !== lastStep || (s < 0 && lastStep !== done)) {
-    lastStep = s;
+  const s = activeStep(t), done = t >= T_EXP || t < 2.5 ? LEVELS.length : s;
+  const stepKey = s >= 0 ? s : -100 - done;
+  if (stepKey !== lastStep) {
+    lastStep = stepKey;
     LEVELS.forEach((lv, i) => { lv.li.classList.toggle("on", i === s); lv.li.classList.toggle("done", i < done && i !== s); });
-    if (s >= 0) phaseOut.textContent = `Step ${s + 1} of 8`;
+    if (s >= 0) phaseOut.textContent = `Step ${s + 1} of ${LEVELS.length}`;
   }
   requestAnimationFrame(tick);
 }
