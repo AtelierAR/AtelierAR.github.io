@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anatomy of the Game: Stadia</title>
-<meta name="description" content="A 100-second anatomical animation of football stadia and sports facilities: the living pitch, sun and orientation, light and air, Madrid’s moving pitch, floodlighting, energy and climate.">
+<meta name="description" content="A 142-second, 4:5 anatomical animation of football stadia: the living pitch, sun, light and air, Madrid’s moving pitch, floodlighting, acoustics, access, premium spaces, locker rooms, energy and climate.">
 <style>
   :root{
     --white:#FFFFFF; --light:#EEF1F4; --mid:#9AA3AE; --graphite:#3A4048; --blue:#1E5BFF; --cyan:#6EC8FF;
@@ -14,7 +14,7 @@
   html,body{background:var(--white);color:var(--graphite);font-family:var(--font);font-weight:300;min-height:100%}
   body{display:flex;flex-direction:column;min-height:100vh}
   .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px 8px}
-  .frame{position:relative;width:min(100%, calc((100vh - 150px) * 16 / 9));aspect-ratio:16/9;background:var(--white);
+  .frame{position:relative;width:min(100%, calc((100vh - 150px) * 4 / 5));aspect-ratio:4/5;background:var(--white);
     box-shadow:0 0 0 1px var(--light), 0 40px 90px -50px rgba(58,64,72,.35)}
   canvas{display:block;width:100%;height:100%}
   .start{position:absolute;inset:0;border:0;background:rgba(255,255,255,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
@@ -25,7 +25,7 @@
   .start .p{margin-top:1.4em;display:inline-flex;align-items:center;gap:.7em;font-weight:300;font-size:clamp(12px,1.1vw,16px);letter-spacing:.2em;text-transform:uppercase;color:var(--blue)}
   .start .p i{display:inline-block;width:0;height:0;border-left:11px solid var(--blue);border-top:7px solid transparent;border-bottom:7px solid transparent}
   .start.hidden{display:none}
-  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 16px 6px;width:min(100%, calc((100vh - 150px) * 16 / 9 + 32px));margin:0 auto}
+  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 16px 6px;width:min(100%, calc((100vh - 150px) * 4 / 5 + 32px));margin:0 auto}
   .bar button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.16em;text-transform:uppercase;background:none;border:0;color:var(--graphite);cursor:pointer;padding:6px 0}
   .bar button:hover,.bar button.on{color:var(--blue)}
   .scrub{position:relative;flex:1 1 260px;height:28px;display:flex;align-items:center}
@@ -37,12 +37,12 @@
   .ticks{position:absolute;left:0;right:0;top:50%;height:0;z-index:1;pointer-events:none}
   .ticks span{position:absolute;top:-5px;width:1px;height:10px;background:var(--mid)}
   .tc{font-size:12px;letter-spacing:.14em;color:var(--mid);font-variant-numeric:tabular-nums;min-width:110px}
-  .chapters{display:flex;flex-wrap:wrap;gap:4px 18px;padding:0 16px 22px;width:min(100%, calc((100vh - 150px) * 16 / 9 + 32px));margin:0 auto}
+  .chapters{display:flex;flex-wrap:wrap;gap:4px 18px;padding:0 16px 22px;width:min(100%, calc((100vh - 150px) * 4 / 5 + 32px));margin:0 auto}
   .chapters button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.04em;color:var(--mid);background:none;border:0;cursor:pointer;padding:2px 0}
   .chapters button b{font-weight:700;color:var(--graphite);margin-right:6px}
   .chapters button.on{color:var(--blue)} .chapters button.on b{color:var(--blue)}
   body.export .bar, body.export .chapters, body.export .start{display:none}
-  body.export .stage{padding:0} body.export .frame{width:1920px;height:1080px;box-shadow:none}
+  body.export .stage{padding:0} body.export .frame{width:1080px;height:1350px;box-shadow:none}
   @media (max-width:640px){ body{min-height:0} .stage{flex:none;padding:16px 16px 4px} .bar,.chapters{width:100%} }
 </style>
 </head>
@@ -53,15 +53,15 @@
     <button class="start" id="start" type="button">
       <span class="k">Vol. IV · Football stadia &amp; facilities</span>
       <span class="t">Anatomy of the Game</span>
-      <span class="s">100 seconds · best with sound</span>
+      <span class="s">142 seconds · 4:5 · best with sound</span>
       <span class="p"><i></i>Play film</span>
     </button>
   </div>
 </main>
 <div class="bar">
   <button id="pp" type="button">Play</button>
-  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="100" step="0.01" value="0" aria-label="Timeline"></div>
-  <span class="tc" id="tc">00:00 / 01:40</span>
+  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="142" step="0.01" value="0" aria-label="Timeline"></div>
+  <span class="tc" id="tc">00:00 / 02:22</span>
   <button id="snd" type="button" class="on">Sound on</button>
   <button id="rec" type="button">Export WebM</button>
   <button id="fs" type="button">Fullscreen</button>
@@ -71,11 +71,11 @@
 <script>
 "use strict";
 /* =====================================================================
-   ANATOMY OF THE GAME · VOL. IV, FOOTBALL STADIA & FACILITIES — 100 s procedural animation
+   ANATOMY OF THE GAME · VOL. IV, FOOTBALL STADIA & FACILITIES — 142 s, 4:5 procedural animation
    Every frame is a pure function of time t (seconds), so the film can be
    played, scrubbed, or rendered frame-by-frame to video.
    ===================================================================== */
-const W = 1920, H = 1080, DUR = 100, TAU = Math.PI * 2, BEAT = 60 / 70;
+const W = 1080, H = 1350, DUR = 142, TAU = Math.PI * 2, BEAT = 60 / 70;
 const RGB = { white:[255,255,255], light:[238,241,244], mid:[154,163,174], graphite:[58,64,72], blue:[30,91,255], cyan:[110,200,255] };
 const rgba = (k, a) => `rgba(${RGB[k][0]},${RGB[k][1]},${RGB[k][2]},${Math.max(0, Math.min(1, a))})`;
 const FONT = '"Helvetica Neue","HelveticaNeue",Helvetica,Inter,Arial,sans-serif';
@@ -498,8 +498,12 @@ function pathAt(pts, cum, s) { let k = 1; while (k < cum.length - 1 && cum[k] < 
 
 
 /* =====================================================================
-   SHARED — box, bowl section, sun
+   SHARED — layout (4:5), box, bowl section, sun
    ===================================================================== */
+const MX = 72, HY = 1190;                                               // left margin, headline baseline
+const head = (c, segs, p, a, size = 52) => headline(c, segs, MX, HY, p, { size, maxW: W - 2 * MX, a });
+const lab = (c, ax, ay, tx, ty, p, title, a) => leader(c, ax, ay, tx, ty, p, title, null, { a, tsize: 24 });
+function stat(c, k, v, x, y, p, a) { kicker(c, k, x, y, seg(p, 0, .5), a); txt(c, v, x - 2, y + 62, { w: 700, size: 60, color: 'blue', a: a * smooth(seg(p, .2, .6)) }); }
 function box3(c, cm, x0, z0, x1, z1, y0, h, a, fill = 'white', stroke = 'graphite') {
   const P = (x, y, z) => cm.p(x, y, z), b = [P(x0, y0, z0), P(x1, y0, z0), P(x1, y0, z1), P(x0, y0, z1)], tp = [P(x0, y0 + h, z0), P(x1, y0 + h, z0), P(x1, y0 + h, z1), P(x0, y0 + h, z1)];
   for (let i = 0; i < 4; i++) { const j = (i + 1) % 4; c.beginPath(); c.moveTo(b[i][0], b[i][1]); c.lineTo(b[j][0], b[j][1]); c.lineTo(tp[j][0], tp[j][1]); c.lineTo(tp[i][0], tp[i][1]); c.closePath(); c.fillStyle = rgba(fill, .7 * a); c.fill(); }
@@ -507,18 +511,17 @@ function box3(c, cm, x0, z0, x1, z1, y0, h, a, fill = 'white', stroke = 'graphit
   c.beginPath(); for (let i = 0; i < 4; i++) { c.moveTo(b[i][0], b[i][1]); c.lineTo(tp[i][0], tp[i][1]); c.moveTo(tp[i][0], tp[i][1]); c.lineTo(tp[(i + 1) % 4][0], tp[(i + 1) % 4][1]); c.moveTo(b[i][0], b[i][1]); c.lineTo(b[(i + 1) % 4][0], b[(i + 1) % 4][1]); }
   c.strokeStyle = rgba(stroke, .75 * a); c.lineWidth = 1; c.stroke();
 }
-/* cross-section of a two-sided bowl (metres, y up); returns the mapping */
 function bowlSection(c, O, k, a, o = {}) {
   const X = m => O[0] + m * k, Y = m => O[1] - m * k, { roofTrans = 0 } = o;
   const path = (pts, close) => { c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); if (close) c.closePath(); };
   c.save(); c.globalAlpha = a;
   c.beginPath(); c.moveTo(X(-96), Y(0)); c.lineTo(X(96), Y(0)); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
-  c.fillStyle = rgba('light', .9); c.fillRect(X(-34), Y(0), 68 * k, 4); txt(c, 'PITCH', X(0), Y(0) + 26, { size: 13, ls: 3, color: 'mid', align: 'center' });
+  c.fillStyle = rgba('light', .9); c.fillRect(X(-34), Y(0), 68 * k, 4);
   for (const s of [-1, 1]) {
     const pts = [[s * 37, 0], [s * 37, 2]]; for (let i = 0; i < 36; i++) { pts.push([s * (38 + i * 1.1), 2 + i * .75]); pts.push([s * (39.1 + i * 1.1), 2 + i * .75]); }
     pts.push([s * 80, 29], [s * 82, 29], [s * 82, 0]);
     path(pts, true); c.fillStyle = rgba('light', 1); c.fill();
-    c.save(); c.clip(); c.beginPath(); for (let h = -1200; h < 1200; h += 12) { c.moveTo(O[0] + h, Y(0)); c.lineTo(O[0] + h + 500, Y(0) - 500); } c.strokeStyle = rgba('mid', .25); c.lineWidth = 1; c.stroke(); c.restore();
+    c.save(); c.clip(); c.beginPath(); for (let h = -1200; h < 1200; h += 10) { c.moveTo(O[0] + h, Y(0)); c.lineTo(O[0] + h + 500, Y(0) - 500); } c.strokeStyle = rgba('mid', .25); c.lineWidth = 1; c.stroke(); c.restore();
     path(pts, true); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1; c.stroke();
     path([[s * 84, 0], [s * 84, 47.5]], false); c.strokeStyle = rgba('graphite', .8); c.lineWidth = 2; c.stroke();
     path([[s * 86, 47.5], [s * 46, 46.6], [s * 46, 45.4], [s * 86, 46.3]], true); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('blue', .9); c.lineWidth = 1.2; c.stroke();
@@ -527,9 +530,28 @@ function bowlSection(c, O, k, a, o = {}) {
   c.restore();
   return { X, Y };
 }
+const ALTMAX = 50 * Math.PI / 180;
+function sunDir(h) { const ph = (h - 12) / 6 * Math.PI / 2, alt = Math.max(.02, ALTMAX * Math.cos(ph)); return [-Math.cos(alt) * Math.cos(ph), Math.sin(alt), -Math.cos(alt) * Math.sin(ph)]; }
+const inOpening = (x, z) => Math.pow(Math.abs(x / 74), 2.8) + Math.pow(Math.abs(z / 56), 2.8) < 1;
+const SUNMAP = (() => {
+  const nx = 21, nz = 14, cells = [];
+  for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
+    const x = -52.5 + (i + .5) * 105 / nx, z = -34 + (j + .5) * 68 / nz; let hrs = 0;
+    for (let h = 6.25; h < 18; h += .5) { const d = sunDir(h); if (d[1] < .05) continue; const s = 46 / d[1]; if (inOpening(x + d[0] * s, z + d[2] * s)) hrs += .5; }
+    cells.push({ x, z, hrs });
+  }
+  return { nx, nz, cells, mx: Math.max(...cells.map(c => c.hrs)) };
+})();
+const LUM = (() => { const o = oval(74, 56), L = []; for (let i = 0; i < NS; i += 1.5) { const q = o[Math.floor(i)]; L.push([q[0], 46, q[1]]); } return L.slice(0, 64); })();
+const LUX = (() => {
+  const nx = 14, nz = 9, cells = [];
+  for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) { const x = -52.5 + (i + .5) * 105 / nx, z = -34 + (j + .5) * 68 / nz; let e = 0; for (const f of LUM) { const dx = f[0] - x, dz = f[2] - z, h = f[1], d2 = dx * dx + dz * dz + h * h; e += h / Math.pow(d2, 1.5); } cells.push({ x, z, e }); }
+  const avg = cells.reduce((s, c) => s + c.e, 0) / cells.length, mn = Math.min(...cells.map(c => c.e)), mx = Math.max(...cells.map(c => c.e));
+  return { nx, nz, cells, mn, mx, U: mn / avg };
+})();
 
 /* =====================================================================
-   SCENE 01 — BALL TO PITCH  (0 – 10.6)
+   01 — BALL TO PITCH  (0 – 10.6)
    ===================================================================== */
 const PHI = (1 + Math.sqrt(5)) / 2;
 const TI = (() => {
@@ -541,7 +563,7 @@ const TI = (() => {
   const PENT = ico.map(d => {
     const l = Math.hypot(...d), u = d.map(x => x / l);
     const idx = n.map((v, i) => [v[0] * u[0] + v[1] * u[1] + v[2] * u[2], i]).sort((a, b) => b[0] - a[0]).slice(0, 5).map(p => p[1]);
-    const perp = v => { const d = v[0] * u[0] + v[1] * u[1] + v[2] * u[2]; return [v[0] - u[0] * d, v[1] - u[1] * d, v[2] - u[2] * d]; };
+    const perp = v => { const dd = v[0] * u[0] + v[1] * u[1] + v[2] * u[2]; return [v[0] - u[0] * dd, v[1] - u[1] * dd, v[2] - u[2] * dd]; };
     const ref = perp(n[idx[0]]), a2 = [u[1] * ref[2] - u[2] * ref[1], u[2] * ref[0] - u[0] * ref[2], u[0] * ref[1] - u[1] * ref[0]];
     return idx.map(i => { const w = perp(n[i]); return [Math.atan2(w[0] * a2[0] + w[1] * a2[1] + w[2] * a2[2], w[0] * ref[0] + w[1] * ref[1] + w[2] * ref[2]), i]; }).sort((a, b) => a[0] - b[0]).map(p => p[1]);
   });
@@ -549,16 +571,16 @@ const TI = (() => {
   return { n, E, PENT, lon, lat, tgt: n.map((_, i) => [lon[i] / Math.PI * 52.5, 0, -lat[i] / (Math.PI / 2) * 34]) };
 })();
 const F1KEYS = [
-  { t: 0, yaw: .5, pitch: .42, dist: 200, f: 1000, tx: 0, ty: 18, tz: 0, cx: 960, cy: 470 },
-  { t: 3.4, yaw: .42, pitch: .45, dist: 195, f: 1000, tx: 0, ty: 18, tz: 0, cx: 960, cy: 470 },
-  { t: 7.4, yaw: .22, pitch: .7, dist: 175, f: 1000, tx: 0, ty: 0, tz: 0, cx: 960, cy: 480 },
-  { t: 10.6, yaw: .12, pitch: .88, dist: 165, f: 1000, tx: 0, ty: 0, tz: 0, cx: 960, cy: 480 },
+  { t: 0, yaw: .5, pitch: .42, dist: 220, f: 1000, tx: 0, ty: 18, tz: 0, cx: 540, cy: 560 },
+  { t: 3.4, yaw: .6, pitch: .45, dist: 215, f: 1000, tx: 0, ty: 18, tz: 0, cx: 540, cy: 560 },
+  { t: 7.4, yaw: 1.35, pitch: .8, dist: 175, f: 1000, tx: 0, ty: 0, tz: 0, cx: 540, cy: 600 },
+  { t: 10.6, yaw: Math.PI / 2 + .1, pitch: .95, dist: 160, f: 1000, tx: 0, ty: 0, tz: 0, cx: 540, cy: 600 },
 ];
 function sBall(c, t) {
-  const cm = cam(camKeys(F1KEYS, t)), m = ease(seg(t, 3.6, 6.8)), S = 26, ctr = [0, 20, 0], intro = smooth(seg(t, .2, 1.6));
+  const cm = cam(camKeys(F1KEYS, t)), m = ease(seg(t, 3.6, 6.8)), S = 34, ctr = [0, 20, 0], intro = smooth(seg(t, .2, 1.6));
   const spin = 1.9 * (t < 6.8 ? t : 6.8), cs = Math.cos(spin), sn = Math.sin(spin), tl = .5, ct = Math.cos(tl), st = Math.sin(tl);
   const world = i => { const q = TI.n[i]; let x = q[0] * cs - q[2] * sn, z = q[0] * sn + q[2] * cs, y = q[1]; const y2 = y * ct - z * st; z = y * st + z * ct; const b = [ctr[0] + x * S, ctr[1] + y2 * S, ctr[2] + z * S]; return lerp3(b, TI.tgt[i], m); };
-  const W = TI.n.map((_, i) => world(i)), PR = W.map(q => cm.p(...q)), dRef = cm.p(...ctr)[2];
+  const Wp = TI.n.map((_, i) => world(i)), PR = Wp.map(q => cm.p(...q)), dRef = cm.p(...ctr)[2];
   const fa = smooth(seg(t, 6.0, 7.6));
   if (fa > 0) {
     const q = [[-52.5, -34], [52.5, -34], [52.5, 34], [-52.5, 34]].map(p => cm.p(p[0], 0, p[1]));
@@ -571,103 +593,63 @@ function sBall(c, t) {
     g.addColorStop(0, rgba('graphite', .14 * (1 - m) * intro)); g.addColorStop(1, rgba('graphite', 0));
     c.save(); c.translate(sh[0], sh[1]); c.scale(1, .3); c.translate(-sh[0], -sh[1]); c.fillStyle = g; c.beginPath(); c.arc(sh[0], sh[1], r, 0, TAU); c.fill(); c.restore();
   }
-  const seam = (i, j) => Math.abs(TI.lon[i] - TI.lon[j]) > 2.2;
-  const meshA = intro * (1 - .75 * smooth(seg(t, 7.2, 8.6)));
-  // pentagons
+  const seam = (i, j) => Math.abs(TI.lon[i] - TI.lon[j]) > 2.2, meshA = intro * (1 - .75 * smooth(seg(t, 7.2, 8.6)));
   for (const P of TI.PENT) {
     if (m > .05 && P.some((i, k) => seam(i, P[(k + 1) % 5]))) continue;
     const front = P.reduce((s, i) => s + PR[i][2], 0) / 5 < dRef + 3 || m > .5;
-    c.beginPath(); P.forEach((i, k) => k ? c.lineTo(PR[i][0], PR[i][1]) : c.moveTo(PR[i][0], PR[i][1])); c.closePath();
-    c.fillStyle = rgba('blue', (front ? lerp(.75, .25, m) : .12) * meshA); c.fill();
+    c.beginPath(); P.forEach((i, k) => k ? c.lineTo(PR[i][0], PR[i][1]) : c.moveTo(PR[i][0], PR[i][1])); c.closePath(); c.fillStyle = rgba('blue', (front ? lerp(.75, .25, m) : .12) * meshA); c.fill();
   }
-  // edges
   c.beginPath(); const back = [];
-  for (const [i, j] of TI.E) { if (m > .05 && seam(i, j)) continue; const d = (PR[i][2] + PR[j][2]) / 2; if (d > dRef && m < .5) { back.push([i, j]); continue; } c.moveTo(PR[i][0], PR[i][1]); c.lineTo(PR[j][0], PR[j][1]); }
+  for (const [i, j] of TI.E) { if (m > .05 && seam(i, j)) continue; if ((PR[i][2] + PR[j][2]) / 2 > dRef && m < .5) { back.push([i, j]); continue; } c.moveTo(PR[i][0], PR[i][1]); c.lineTo(PR[j][0], PR[j][1]); }
   c.strokeStyle = rgba(m < .5 ? 'graphite' : 'blue', .8 * meshA); c.lineWidth = 1.1; c.stroke();
   c.beginPath(); for (const [i, j] of back) { c.moveTo(PR[i][0], PR[i][1]); c.lineTo(PR[j][0], PR[j][1]); } c.strokeStyle = rgba('mid', .3 * meshA); c.lineWidth = .8; c.stroke();
-  const ba = 1 - smooth(seg(t, 3.6, 4.1)), p1 = cm.p(...lerp3(W[TI.PENT[0][0]], W[TI.PENT[0][2]], .5)), p2 = cm.p(ctr[0] + S, ctr[1], 0);
-  leader(c, p1[0], p1[1], 1420, 360, seg(t, 1.2, 2.6), '32 panels', '12 pentagons · 20 hexagons', { a: ba });
-  leader(c, p2[0], p2[1], 1420, 560, seg(t, 1.8, 3.2), 'Size 5', '68–70 cm around · 410–450 g', { a: ba });
-  const fl = env(t, 8.0, 8.4, 9.8, 10.4), corner = cm.p(-52.5, 0, 34);
-  leader(c, corner[0], corner[1], 120, 300, seg(t, 8.0, 9.4), 'The pitch', '105 × 68 m, the size FIFA recommends', { a: fl });
-  const ha = 1 - smooth(seg(t, 9.6, 10.4));
-  kicker(c, 'FIG. 01 — FROM BALL TO PITCH', 120, 852, seg(t, 4.0, 5.0), ha);
-  headline(c, [['It all starts with ', 'graphite'], ['105 × 68 m of living grass.', 'blue']], 120, 930, seg(t, 4.6, 6.2), { size: 60, maxW: 1600, a: ha });
+  const p1 = cm.p(...lerp3(Wp[TI.PENT[0][0]], Wp[TI.PENT[0][2]], .5));
+  lab(c, p1[0], p1[1], 760, 300, seg(t, 1.2, 2.6), '32 panels', 1 - smooth(seg(t, 3.6, 4.1)));
+  head(c, [['105 × 68 m', 'blue'], [' of living grass.', 'graphite']], seg(t, 4.6, 6.0), 1 - smooth(seg(t, 9.6, 10.4)), 62);
 }
 
 /* =====================================================================
-   SCENE 02 — THE LIVING PITCH (section)  (10 – 24.6)
+   02 — THE LIVING PITCH  (10 – 22.6)
    ===================================================================== */
-const SOIL = (() => { const r = rng(17), roots = [], gravel = [], blades = []; for (let i = 0; i < 140; i++) roots.push([r(), r() * .8 + .2, r()]); for (let i = 0; i < 160; i++) gravel.push([r(), r(), .6 + r() * .8]); for (let i = 0; i < 220; i++) blades.push([r(), .6 + r() * .6, r() * 2 - 1]); return { roots, gravel, blades }; })();
+const SOIL = (() => { const r = rng(17), roots = [], gravel = [], blades = []; for (let i = 0; i < 120; i++) roots.push([r(), r() * .8 + .2, r()]); for (let i = 0; i < 130; i++) gravel.push([r(), r(), .6 + r() * .8]); for (let i = 0; i < 170; i++) blades.push([r(), .6 + r() * .6, r() * 2 - 1]); return { roots, gravel, blades }; })();
 function sSoil(c, t) {
-  const x0 = 520, x1 = 1380, y0 = 330, k = 8, Y = cm => y0 + cm * k;                  // depth in cm below the surface
-  const ia = smooth(seg(t, 10.0, 10.8)), rev = ease(seg(t, 10.4, 13.6)), revY = lerp(y0 - 40, Y(56), rev);
+  const x0 = 390, x1 = 1010, y0 = 300, k = 9, Y = cmv => y0 + cmv * k;
+  const ia = smooth(seg(t, 10.0, 10.8)), rev = ease(seg(t, 10.4, 13.4)), revY = lerp(y0 - 40, Y(56), rev);
   c.save(); c.beginPath(); c.rect(0, 0, W, revY); c.clip(); c.globalAlpha = ia;
-  // layers
   const band = (a, b, fill) => { c.fillStyle = fill; c.fillRect(x0, Y(a), x1 - x0, Y(b) - Y(a)); };
   band(0, 26, rgba('light', 1)); band(26, 32, 'rgba(232,236,241,1)'); band(32, 46, rgba('light', .7)); band(46, 56, 'rgba(226,231,236,1)');
   c.strokeStyle = rgba('graphite', .7); c.lineWidth = 1; for (const d of [0, 26, 32, 46, 56]) { c.beginPath(); c.moveTo(x0, Y(d)); c.lineTo(x1, Y(d)); c.stroke(); }
   c.strokeRect(x0, Y(-4), x1 - x0, Y(56) - Y(-4));
-  // sand speckle
-  c.fillStyle = rgba('mid', .45); for (let i = 0; i < 260; i++) { const x = x0 + hash(i) * (x1 - x0), y = Y(1 + hash(i + 7) * 24); c.fillRect(x, y, 1.6, 1.6); }
-  // roots
+  c.fillStyle = rgba('mid', .45); for (let i = 0; i < 200; i++) c.fillRect(x0 + hash(i) * (x1 - x0), Y(1 + hash(i + 7) * 24), 1.6, 1.6);
   c.beginPath(); for (const [u, d, w] of SOIL.roots) { const x = x0 + u * (x1 - x0); c.moveTo(x, Y(0)); c.quadraticCurveTo(x + (w - .5) * 30, Y(d * 12), x + (w - .5) * 20, Y(d * 22)); } c.strokeStyle = rgba('mid', .55); c.lineWidth = .8; c.stroke();
-  // hybrid fibres
-  const fa = smooth(seg(t, 13.2, 14.0));
+  const fa = smooth(seg(t, 13.0, 13.8));
   c.beginPath(); for (let x = x0 + 10; x < x1; x += 20) { c.moveTo(x, Y(-2.5)); c.lineTo(x, Y(18)); } c.strokeStyle = rgba('blue', .75 * fa); c.lineWidth = 1.4; c.stroke();
-  // grass blades
   c.beginPath(); for (const [u, h, lean] of SOIL.blades) { const x = x0 + u * (x1 - x0); c.moveTo(x, Y(0)); c.quadraticCurveTo(x + lean * 4, Y(-h * 2), x + lean * 7 + Math.sin(t * 2 + u * 20) * 1.5, Y(-h * 3.6)); } c.strokeStyle = rgba('graphite', .65); c.lineWidth = 1; c.stroke();
-  // heating pipes
   const hp = .5 + .5 * Math.sin(t * 2.4);
-  for (let x = x0 + 50; x < x1; x += 110) { c.beginPath(); c.arc(x, Y(29), 13, 0, TAU); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('blue', .9); c.lineWidth = 1.4; c.stroke(); c.beginPath(); c.arc(x, Y(29), 13 + 8 * hp, 0, TAU); c.strokeStyle = rgba('cyan', .5 * (1 - hp)); c.stroke(); }
-  // gravel + air / water flow
+  for (let x = x0 + 50; x < x1; x += 105) { c.beginPath(); c.arc(x, Y(29), 13, 0, TAU); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('blue', .9); c.lineWidth = 1.4; c.stroke(); c.beginPath(); c.arc(x, Y(29), 13 + 8 * hp, 0, TAU); c.strokeStyle = rgba('cyan', .5 * (1 - hp)); c.stroke(); }
   c.strokeStyle = rgba('mid', .6); c.lineWidth = 1; for (const [u, v, s] of SOIL.gravel) { c.beginPath(); c.ellipse(x0 + 8 + u * (x1 - x0 - 16), Y(33 + v * 12), 5 * s, 3.5 * s, u * 3, 0, TAU); c.stroke(); }
-  const af = smooth(seg(t, 16.0, 16.8));
+  const af = smooth(seg(t, 15.4, 16.2));
   if (af > 0) { c.setLineDash([10, 12]); c.lineDashOffset = -t * 60; for (const d of [36, 41]) { c.beginPath(); c.moveTo(x0, Y(d)); for (let x = x0; x <= x1; x += 20) c.lineTo(x, Y(d + 1.2 * Math.sin(x * .02 + d))); c.strokeStyle = rgba('cyan', .9 * af); c.lineWidth = 2; c.stroke(); } c.setLineDash([]); }
   c.beginPath(); c.arc((x0 + x1) / 2, Y(51), 20, 0, TAU); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('graphite', .8); c.lineWidth = 1.4; c.stroke();
-  for (let i = 0; i < 6; i++) { const ph = (t * .6 + i / 6) % 1, x = x0 + 80 + i * 130, y = lerp(Y(2), Y(46), ph); c.beginPath(); c.arc(x, y, 2.6, 0, TAU); c.fillStyle = rgba('blue', .8 * (1 - ph) * af); c.fill(); }
-  // sensor probe
-  const sa = smooth(seg(t, 17.4, 18.0)), px = x1 - 120;
+  for (let i = 0; i < 5; i++) { const ph = (t * .6 + i / 5) % 1, x = x0 + 70 + i * 120, y = lerp(Y(2), Y(46), ph); c.beginPath(); c.arc(x, y, 2.6, 0, TAU); c.fillStyle = rgba('blue', .8 * (1 - ph) * af); c.fill(); }
+  const sa = smooth(seg(t, 16.6, 17.2)), px = x1 - 90;
   c.strokeStyle = rgba('blue', sa); c.lineWidth = 2; c.beginPath(); c.moveTo(px, Y(-10)); c.lineTo(px, Y(15)); c.stroke(); c.fillStyle = rgba('blue', sa); c.fillRect(px - 6, Y(-14), 12, 8);
   c.restore();
-  // scan line
-  if (rev > 0 && rev < 1) { c.beginPath(); c.moveTo(x0 - 40, revY); c.lineTo(x1 + 40, revY); glowStroke(c, 'cyan', .9, 1.4, 12); }
-  // labels
-  const la = env(t, 11.0, 11.4, 23.8, 24.4), L = [[x0 + 200, Y(-2.5), 'Natural grass', 'Living leaf and roots', 11.2], [x0 + 330, Y(10), 'Hybrid fibres', 'Synthetic yarn stitched into the rootzone', 13.4], [x0 + 260, Y(20), 'Rootzone', 'Engineered sand', 12.2], [x0 + 50, Y(29), 'Under-soil heating', 'Keeps roots growing in winter', 14.6], [x0 + 400, Y(39), 'Air & drainage layer', 'Fans move water and air through the profile', 16.2]];
-  L.forEach(([ax, ay, ti, sub, ts], i) => leader(c, ax, ay, 120, 300 + i * 120, seg(t, ts, ts + 1.4), ti, sub, { a: la }));
-  const ca = env(t, 17.6, 18.1, 23.8, 24.4), Xr = 1490;
-  if (ca > 0) {
-    kicker(c, 'SOIL SENSORS · LIVE', Xr, 300, seg(t, 17.6, 18.2), ca, 'blue');
-    [['ROOTZONE TEMPERATURE', fmt(14.2 * easeOut(seg(t, 17.8, 19.2)), 1) + ' °C'], ['MOISTURE', Math.round(22 * easeOut(seg(t, 18.2, 19.6))) + ' %'], ['SURFACE HARDNESS', 'in range']].forEach(([n, v], i) => { const y = 360 + i * 100; kicker(c, n, Xr, y, 1, ca); txt(c, v, Xr - 2, y + 42, { w: 700, size: 32, color: i === 0 ? 'blue' : 'graphite', a: ca }); });
-    txt(c, 'Values illustrative', Xr, 690, { size: 13, color: 'mid', a: ca });
-  }
-  const ha = 1 - smooth(seg(t, 23.8, 24.4));
-  kicker(c, 'FIG. 02 — SECTION THROUGH A HYBRID PITCH (VERTICAL SCALE EXAGGERATED)', 120, 862, seg(t, 10.6, 11.6), ha);
-  headline(c, [['A pitch is a living system:', 'blue'], [' grass, stitched fibres, heating, drainage and air.', 'graphite']], 120, 925, seg(t, 11.4, 13.6), { size: 42, maxW: 1300, a: ha });
+  if (rev > 0 && rev < 1) { c.beginPath(); c.moveTo(x0 - 30, revY); c.lineTo(x1 + 30, revY); glowStroke(c, 'cyan', .9, 1.4, 12); }
+  const la = env(t, 11.0, 11.4, 21.8, 22.4);
+  [[x0 + 150, Y(-2.5), 'Grass', 11.2], [x0 + 300, Y(10), 'Hybrid fibres', 13.2], [x0 + 220, Y(20), 'Rootzone', 12.0], [x0 + 50, Y(29), 'Heating', 14.0], [x0 + 330, Y(39), 'Air + drainage', 15.6], [px, Y(-12), 'Sensors', 16.8]].forEach(([ax, ay, ti, ts]) => lab(c, ax, ay, MX, ay + 8, seg(t, ts, ts + 1.2), ti, la));
+  head(c, [['A pitch is a ', 'graphite'], ['living system.', 'blue']], seg(t, 11.2, 12.6), 1 - smooth(seg(t, 21.8, 22.4)));
 }
 
 /* =====================================================================
-   SCENE 03 — SUN & ORIENTATION  (24 – 38.6)    north = +x, east = +z
+   03 — SUN & ORIENTATION  (22 – 34.6)
    ===================================================================== */
-const ALTMAX = 50 * Math.PI / 180;
-function sunDir(h) { const ph = (h - 12) / 6 * Math.PI / 2, alt = Math.max(.02, ALTMAX * Math.cos(ph)); return [-Math.cos(alt) * Math.cos(ph), Math.sin(alt), -Math.cos(alt) * Math.sin(ph)]; }
-const inOpening = (x, z) => Math.pow(Math.abs(x / 74), 2.8) + Math.pow(Math.abs(z / 56), 2.8) < 1;
-const SUNMAP = (() => {
-  const nx = 21, nz = 14, cells = [];
-  for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
-    const x = -52.5 + (i + .5) * 105 / nx, z = -34 + (j + .5) * 68 / nz; let hrs = 0;
-    for (let h = 6.25; h < 18; h += .5) { const d = sunDir(h); if (d[1] < .05) continue; const s = 46 / d[1]; if (inOpening(x + d[0] * s, z + d[2] * s)) hrs += .5; }
-    cells.push({ x, z, hrs });
-  }
-  const mx = Math.max(...cells.map(c => c.hrs)); return { nx, nz, cells, mx };
-})();
 function sSun(c, t) {
-  const cm = cam({ yaw: .7 + .05 * (t - 24), pitch: .62, dist: 420, f: 1000, tx: 0, ty: 20, tz: 0, cx: 900, cy: 560 });
-  const ia = smooth(seg(t, 24.0, 24.7)), h = 6.2 + 11.6 * ease(seg(t, 25.0, 33.0)), d = sunDir(h);
+  const cm = cam({ yaw: .7 + .05 * (t - 22), pitch: .62, dist: 440, f: 1000, tx: 0, ty: 20, tz: 0, cx: 540, cy: 660 });
+  const ia = smooth(seg(t, 22.0, 22.7)), h = 6.2 + 11.6 * ease(seg(t, 22.8, 30.0)), d = sunDir(h);
   drawStadium(c, cm, t, { e: 0, a: ia, fill: .7, pitchA: .5, flows: 0 });
-  // shadow and sun patch on the pitch
   const pq = [[-52.5, -34], [52.5, -34], [52.5, 34], [-52.5, 34]].map(p => cm.p(p[0], 0, p[1]));
-  const sa = smooth(seg(t, 25.0, 25.6)) * (1 - smooth(seg(t, 33.2, 33.8)));
+  const sa = smooth(seg(t, 22.8, 23.4)) * (1 - smooth(seg(t, 30.2, 30.8)));
   if (sa > 0 && d[1] > .03) {
     c.save(); c.beginPath(); pq.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.clip();
     c.fillStyle = rgba('graphite', .18 * sa); c.fillRect(0, 0, W, H);
@@ -675,99 +657,73 @@ function sSun(c, t) {
     c.beginPath(); op.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = rgba('white', .95 * sa); c.fill(); c.fillStyle = rgba('cyan', .25 * sa); c.fill();
     c.restore();
   }
-  // sun-hours map
-  const ma = smooth(seg(t, 33.4, 34.2)) * (1 - smooth(seg(t, 38.0, 38.6)));
+  const ma = smooth(seg(t, 30.4, 31.2)) * (1 - smooth(seg(t, 34.0, 34.6)));
   if (ma > 0) for (const cl of SUNMAP.cells) {
     const v = cl.hrs / SUNMAP.mx, w = 105 / SUNMAP.nx / 2 * .92, dz = 68 / SUNMAP.nz / 2 * .92, q = [[cl.x - w, cl.z - dz], [cl.x + w, cl.z - dz], [cl.x + w, cl.z + dz], [cl.x - w, cl.z + dz]].map(p => cm.p(p[0], .1, p[1]));
     c.beginPath(); q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = rgba(v > .97 ? 'cyan' : 'blue', (v > .97 ? .7 : .05 + .6 * v * v) * ma); c.fill();
   }
-  // sun path
   const arc = []; for (let hh = 6; hh <= 18; hh += .25) { const dd = sunDir(hh); arc.push(cm.p(dd[0] * 175, dd[1] * 175, dd[2] * 175)); }
-  const pa = smooth(seg(t, 24.6, 25.4)) * (1 - smooth(seg(t, 38.0, 38.6)));
+  const pa = smooth(seg(t, 22.4, 23.2)) * (1 - smooth(seg(t, 34.0, 34.6)));
   c.setLineDash([4, 6]); c.beginPath(); arc.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.strokeStyle = rgba('mid', pa); c.lineWidth = 1.2; c.stroke(); c.setLineDash([]);
   const sp = cm.p(d[0] * 175, d[1] * 175, d[2] * 175);
-  if (pa > 0) {
-    c.save(); c.shadowColor = rgba('cyan', 1); c.shadowBlur = 30 * SC; c.beginPath(); c.arc(sp[0], sp[1], 16, 0, TAU); c.fillStyle = rgba('white', pa); c.fill(); c.restore();
-    c.beginPath(); c.arc(sp[0], sp[1], 16, 0, TAU); c.strokeStyle = rgba('blue', pa); c.lineWidth = 1.6; c.stroke();
-    const hh = Math.floor(h), mm = Math.floor((h - hh) * 60 / 15) * 15; txt(c, `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`, sp[0] + 24, sp[1] + 6, { w: 700, size: 18, color: 'blue', a: pa });
-  }
-  // compass
+  if (pa > 0) { c.save(); c.shadowColor = rgba('cyan', 1); c.shadowBlur = 30 * SC; c.beginPath(); c.arc(sp[0], sp[1], 16, 0, TAU); c.fillStyle = rgba('white', pa); c.fill(); c.restore(); c.beginPath(); c.arc(sp[0], sp[1], 16, 0, TAU); c.strokeStyle = rgba('blue', pa); c.lineWidth = 1.6; c.stroke(); }
   const n0 = cm.p(150, 0, 0), n1 = cm.p(185, 0, 0), ang = Math.atan2(n1[1] - n0[1], n1[0] - n0[0]);
   c.beginPath(); c.moveTo(n0[0], n0[1]); c.lineTo(n1[0], n1[1]); c.lineTo(n1[0] - 12 * Math.cos(ang - .4), n1[1] - 12 * Math.sin(ang - .4)); c.moveTo(n1[0], n1[1]); c.lineTo(n1[0] - 12 * Math.cos(ang + .4), n1[1] - 12 * Math.sin(ang + .4)); c.strokeStyle = rgba('graphite', ia); c.lineWidth = 2; c.stroke();
-  txt(c, 'N', n1[0] + 10 * Math.cos(ang), n1[1] + 10 * Math.sin(ang) - 4, { w: 700, size: 20, a: ia, align: 'center' });
-  const la = env(t, 25.4, 25.8, 38.0, 38.6), ax = cm.p(52.5, 0, 0);
-  leader(c, ax[0], ax[1], 120, 330, seg(t, 25.6, 27.0), 'Long axis north–south', 'The low sun stays out of players’ eyes', { a: la });
-  const rf = cm.p(-124, 48, 0); leader(c, rf[0], rf[1], 120, 470, seg(t, 27.6, 29.0), 'Roof shadow', 'Traced hour by hour across the grass', { a: la });
-  const mp = cm.p(30, 0, -10); leader(c, mp[0], mp[1], 120, 610, seg(t, 34.0, 35.4), 'Sun-hours map', 'Computed from this roof · one day', { a: la });
-  const ha = 1 - smooth(seg(t, 38.0, 38.6));
-  kicker(c, 'FIG. 03 — SUN PATH & SHADOW · ILLUSTRATIVE MID-LATITUDE DAY', 120, 862, seg(t, 24.6, 25.6), ha);
-  headline(c, [['Orientation:', 'blue'], [' pitches run north–south, and roofs are shaped by sun-hour maps.', 'graphite']], 120, 925, seg(t, 25.4, 27.6), { size: 42, maxW: 1300, a: ha });
+  txt(c, 'N', n1[0] + 12 * Math.cos(ang), n1[1] + 12 * Math.sin(ang) - 4, { w: 700, size: 22, a: ia, align: 'center' });
+  const la = env(t, 23.2, 23.6, 34.0, 34.6), ax = cm.p(52.5, 0, 0), rf = cm.p(-124, 48, 0), mp = cm.p(30, 0, -10);
+  lab(c, ax[0], ax[1], MX, 230, seg(t, 23.4, 24.6), 'North–south axis', la);
+  lab(c, rf[0], rf[1], MX, 300, seg(t, 25.0, 26.2), 'Roof shadow', la);
+  lab(c, mp[0], mp[1], MX, 370, seg(t, 31.0, 32.2), 'Sun hours', la);
+  head(c, [['Orientation ', 'graphite'], ['follows the sun.', 'blue']], seg(t, 23.0, 24.4), 1 - smooth(seg(t, 34.0, 34.6)));
 }
 
 /* =====================================================================
-   SCENE 04 — LIGHT & AIR (section)  (38 – 50.6)
+   04 — LIGHT & AIR  (34 – 45.6)
    ===================================================================== */
 function sAir(c, t) {
-  const O = [960, 780], k = 7.0, ia = smooth(seg(t, 38.0, 38.7));
-  const { X, Y } = bowlSection(c, O, k, ia, { roofTrans: smooth(seg(t, 39.6, 40.4)) });
-  // sunlight through the opening and the translucent edge
-  const ra = env(t, 39.0, 39.8, 49.8, 50.4);
-  if (ra > 0) {
-    const dx = .5, dy = -1;
-    for (let x0 = -100; x0 <= 40; x0 += 5) {
-      const xr = x0 + dx * (70 - 46.5) / -dy; let a = .35, endY = 0;
-      if (xr <= -46 && xr >= -86) { endY = 47; a = .3; } else if (xr > -46 && xr <= -34) a = .18;
-      const xe = x0 + dx * (70 - endY) / -dy;
-      c.beginPath(); c.moveTo(X(x0), Y(70)); c.lineTo(X(xe), Y(endY)); c.strokeStyle = rgba('cyan', a * ra); c.lineWidth = 1.2; c.stroke();
-    }
+  const O = [540, 860], k = 5.0, ia = smooth(seg(t, 34.0, 34.7));
+  const { X, Y } = bowlSection(c, O, k, ia, { roofTrans: smooth(seg(t, 35.2, 36.0)) });
+  const ra = env(t, 35.0, 35.8, 44.8, 45.4);
+  if (ra > 0) for (let x0 = -100; x0 <= 40; x0 += 5) {
+    const xr = x0 + .5 * (70 - 46.5); let a = .35, endY = 0;
+    if (xr <= -46 && xr >= -86) { endY = 47; a = .3; } else if (xr > -46 && xr <= -34) a = .18;
+    c.beginPath(); c.moveTo(X(x0), Y(70)); c.lineTo(X(x0 + .5 * (70 - endY)), Y(endY)); c.strokeStyle = rgba('cyan', a * ra); c.lineWidth = 1.2; c.stroke();
   }
-  // air movement
-  const fa = env(t, 41.4, 42.2, 49.8, 50.4);
+  const fa = env(t, 37.0, 37.8, 44.8, 45.4);
   if (fa > 0) {
     c.setLineDash([12, 14]); c.lineDashOffset = -t * 70;
-    for (const s of [-1, 1]) for (const [y0, yc, ye] of [[37, 26, 3], [41, 34, 8]]) {
-      c.beginPath(); c.moveTo(X(s * 98), Y(y0)); c.bezierCurveTo(X(s * 70), Y(y0), X(s * 40), Y(yc), X(s * 22), Y(ye)); c.bezierCurveTo(X(s * 6), Y(ye - 2), X(s * 4), Y(30), X(s * 8), Y(62));
-      c.strokeStyle = rgba('blue', .75 * fa); c.lineWidth = 1.8; c.stroke();
-    }
+    for (const s of [-1, 1]) for (const [y0, yc, ye] of [[37, 26, 3], [41, 34, 8]]) { c.beginPath(); c.moveTo(X(s * 98), Y(y0)); c.bezierCurveTo(X(s * 70), Y(y0), X(s * 40), Y(yc), X(s * 22), Y(ye)); c.bezierCurveTo(X(s * 6), Y(ye - 2), X(s * 4), Y(30), X(s * 8), Y(62)); c.strokeStyle = rgba('blue', .75 * fa); c.lineWidth = 1.8; c.stroke(); }
     c.setLineDash([]);
   }
-  // LED grow-light rig
-  const ga = env(t, 44.0, 44.6, 49.8, 50.4);
+  const ga = env(t, 39.6, 40.2, 44.8, 45.4), gx = lerp(-26, 14, ease(seg(t, 39.8, 45.0)));
   if (ga > 0) {
-    const gx = lerp(-26, 14, ease(seg(t, 44.2, 49.6)));
     c.strokeStyle = rgba('graphite', ga); c.lineWidth = 1.6; c.beginPath(); c.moveTo(X(gx - 8), Y(0)); c.lineTo(X(gx - 8), Y(3.2)); c.lineTo(X(gx + 8), Y(3.2)); c.lineTo(X(gx + 8), Y(0)); c.stroke();
-    for (const w of [-8, 8]) { c.beginPath(); c.arc(X(gx + w), Y(0) - 4, 4, 0, TAU); c.stroke(); }
     for (let i = 0; i < 8; i++) { const lx = gx - 7 + i * 2; c.beginPath(); c.moveTo(X(lx), Y(3.1)); c.lineTo(X(lx - .9), Y(.05)); c.lineTo(X(lx + .9), Y(.05)); c.closePath(); c.fillStyle = rgba('cyan', .3 * ga); c.fill(); }
   }
-  const la = env(t, 39.6, 40.0, 49.8, 50.4);
-  leader(c, X(-40), Y(45.8), 120, 300, seg(t, 39.8, 41.2), 'Translucent roof edge', 'Daylight reaches the grass', { a: la });
-  leader(c, X(-83), Y(38), 120, 430, seg(t, 41.6, 43.0), 'Ventilation gaps', 'Air moves over the turf and out', { a: la });
-  if (ga > 0) leader(c, X(lerp(-26, 14, ease(seg(t, 44.2, 49.6)))), Y(3.2), 120, 560, seg(t, 44.4, 45.8), 'LED grow lights', 'Give back the light the roof takes away', { a: la });
-  const ha = 1 - smooth(seg(t, 49.8, 50.4));
-  kicker(c, 'FIG. 04 — SECTION THROUGH THE BOWL', 120, 196, seg(t, 38.4, 39.2), ha);
-  headline(c, [['Light and air:', 'blue'], [' translucent roofs, ventilation gaps and grow lights keep grass alive inside the bowl.', 'graphite']], 120, 925, seg(t, 39.4, 41.6), { size: 40, maxW: 1400, a: ha });
+  const la = env(t, 35.4, 35.8, 44.8, 45.4);
+  lab(c, X(-40), Y(45.8), MX, 440, seg(t, 35.6, 36.8), 'Translucent edge', la);
+  lab(c, X(-83), Y(38), MX, 510, seg(t, 37.2, 38.4), 'Ventilation', la);
+  if (ga > 0) lab(c, X(gx), Y(3.2), MX, 580, seg(t, 40.0, 41.2), 'Grow lights', la);
+  head(c, [['Light and air', 'blue'], [' keep the grass alive.', 'graphite']], seg(t, 35.0, 36.6), 1 - smooth(seg(t, 44.8, 45.4)));
 }
 
 /* =====================================================================
-   SCENE 05 — MADRID: THE MOVING PITCH  (50 – 62.6)
+   05 — MADRID: THE MOVING PITCH  (45 – 57.6)
    ===================================================================== */
 function sMadrid(c, t) {
-  const cm = cam({ yaw: .85 + .04 * (t - 50), pitch: .58, dist: 380, f: 1000, tx: 18, ty: 6, tz: 0, cx: 900, cy: 560 }), P = (x, y, z) => cm.p(x, y, z);
-  const ia = smooth(seg(t, 50.0, 50.7));
+  const cm = cam({ yaw: .85 + .04 * (t - 45), pitch: .6, dist: 450, f: 1000, tx: 18, ty: 4, tz: 0, cx: 540, cy: 660 }), P = (x, y, z) => cm.p(x, y, z);
+  const ia = smooth(seg(t, 45.0, 45.7));
   const poly = (pts, fill, stroke, lw = 1) => { c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); if (fill) { c.fillStyle = fill; c.fill(); } if (stroke) { c.strokeStyle = stroke; c.lineWidth = lw; c.stroke(); } };
   drawStadium(c, cm, t, { e: 0, a: ia, fill: .6, pitchA: 0, flows: 0 });
-  // underground greenhouse
-  const gh = smooth(seg(t, 51.4, 52.2));
+  const gh = smooth(seg(t, 46.4, 47.2));
   if (gh > 0) {
     box3(c, cm, 58, -40, 120, 40, -24, 20, gh * ia, 'light', 'blue');
     c.beginPath(); for (let i = 0; i < 6; i++) { const y = -21 + i * 3, a = P(62, y + 2.4, -36), b = P(62, y + 2.4, 36); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } c.strokeStyle = rgba('cyan', .8 * gh * ia); c.lineWidth = 1.4; c.stroke();
   }
-  // event floor beneath the pitch
   poly([[-55, -36], [55, -36], [55, 36], [-55, 36]].map(q => P(q[0], -1.5, q[1])), rgba('light', ia), rgba('graphite', .5 * ia));
-  // six trays: slide north, then drop into the greenhouse
   const W6 = 105 / 6;
   for (let k = 5; k >= 0; k--) {
-    const x0 = -52.5 + k * W6, ts = 52.2 + (5 - k) * .45, u = ease(seg(t, ts, ts + 1.6)), v = ease(seg(t, ts + 1.6, ts + 2.4));
+    const x0 = -52.5 + k * W6, ts = 47.2 + (5 - k) * .45, u = ease(seg(t, ts, ts + 1.6)), v = ease(seg(t, ts + 1.6, ts + 2.4));
     const dx = (64 - x0) * u, y = lerp(0, -20 + (5 - k) * 3, v), a0 = x0 + dx, a1 = a0 + W6;
     const top = [[a0, -34], [a1, -34], [a1, 34], [a0, 34]].map(q => P(q[0], y, q[1]));
     poly(top, rgba('white', .95 * ia), rgba('graphite', .75 * ia), 1);
@@ -776,176 +732,286 @@ function sMadrid(c, t) {
     drawPitchLines(c, { p: (x, yy, z) => cm.p(x + dx, yy + y, z), o: cm.o }, .7 * ia);
     c.restore();
   }
-  // retractable roof closes
-  const rc = ease(seg(t, 56.8, 59.6));
+  const rc = ease(seg(t, 51.8, 54.6));
   if (rc > 0) {
     c.save(); const op = ringP(cm, 74, 56, 46); c.beginPath(); op.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); c.clip();
     for (const s of [-1, 1]) { const z0 = s * 60, z1 = s * 60 * (1 - rc); poly([[-80, z0], [80, z0], [80, z1], [-80, z1]].map(q => P(q[0], 46.5, q[1])), rgba('white', .85 * ia), rgba('blue', .8 * ia), 1.2); c.beginPath(); for (let x = -80; x <= 80; x += 10) { const a = P(x, 46.5, z0), b = P(x, 46.5, z1); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } c.strokeStyle = rgba('blue', .35 * ia); c.lineWidth = .8; c.stroke(); }
     c.restore();
   }
-  const la = env(t, 52.0, 52.4, 62.0, 62.6);
-  const tq = P(-10, 0, -34); leader(c, tq[0], tq[1], 120, 300, seg(t, 52.2, 53.6), 'Six pitch trays', 'Slide away beneath the stand', { a: la * (1 - smooth(seg(t, 55.4, 56.0))) });
-  const gq = P(58, -14, -40); leader(c, gq[0], gq[1], 120, 440, seg(t, 53.4, 54.8), 'Underground greenhouse', 'Grass is lit, watered and ventilated below ground', { a: la });
-  const fq = P(-30, -1.5, -36); leader(c, fq[0], fq[1], 120, 580, seg(t, 55.2, 56.6), 'Event floor', 'Concerts and other sports, grass untouched', { a: la });
-  const rq = P(-60, 46.5, 0); leader(c, rq[0], rq[1], 1440, 300, seg(t, 57.2, 58.6), 'Retractable roof', 'Closes over the whole bowl', { a: la });
-  const ha = 1 - smooth(seg(t, 62.0, 62.6));
-  kicker(c, 'FIG. 05 — THE MOVING PITCH · SANTIAGO BERNABÉU, MADRID', 120, 862, seg(t, 50.4, 51.4), ha);
-  headline(c, [['Madrid:', 'blue'], [' the Bernabéu’s pitch retracts into an underground greenhouse, under a retractable roof.', 'graphite']], 120, 925, seg(t, 51.0, 53.4), { size: 42, maxW: 1300, a: ha });
+  const la = env(t, 47.0, 47.4, 57.0, 57.6), tq = P(-10, 0, -34), gq = P(58, -14, -40), rq = P(-60, 46.5, 0);
+  lab(c, tq[0], tq[1], MX, 230, seg(t, 47.2, 48.4), 'Six pitch trays', la);
+  lab(c, gq[0], gq[1], MX, 300, seg(t, 48.4, 49.6), 'Underground greenhouse', la);
+  lab(c, rq[0], rq[1], MX, 370, seg(t, 52.2, 53.4), 'Retractable roof', la);
+  head(c, [['Madrid:', 'blue'], [' the pitch goes underground.', 'graphite']], seg(t, 46.0, 47.6), 1 - smooth(seg(t, 57.0, 57.6)));
 }
 
 /* =====================================================================
-   SCENE 06 — FLOODLIGHTING  (62 – 76.6)
+   06 — FLOODLIGHTING  (57 – 72.6)
    ===================================================================== */
-const LUM = (() => { const o = oval(74, 56), L = []; for (let i = 0; i < NS; i += 1.5) { const q = o[Math.floor(i)]; L.push([q[0], 46, q[1]]); } return L.slice(0, 64); })();
-const LUX = (() => {
-  const nx = 14, nz = 9, cells = [];
-  for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) { const x = -52.5 + (i + .5) * 105 / nx, z = -34 + (j + .5) * 68 / nz; let e = 0; for (const f of LUM) { const dx = f[0] - x, dz = f[2] - z, h = f[1], d2 = dx * dx + dz * dz + h * h; e += h / Math.pow(d2, 1.5); } cells.push({ x, z, e }); }
-  const avg = cells.reduce((s, c) => s + c.e, 0) / cells.length, mn = Math.min(...cells.map(c => c.e)), mx = Math.max(...cells.map(c => c.e));
-  return { nx, nz, cells, avg, mn, mx, U: mn / avg };
-})();
 function sLight(c, t) {
-  const cm = cam({ yaw: .55 + .05 * (t - 62), pitch: .55, dist: 360, f: 1000, tx: 0, ty: 18, tz: 0, cx: 880, cy: 560 });
-  const ia = smooth(seg(t, 62.0, 62.7)), show = env(t, 67.6, 68.0, 70.2, 70.6), fac = smooth(seg(t, 70.6, 71.4));
+  const cm = cam({ yaw: .55 + .05 * (t - 57), pitch: .55, dist: 430, f: 1000, tx: 0, ty: 18, tz: 0, cx: 540, cy: 680 });
+  const ia = smooth(seg(t, 57.0, 57.7)), show = env(t, 62.6, 63.0, 65.2, 65.6), fac = smooth(seg(t, 65.6, 66.4));
   drawStadium(c, cm, t, { e: 0, a: ia, fill: .7, pitchA: .5, flows: 0 });
-  // illuminance grid
-  const ga = smooth(seg(t, 63.6, 64.6)) * (1 - .6 * fac);
+  const ga = smooth(seg(t, 58.6, 59.6)) * (1 - .6 * fac);
   if (ga > 0) for (const cl of LUX.cells) {
     const v = (cl.e - LUX.mn) / (LUX.mx - LUX.mn), w = 105 / LUX.nx / 2 * .9, dz = 68 / LUX.nz / 2 * .9, q = [[cl.x - w, cl.z - dz], [cl.x + w, cl.z - dz], [cl.x + w, cl.z + dz], [cl.x - w, cl.z + dz]].map(p => cm.p(p[0], .1, p[1]));
     c.beginPath(); q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = rgba('blue', (.12 + .45 * v) * ga); c.fill();
   }
-  // beams + fixtures
-  const ba = smooth(seg(t, 62.6, 63.4)) * (1 - .7 * fac);
+  const ba = smooth(seg(t, 57.6, 58.4)) * (1 - .7 * fac);
   LUM.forEach((f, i) => {
-    const on = show > 0 ? lerp(1, .5 + .5 * Math.sin(t * 9 - i * .45), show) : 1, aim = [f[0] * .35, 0, f[2] * .3], A = cm.p(...f), B = cm.p(...aim);
+    const on = show > 0 ? lerp(1, .5 + .5 * Math.sin(t * 9 - i * .45), show) : 1, A = cm.p(...f), B = cm.p(f[0] * .35, 0, f[2] * .3);
     if (i % 2 === 0) { c.beginPath(); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); c.strokeStyle = rgba('cyan', .16 * ba * on); c.lineWidth = 1; c.stroke(); }
     c.beginPath(); c.arc(A[0], A[1], 3.2, 0, TAU); c.fillStyle = rgba(on > .7 ? 'cyan' : 'blue', ia); c.fill();
   });
-  // Munich: a glowing ETFE-cushion façade
   if (fac > 0) {
     const o = oval(121, 101);
     for (let i = 0; i < NS; i += 2) for (let r = 0; r < 5; r++) {
-      const y0 = r * 8.4, y1 = y0 + 8.4, a = o[i], b = o[Math.min(i + 2, NS)], q = [cm.p(a[0], y0, a[1]), cm.p(b[0], y0, b[1]), cm.p(b[0], y1, b[1]), cm.p(a[0], y1, a[1])];
-      const mx = (q[0][0] + q[2][0]) / 2, my = (q[0][1] + q[2][1]) / 2, ph = .5 + .5 * Math.sin(t * 2.4 - i * .18 + r * .9);
+      const y0 = r * 8.4, y1 = y0 + 8.4, a = o[i], b = o[Math.min(i + 2, NS)], q = [cm.p(a[0], y0, a[1]), cm.p(b[0], y0, b[1]), cm.p(b[0], y1, b[1]), cm.p(a[0], y1, a[1])], ph = .5 + .5 * Math.sin(t * 2.4 - i * .18 + r * .9);
       c.beginPath(); c.moveTo((q[0][0] + q[1][0]) / 2, (q[0][1] + q[1][1]) / 2); c.lineTo((q[1][0] + q[2][0]) / 2, (q[1][1] + q[2][1]) / 2); c.lineTo((q[2][0] + q[3][0]) / 2, (q[2][1] + q[3][1]) / 2); c.lineTo((q[3][0] + q[0][0]) / 2, (q[3][1] + q[0][1]) / 2); c.closePath();
       c.fillStyle = rgba(ph > .6 ? 'cyan' : 'blue', (ph > .6 ? .55 : .2 + .25 * ph) * fac * ia); c.fill(); c.strokeStyle = rgba('blue', .5 * fac); c.lineWidth = .6; c.stroke();
-      void mx; void my;
     }
   }
-  // right column: computed lighting numbers
-  const X = 1490, ca = env(t, 63.8, 64.3, 70.2, 70.8);
-  if (ca > 0) {
-    kicker(c, 'COMPUTED FROM 64 FIXTURES', X, 290, seg(t, 63.8, 64.4), ca, 'blue');
-    kicker(c, 'UNIFORMITY · MIN ÷ AVG', X, 350, 1, ca); txt(c, fmt(LUX.U * easeOut(seg(t, 64.0, 65.4)), 2), X - 2, 400, { w: 700, size: 52, color: 'blue', a: ca });
-    kicker(c, 'MAX ÷ MIN', X, 460, 1, ca); txt(c, fmt(LUX.mx / LUX.mn * easeOut(seg(t, 64.4, 65.8)), 2), X - 2, 504, { w: 700, size: 36, a: ca });
-    // flicker
-    kicker(c, 'FLICKER · SLOW-MOTION CAMERA', X, 580, 1, ca * smooth(seg(t, 65.6, 66.2)));
-    const fa = ca * smooth(seg(t, 65.6, 66.2));
-    c.beginPath(); for (let i = 0; i <= 120; i++) { const x = X + i * 2.6, y = 640 - 18 * Math.abs(Math.sin(i * .26 + t * 4)); i ? c.lineTo(x, y) : c.moveTo(x, y); } c.strokeStyle = rgba('mid', fa); c.lineWidth = 1.2; c.stroke();
-    txt(c, 'Older lamps', X + 318, 636, { size: 12, color: 'mid', a: fa, align: 'right' });
-    c.beginPath(); c.moveTo(X, 690); c.lineTo(X + 312, 690); c.strokeStyle = rgba('blue', fa); c.lineWidth = 2; c.stroke();
-    txt(c, 'LED · flicker-free', X + 312, 680, { size: 12, color: 'blue', a: fa, align: 'right' });
-  }
-  if (show > 0) txt(c, 'LIGHT SHOW · LEDs SWITCH INSTANTLY', 880, 200, { size: 15, ls: 3, color: 'blue', a: show, align: 'center' });
-  const fl = env(t, 71.2, 71.6, 76.0, 76.6), fq = leftmost(ringP(cm, 121, 101, 20));
-  leader(c, fq[0], fq[1], 120, 360, seg(t, 71.4, 72.8), 'ETFE cushions', 'Each lit from inside by LEDs', { a: fl });
-  const ha1 = 1 - smooth(seg(t, 70.2, 70.8)), ha2 = 1 - smooth(seg(t, 76.0, 76.6));
-  kicker(c, 'FIG. 06 — FLOODLIGHTING', 120, 862, seg(t, 62.4, 63.2), ha2);
-  headline(c, [['LED floodlights:', 'blue'], [' instant on, flicker-free for slow motion, aimed for even light.', 'graphite']], 120, 925, seg(t, 63.0, 65.2), { size: 42, maxW: 1300, a: ha1 });
-  headline(c, [['Munich:', 'blue'], [' a façade of ETFE cushions glows in any colour after dark.', 'graphite']], 120, 925, seg(t, 71.0, 73.0), { size: 42, maxW: 1300, a: ha2 });
+  stat(c, 'UNIFORMITY', fmt(LUX.U * easeOut(seg(t, 59.0, 60.4)), 2), MX, 220, seg(t, 58.8, 60.0), env(t, 58.8, 59.2, 65.2, 65.8));
+  const fl = env(t, 66.2, 66.6, 72.0, 72.6), fq = leftmost(ringP(cm, 121, 101, 20));
+  lab(c, fq[0], fq[1], MX, 260, seg(t, 66.4, 67.6), 'ETFE cushions', fl);
+  head(c, [['LED floodlights:', 'blue'], [' even, instant, flicker-free.', 'graphite']], seg(t, 58.0, 59.8), 1 - smooth(seg(t, 65.2, 65.8)));
+  head(c, [['Munich:', 'blue'], [' a façade that glows.', 'graphite']], seg(t, 66.0, 67.4), 1 - smooth(seg(t, 72.0, 72.6)));
 }
 
 /* =====================================================================
-   SCENE 07 — ENERGY & CLIMATE  (76 – 88.6)
+   07 — ACOUSTICS  (72 – 84.6)
+   ===================================================================== */
+function sAcoustic(c, t) {
+  const O = [540, 860], k = 5.0, ia = smooth(seg(t, 72.0, 72.7)), lvl = ease(seg(t, 73.0, 77.0));
+  const { X, Y } = bowlSection(c, O, k, ia, { roofTrans: .2 });
+  // absorbers under the back of the roof
+  const aa = smooth(seg(t, 78.4, 79.2)) * ia;
+  if (aa > 0) { c.beginPath(); for (const s of [-1, 1]) { c.moveTo(X(s * 60), Y(45.2)); for (let x = 60; x < 84; x += 1.5) { c.lineTo(X(s * (x + .75)), Y(43.7)); c.lineTo(X(s * (x + 1.5)), Y(45.2)); } } c.strokeStyle = rgba('graphite', .8 * aa); c.lineWidth = 1.2; c.stroke(); }
+  // crowd
+  c.fillStyle = rgba('blue', .6 * ia);
+  for (const s of [-1, 1]) for (let i = 0; i < 36; i += 2) { const bx = X(s * (38.6 + i * 1.1)), by = Y(2 + i * .75 + .9 + (.15 + .5 * lvl) * Math.max(0, Math.sin(t * (8 + 6 * lvl) + i * .7))); c.beginPath(); c.arc(bx, by, 2.2, 0, TAU); c.fill(); }
+  // waves out of the stands, and their reflections off the roof
+  const wa = smooth(seg(t, 72.8, 73.6)) * (1 - smooth(seg(t, 84.0, 84.6)));
+  if (wa > 0) {
+    c.save(); c.beginPath(); c.rect(X(-86), Y(45.3), X(86) - X(-86), Y(0) - Y(45.3)); c.clip();
+    const per = lerp(.9, .5, lvl), spd = 30, yr = 45.4;
+    for (const s of [-1, 1]) for (const i of [6, 16, 26]) {
+      const sx = s * (38.6 + i * 1.1), sy = 2 + i * .75 + 1;
+      for (let e = 0; e < 6; e++) {
+        const te = Math.floor((t - 72.8) / per) * per + 72.8 - e * per, r = (t - te) * spd; if (r <= 0 || te < 72.7) continue;
+        const al = (1 - r / (spd * per * 6)) * wa * (.4 + .6 * lvl); if (al <= 0) continue;
+        c.beginPath(); c.arc(X(sx), Y(sy), r * k, s < 0 ? -Math.PI / 2 : Math.PI / 2, s < 0 ? Math.PI / 2 : Math.PI * 1.5); c.strokeStyle = rgba('blue', .5 * al); c.lineWidth = 1.2; c.stroke();
+        if (r > yr - sy) { c.beginPath(); c.arc(X(sx), Y(2 * yr - sy), r * k, s < 0 ? 0 : Math.PI / 2, s < 0 ? Math.PI / 2 : Math.PI); c.strokeStyle = rgba('cyan', .8 * al); c.lineWidth = 1.4; c.stroke(); }
+      }
+    }
+    c.restore();
+  }
+  // PA line arrays at the roof edge
+  const pa = smooth(seg(t, 76.4, 77.2)) * ia;
+  if (pa > 0) for (const s of [-1, 1]) {
+    for (let j = 0; j < 4; j++) { c.fillStyle = rgba('graphite', pa); c.fillRect(X(s * 35) - 4, Y(44.8 - j * 1.1), 8, 1.0 * k - 1); }
+    const pulse = .5 + .5 * Math.sin(t * 5);
+    c.beginPath(); c.moveTo(X(s * 35), Y(42.5)); c.lineTo(X(s * 50), Y(10)); c.lineTo(X(s * 78), Y(28)); c.closePath(); c.fillStyle = rgba('cyan', (.1 + .1 * pulse) * pa); c.fill();
+  }
+  const la = env(t, 74.0, 74.4, 84.0, 84.6);
+  lab(c, X(-62), Y(45.4), MX, 440, seg(t, 74.2, 75.4), 'Reflective roof', la);
+  lab(c, X(35), Y(43), MX, 510, seg(t, 76.8, 78.0), 'PA arrays', la);
+  lab(c, X(-72), Y(44.4), MX, 580, seg(t, 78.6, 79.8), 'Absorbers', la);
+  head(c, [['Acoustics:', 'blue'], [' the roof returns the roar.', 'graphite']], seg(t, 73.0, 74.6), 1 - smooth(seg(t, 84.0, 84.6)));
+}
+
+/* =====================================================================
+   08 — ACCESS  (84 – 96.6)
+   ===================================================================== */
+const GATES = [.62, .84, 1.16, 1.38].map(f => f * Math.PI);
+const STATION = [-235, 0, 34];
+const ROUTES = GATES.map(a => { const m = ovPt(150, 130, a), g = ovPt(121, 101, a), pts = [[STATION[0], STATION[2]], [m[0], m[1]], [g[0], g[1]]]; return { pts, cum: pathCum(pts) }; });
+function sAccess(c, t) {
+  const cm = cam({ yaw: .3 + .03 * (t - 84), pitch: .95, dist: 640, f: 1000, tx: -60, ty: 0, tz: 0, cx: 560, cy: 660 }), P = (x, y, z) => cm.p(x, y, z);
+  const ia = smooth(seg(t, 84.0, 84.7));
+  const pl = ringP(cm, 150, 130, 0); c.setLineDash([4, 6]); c.beginPath(); pl.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('mid', .7 * ia); c.lineWidth = 1; c.stroke(); c.setLineDash([]);
+  drawStadium(c, cm, t, { e: 0, a: ia, fill: .7, pitchA: .4, flows: 1 });
+  // rail line + station
+  c.beginPath(); for (const z of [30, 38]) { const a = P(-420, 0, z), b = P(-120, 0, z); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } c.strokeStyle = rgba('graphite', .6 * ia); c.lineWidth = 1.2; c.stroke();
+  box3(c, cm, -265, 22, -205, 46, 0, 8, ia, 'white', 'blue');
+  // walking routes + people
+  const ra = smooth(seg(t, 85.0, 85.8));
+  ROUTES.forEach((R, ri) => {
+    const pr = R.pts.map(q => P(q[0], 0, q[1]));
+    c.beginPath(); polyPartial(c, pr, easeOut(seg(t, 85.0 + ri * .2, 86.4 + ri * .2))); c.strokeStyle = rgba('blue', .55 * ra); c.lineWidth = 2; c.stroke();
+    const L = R.cum[R.cum.length - 1];
+    c.fillStyle = rgba('blue', .9 * ra); for (let j = 0; j < 26; j++) { const s = ((t * 18 + j / 26 * L + ri * 7) % L), q = pathAt(R.pts, R.cum, s), sp = P(q[0], 0, q[1]); c.fillRect(sp[0] - 1.5, sp[1] - 1.5, 3, 3); }
+    // turnstiles
+    const g = R.pts[2], g2 = ovPt(121, 101, GATES[ri] + .03), g0 = ovPt(121, 101, GATES[ri] - .03), a = P(g0[0], 0, g0[1]), b = P(g2[0], 0, g2[1]);
+    c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.strokeStyle = rgba('cyan', ra * smooth(seg(t, 87.0, 87.6))); c.lineWidth = 5; c.stroke(); void g;
+  });
+  // step-free ramp
+  const sa = smooth(seg(t, 88.8, 89.6));
+  if (sa > 0) { const ramp = []; for (let i = 0; i <= 6; i++) { const a = 1.0 * Math.PI + (i % 2 ? .05 : -.05), r = lerp(1.32, 1.06, i / 6), q = ovPt(121 * r, 101 * r, a); ramp.push(P(q[0], i * .6, q[1])); } c.beginPath(); polyPartial(c, ramp, easeOut(seg(t, 88.8, 90.2))); c.strokeStyle = rgba('cyan', sa); c.lineWidth = 3; c.stroke(); }
+  const la = env(t, 85.6, 86.0, 96.0, 96.6), st = P(-235, 8, 34), tq = P(...(() => { const q = ovPt(121, 101, GATES[1]); return [q[0], 0, q[1]]; })()), rq = (() => { const q = ovPt(121 * 1.2, 101 * 1.2, Math.PI); return P(q[0], 1, q[1]); })();
+  lab(c, st[0], st[1], MX, 230, seg(t, 85.8, 87.0), 'Metro', la);
+  lab(c, tq[0], tq[1], MX, 300, seg(t, 87.2, 88.4), 'Turnstiles', la);
+  lab(c, rq[0], rq[1], MX, 370, seg(t, 89.2, 90.4), 'Step-free ramps', la);
+  head(c, [['Access:', 'blue'], [' from train to seat, step-free.', 'graphite']], seg(t, 85.0, 86.6), 1 - smooth(seg(t, 96.0, 96.6)));
+}
+
+/* =====================================================================
+   09 — PREMIUM  (96 – 108.6)
+   ===================================================================== */
+function sPremium(c, t) {
+  const O = [130, 900], k = 12, X = m => O[0] + m * k, Y = m => O[1] - m * k, ia = smooth(seg(t, 96.0, 96.7));
+  const path = (pts, close) => { c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); if (close) c.closePath(); };
+  const hatchFill = pts => { path(pts, true); c.fillStyle = rgba('light', 1); c.fill(); c.save(); c.clip(); c.beginPath(); for (let h = -900; h < 900; h += 10) { c.moveTo(O[0] + h, Y(0)); c.lineTo(O[0] + h + 600, Y(0) - 600); } c.strokeStyle = rgba('mid', .25); c.lineWidth = 1; c.stroke(); c.restore(); path(pts, true); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1; c.stroke(); };
+  c.save(); c.globalAlpha = ia;
+  c.beginPath(); c.moveTo(X(-9), Y(0)); c.lineTo(X(66), Y(0)); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
+  c.fillStyle = rgba('light', .9); c.fillRect(X(-9), Y(0), 9 * k, 5);
+  // lower tier over the tunnel club
+  const low = [[1, 3.6], [1, 4.4]]; for (let i = 0; i < 20; i++) { low.push([2 + i * .9, 4.4 + i * .5]); low.push([2.9 + i * .9, 4.4 + i * .5]); } low.push([21, 14.4], [21, 3.6]);
+  hatchFill(low);
+  // private boxes
+  hatchFill([[21, 13.6], [33, 13.6], [33, 12.6], [21, 12.6]]);
+  hatchFill([[21, 18.4], [33, 18.4], [33, 17.6], [21, 17.6]]);
+  // upper tier
+  const up = [[24, 18.4], [24, 20]]; for (let i = 0; i < 26; i++) { up.push([25 + i * .9, 20 + i * .6]); up.push([25.9 + i * .9, 20 + i * .6]); } up.push([50, 35], [50, 33], [34, 18.4]);
+  hatchFill(up);
+  // roof + columns
+  path([[52, 0], [52, 40]], false); c.strokeStyle = rgba('graphite', .8); c.lineWidth = 2; c.stroke();
+  path([[54, 40], [-3, 38.6], [-3, 37.6], [54, 39]], true); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('blue', .9); c.lineWidth = 1.2; c.stroke();
+  c.restore();
+  // tunnel club (glass box at field level) + players walking out
+  const tc = smooth(seg(t, 97.0, 97.8)) * ia;
+  if (tc > 0) {
+    path([[7, .2], [19, .2], [19, 3.4], [7, 3.4]], true); c.fillStyle = rgba('cyan', .3 * tc); c.fill(); c.strokeStyle = rgba('blue', tc); c.lineWidth = 1.4; c.stroke();
+    path([[1, 0], [1, 3.4]], false); c.strokeStyle = rgba('graphite', tc); c.stroke();
+    for (let i = 0; i < 4; i++) { c.beginPath(); c.arc(X(9 + i * 2.6), Y(1.5), 4, 0, TAU); c.fillStyle = rgba('graphite', .7 * tc); c.fill(); }
+    for (let j = 0; j < 6; j++) { const u = ((t * .35 + j / 6) % 1), x = lerp(19, -6, u); c.beginPath(); c.arc(X(x), Y(1.1), 5, 0, TAU); c.fillStyle = rgba('blue', tc * (x > 1 ? .45 : 1)); c.fill(); }
+  }
+  // club seats (halfway-line rows) + box glazing
+  const cs = smooth(seg(t, 99.0, 99.8)) * ia;
+  if (cs > 0) { c.fillStyle = rgba('cyan', .9 * cs); for (let i = 5; i < 13; i++) c.fillRect(X(2.2 + i * .9), Y(4.4 + i * .5) - 6, .6 * k, 5); }
+  const bx = smooth(seg(t, 101.0, 101.8)) * ia;
+  if (bx > 0) { path([[22, 13.6], [22, 17.6]], false); c.strokeStyle = rgba('cyan', bx); c.lineWidth = 4; c.stroke(); for (let i = 0; i < 3; i++) { c.beginPath(); c.arc(X(24.5 + i * 3), Y(15.2), 4, 0, TAU); c.fillStyle = rgba('blue', bx); c.fill(); } }
+  // sightlines to the touchline
+  const sl = smooth(seg(t, 102.4, 103.4)) * ia;
+  if (sl > 0) { c.beginPath(); for (const [x, y] of [[22, 15.6], [10, 9], [2.5, 5.6]]) { c.moveTo(X(x), Y(y)); c.lineTo(X(-6), Y(0)); } c.strokeStyle = rgba('blue', .6 * sl); c.lineWidth = 1.2; c.stroke(); }
+  const la = env(t, 97.6, 98.0, 108.0, 108.6);
+  lab(c, X(13), Y(3.4), 640, 980, seg(t, 97.8, 99.0), 'Tunnel club', la);
+  lab(c, X(9), Y(9.2), 640, 860, seg(t, 99.4, 100.6), 'Club seats', la);
+  lab(c, X(27), Y(15.4), 640, 740, seg(t, 101.2, 102.4), 'Private boxes', la);
+  head(c, [['Premium:', 'blue'], [' closer to the pitch, closer to the players.', 'graphite']], seg(t, 97.0, 98.8), 1 - smooth(seg(t, 108.0, 108.6)));
+}
+
+/* =====================================================================
+   10 — LOCKER ROOMS (plan)  (108 – 120.6)
+   ===================================================================== */
+const LROOMS = [[470, 200, 90, 170, 'Tunnel'], [600, 220, 400, 210, 'Warm-up'], [110, 390, 450, 380, 'Dressing room'], [600, 460, 400, 190, 'Hydro'], [600, 670, 190, 120, 'Medical'], [810, 670, 190, 120, 'Media'], [110, 790, 890, 50, ''], [110, 860, 320, 170, 'Arrival']];
+const LPATH = (() => { const p = [[270, 960], [270, 815], [335, 700], [335, 600], [520, 470], [700, 330], [515, 330], [515, 200], [515, 150]]; return { p, cum: pathCum(p) }; })();
+function sLocker(c, t) {
+  const ia = smooth(seg(t, 108.0, 108.7)), dp = easeOut(seg(t, 108.2, 110.4));
+  // pitch edge
+  c.fillStyle = rgba('light', ia); c.fillRect(110, 120, 890, 60); txt(c, 'PITCH', 555, 158, { size: 14, ls: 4, color: 'mid', a: ia, align: 'center' });
+  // rooms
+  LROOMS.forEach(([x, y, w, h, name], i) => {
+    const p = seg(dp, i / LROOMS.length * .6, i / LROOMS.length * .6 + .4); if (p <= 0) return;
+    c.fillStyle = rgba('white', .9 * ia * p); c.fillRect(x, y, w, h);
+    c.beginPath(); polyLen(c, [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], p); c.strokeStyle = rgba('graphite', .85 * ia); c.lineWidth = 3; c.stroke();
+    if (name) txt(c, name.toUpperCase(), x + 14, y + 26, { size: 13, ls: 2, color: 'mid', a: ia * smooth(seg(p, .6, 1)) });
+  });
+  // warm-up lanes
+  c.beginPath(); for (let i = 1; i < 5; i++) { c.moveTo(620, 230 + i * 38); c.lineTo(980, 230 + i * 38); } c.strokeStyle = rgba('light', ia); c.lineWidth = 2; c.stroke();
+  // hydro pools
+  for (const [x, col] of [[730, 'cyan'], [880, 'blue']]) { c.beginPath(); c.arc(x, 565, 52, 0, TAU); c.fillStyle = rgba(col, .2 * ia); c.fill(); c.strokeStyle = rgba(col, .9 * ia); c.lineWidth = 1.4; c.stroke(); }
+  // oval bench: every seat faces the coach
+  const ox = 335, oy = 600, rx = 175, ry = 120, ba = smooth(seg(t, 110.0, 110.8)) * ia, sr = smooth(seg(t, 111.2, 112.4)) * ia;
+  c.beginPath(); c.ellipse(ox, oy, rx, ry, 0, 0, TAU); c.strokeStyle = rgba('graphite', .5 * ba); c.lineWidth = 16; c.stroke();
+  for (let i = 0; i < 24; i++) {
+    const a = i / 24 * TAU, sx = ox + rx * Math.cos(a), sy = oy + ry * Math.sin(a);
+    c.beginPath(); c.arc(sx, sy, 6, 0, TAU); c.fillStyle = rgba('white', ba); c.fill(); c.strokeStyle = rgba('blue', ba); c.lineWidth = 1.4; c.stroke();
+    if (sr > 0) { c.beginPath(); c.moveTo(sx, sy); c.lineTo(lerp(sx, ox, sr), lerp(sy, oy, sr)); c.strokeStyle = rgba('cyan', .45 * ia); c.lineWidth = 1; c.stroke(); }
+  }
+  c.beginPath(); c.arc(ox, oy, 10, 0, TAU); c.fillStyle = rgba('blue', ba); c.fill();
+  // team bus
+  c.strokeStyle = rgba('graphite', ia); c.lineWidth = 1.6; c.strokeRect(160, 920, 220, 70); c.beginPath(); c.arc(200, 995, 9, 0, TAU); c.arc(340, 995, 9, 0, TAU); c.stroke();
+  // the matchday route
+  const pa = smooth(seg(t, 112.6, 113.4)) * ia;
+  if (pa > 0) {
+    const pr = LPATH.p; c.setLineDash([8, 8]); c.lineDashOffset = -t * 40; c.beginPath(); pr.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('blue', .8 * pa); c.lineWidth = 2.4; c.stroke(); c.setLineDash([]);
+    const L = LPATH.cum[LPATH.cum.length - 1];
+    for (let j = 0; j < 11; j++) { const s = clamp((t - 113.0 - j * .18) * 260, 0, L), q = pathAt(pr, LPATH.cum, s); c.beginPath(); c.arc(q[0], q[1], 7, 0, TAU); c.fillStyle = rgba('blue', pa); c.fill(); c.strokeStyle = rgba('white', pa); c.lineWidth = 1.5; c.stroke(); }
+  }
+  head(c, [['Locker rooms:', 'blue'], [' every seat faces the coach.', 'graphite']], seg(t, 109.0, 110.6), 1 - smooth(seg(t, 120.0, 120.6)));
+}
+
+/* =====================================================================
+   11 — ENERGY & CLIMATE  (120 – 132.6)
    ===================================================================== */
 function sSolar(c, t) {
-  const cm = cam({ yaw: .9 + .05 * (t - 76), pitch: .62, dist: 400, f: 1000, tx: 20, ty: 14, tz: 0, cx: 860, cy: 560 });
-  const ia = smooth(seg(t, 76.0, 76.7));
+  const cm = cam({ yaw: .9 + .05 * (t - 120), pitch: .64, dist: 450, f: 1000, tx: 20, ty: 14, tz: 0, cx: 540, cy: 680 });
+  const ia = smooth(seg(t, 120.0, 120.7));
   drawStadium(c, cm, t, { e: 0, a: ia, fill: .7, pitchA: .5, flows: 0 });
-  const pp = easeOut(seg(t, 76.8, 79.6)), N = 48 * 5;
-  for (let k = 0; k < N * pp; k++) {
+  const pp = easeOut(seg(t, 120.6, 123.2));
+  for (let k = 0; k < 240 * pp; k++) {
     const i = k % 48, r = Math.floor(k / 48), a0 = i / 48 * TAU + .01, a1 = (i + 1) / 48 * TAU - .01, f0 = .12 + r * .17, f1 = f0 + .14;
     const q = [[a0, f0], [a1, f0], [a1, f1], [a0, f1]].map(([a, f]) => { const p1 = ovPt(74, 56, a), p2 = ovPt(124, 104, a); return cm.p(lerp(p1[0], p2[0], f), 47.4, lerp(p1[1], p2[1], f)); });
     c.beginPath(); q.forEach((p, j) => j ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = rgba('blue', .55 * ia); c.fill();
   }
-  // battery store
-  const bs = smooth(seg(t, 78.6, 79.2));
-  if (bs > 0) {
-    for (let r = 0; r < 3; r++) for (let j = 0; j < 4; j++) box3(c, cm, 150 + j * 9, -70, 157 + j * 9, -56, r * 5, 4.4, bs * ia, 'white', 'blue');
-    const ch = easeOut(seg(t, 79.4, 81.6)), bq = cm.p(168, 18, -63);
-    c.fillStyle = rgba('light', bs); c.fillRect(bq[0] - 40, bq[1] - 40, 80, 8); c.fillStyle = rgba('cyan', bs); c.fillRect(bq[0] - 40, bq[1] - 40, 80 * ch, 8);
-    const A = cm.p(100, 47, -60), B = cm.p(160, 14, -63); c.setLineDash([6, 8]); c.lineDashOffset = -t * 50; c.beginPath(); c.moveTo(A[0], A[1]); c.quadraticCurveTo((A[0] + B[0]) / 2, Math.min(A[1], B[1]) - 60, B[0], B[1]); c.strokeStyle = rgba('cyan', bs); c.lineWidth = 2; c.stroke(); c.setLineDash([]);
-  }
-  const la = env(t, 77.0, 77.4, 82.0, 82.6), rq = leftmost(ringP(cm, 100, 80, 47.4)), bq = cm.p(150, 15, -70);
-  leader(c, rq[0], rq[1], 120, 360, seg(t, 77.2, 78.6), 'Solar roof', 'Panels across the roof', { a: la });
-  leader(c, bq[0], bq[1], 120, 500, seg(t, 79.0, 80.4), 'Battery store', 'Built from used electric-car batteries', { a: la });
-  const ca = env(t, 77.4, 77.9, 82.0, 82.6), Xr = 1490;
-  if (ca > 0) { kicker(c, 'SOLAR PANELS', Xr, 300, 1, ca); txt(c, '~' + fmt(Math.round(4200 * pp / 10) * 10), Xr - 3, 372, { w: 700, size: 62, color: 'blue', a: ca }); kicker(c, 'BATTERY STORAGE', Xr, 450, 1, ca * bs); txt(c, '3 MW', Xr - 2, 500, { w: 700, size: 40, a: ca * bs }); }
-  const ha = 1 - smooth(seg(t, 82.0, 82.6));
-  vignetteTag(c, '01', 'ENERGY', t, 76.4, ha, '02');
-  headline(c, [['Amsterdam:', 'blue'], [' about 4,200 solar panels on the roof, stored in a battery built from used car batteries.', 'graphite']], 120, 925, seg(t, 76.8, 79.0), { size: 42, maxW: 1300, a: ha });
+  const bs = smooth(seg(t, 122.6, 123.2));
+  if (bs > 0) for (let r = 0; r < 3; r++) for (let j = 0; j < 4; j++) box3(c, cm, 150 + j * 9, -70, 157 + j * 9, -56, r * 5, 4.4, bs * ia, 'white', 'blue');
+  const a = env(t, 121.0, 121.4, 126.0, 126.6);
+  stat(c, 'SOLAR PANELS', '~' + fmt(Math.round(4200 * pp / 10) * 10), MX, 220, seg(t, 121.0, 122.2), a);
+  const bq = cm.p(150, 15, -70); lab(c, bq[0], bq[1], MX, 380, seg(t, 123.0, 124.2), 'Second-life batteries', a);
+  head(c, [['Amsterdam:', 'blue'], [' a solar roof.', 'graphite']], seg(t, 120.8, 122.2), 1 - smooth(seg(t, 126.0, 126.6)));
 }
 function sCool(c, t) {
-  const O = [960, 720], k = 7.4, ia = smooth(seg(t, 82.0, 82.7));
-  // hot exterior wash
-  c.fillStyle = rgba('light', .9 * ia); c.fillRect(0, 140, W, 700);
+  const O = [540, 860], k = 5.0, ia = smooth(seg(t, 126.0, 126.7));
   const { X, Y } = bowlSection(c, O, k, ia, { roofTrans: .5 });
-  const ca = smooth(seg(t, 82.8, 83.6));
+  const ca = smooth(seg(t, 126.6, 127.4));
   if (ca > 0) {
-    // cool air under every row
-    for (const s of [-1, 1]) for (let i = 0; i < 36; i += 3) {
-      const x = s * (38.6 + i * 1.1), y = 2 + i * .75 + .4, ph = (t * 1.4 + i * .07) % 1;
-      c.beginPath(); c.moveTo(X(x), Y(y)); c.lineTo(X(x - s * (1.5 + 3 * ph)), Y(y + .3)); c.strokeStyle = rgba('cyan', (1 - ph) * ca); c.lineWidth = 2; c.stroke();
-    }
-    // pitch-side nozzles
+    for (const s of [-1, 1]) for (let i = 0; i < 36; i += 3) { const x = s * (38.6 + i * 1.1), y = 2 + i * .75 + .4, ph = (t * 1.4 + i * .07) % 1; c.beginPath(); c.moveTo(X(x), Y(y)); c.lineTo(X(x - s * (1.5 + 3 * ph)), Y(y + .3)); c.strokeStyle = rgba('cyan', (1 - ph) * ca); c.lineWidth = 2; c.stroke(); }
     c.setLineDash([10, 12]); c.lineDashOffset = -t * 80;
     for (const s of [-1, 1]) for (const h of [1.2, 2.4, 3.6]) { c.beginPath(); c.moveTo(X(s * 36), Y(h)); c.quadraticCurveTo(X(s * 18), Y(h + 1.5), X(s * 2), Y(h * .6)); c.strokeStyle = rgba('blue', .85 * ca); c.lineWidth = 1.8; c.stroke(); }
     c.setLineDash([]);
-    // cool dome over the bowl
     const g = c.createRadialGradient(X(0), Y(0), 10, X(0), Y(0), 46 * k); g.addColorStop(0, rgba('cyan', .22 * ca)); g.addColorStop(1, rgba('cyan', 0));
     c.fillStyle = g; c.beginPath(); c.ellipse(X(0), Y(0), 60 * k, 30 * k, 0, Math.PI, TAU); c.fill();
   }
-  const la = env(t, 83.2, 83.6, 88.0, 88.6);
-  leader(c, X(-50), Y(10.5), 120, 300, seg(t, 83.4, 84.8), 'Vents under the seats', 'Cooled air delivered row by row', { a: la });
-  leader(c, X(-36), Y(2.4), 120, 440, seg(t, 84.2, 85.6), 'Pitch-side nozzles', 'Cool air across the playing surface', { a: la });
-  txt(c, 'OUTSIDE · HOT', X(92), Y(52), { w: 700, size: 15, ls: 3, color: 'mid', a: ia, align: 'right' });
-  txt(c, 'INSIDE THE BOWL · COOLED', X(0), Y(20), { w: 700, size: 15, ls: 3, color: 'blue', a: ca, align: 'center' });
-  const ha = 1 - smooth(seg(t, 88.0, 88.6));
-  vignetteTag(c, '02', 'CLIMATE', t, 82.4, ha, '02');
-  headline(c, [['Qatar 2022:', 'blue'], [' chilled air flowed from vents under the seats and beside the pitch.', 'graphite']], 120, 925, seg(t, 82.8, 85.0), { size: 42, maxW: 1300, a: ha });
+  const la = env(t, 127.0, 127.4, 132.0, 132.6);
+  lab(c, X(-50), Y(10.5), MX, 470, seg(t, 127.2, 128.4), 'Seat vents', la);
+  lab(c, X(-36), Y(2.4), MX, 540, seg(t, 128.0, 129.2), 'Pitch-side nozzles', la);
+  head(c, [['Qatar 2022:', 'blue'], [' cooled from under the seats.', 'graphite']], seg(t, 126.8, 128.2), 1 - smooth(seg(t, 132.0, 132.6)));
 }
 
 /* =====================================================================
-   SCENE 08 — CLOSING  (88 – 100)
+   12 — CLOSING  (132 – 142)
    ===================================================================== */
 const F8KEYS = [
-  { t: 88.0, yaw: 1.1, pitch: .6, dist: 420, f: 1000, tx: 0, ty: 20, tz: 0, cx: 960, cy: 520 },
-  { t: 92.0, yaw: 1.5, pitch: .5, dist: 440, f: 1000, tx: 0, ty: 24, tz: 0, cx: 960, cy: 500 },
-  { t: 100, yaw: 1.9, pitch: .56, dist: 700, f: 1000, tx: 0, ty: 20, tz: 0, cx: 960, cy: 470 },
+  { t: 132.0, yaw: 1.1, pitch: .6, dist: 460, f: 1000, tx: 0, ty: 20, tz: 0, cx: 540, cy: 640 },
+  { t: 136.0, yaw: 1.5, pitch: .52, dist: 480, f: 1000, tx: 0, ty: 24, tz: 0, cx: 540, cy: 620 },
+  { t: 142, yaw: 1.9, pitch: .56, dist: 760, f: 1000, tx: 0, ty: 20, tz: 0, cx: 540, cy: 600 },
 ];
 function sFinal(c, t) {
   const cm = cam(camKeys(F8KEYS, t));
-  const pulse = heartPulse(t, 94.0, 98.3), g = smooth(seg(t, 93.4, 94.2)) * (.35 + .65 * pulse);
-  if (t > 94) {
-    const n = Math.floor((t - 94) / BEAT);
-    for (let k = Math.max(0, n - 2); k <= n; k++) { const bt = 94 + k * BEAT; if (bt > 98.3) continue; const r = (t - bt) / 2.2; if (r > 1) continue; const s = 1 + r * .9, R = ringP(cm, 121 * s, 101 * s, 0); c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', .6 * (1 - r)); c.lineWidth = 1.4; c.stroke(); }
+  const pulse = heartPulse(t, 136.0, 140.3), g = smooth(seg(t, 135.4, 136.2)) * (.35 + .65 * pulse);
+  if (t > 136) {
+    const n = Math.floor((t - 136) / BEAT);
+    for (let k = Math.max(0, n - 2); k <= n; k++) { const bt = 136 + k * BEAT; if (bt > 140.3) continue; const r = (t - bt) / 2.2; if (r > 1) continue; const s = 1 + r * .9, R = ringP(cm, 121 * s, 101 * s, 0); c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('cyan', .6 * (1 - r)); c.lineWidth = 1.4; c.stroke(); }
   }
-  const arc = []; for (let hh = 6; hh <= 18; hh += .25) { const dd = sunDir(hh); arc.push(cm.p(dd[0] * 260, dd[1] * 260, dd[2] * 260)); }
-  c.setLineDash([4, 6]); c.beginPath(); arc.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.strokeStyle = rgba('mid', .6 * smooth(seg(t, 88.4, 89.4))); c.lineWidth = 1; c.stroke(); c.setLineDash([]);
-  drawStadium(c, cm, t, { e: .5 * (1 - ease(seg(t, 88.2, 91.4))), fill: lerp(1, 1.4, smooth(seg(t, 90, 92))), glow: g, pitchA: .5 });
-  LUM.forEach((f, i) => { if (i % 2) return; const A = cm.p(...f); c.beginPath(); c.arc(A[0], A[1], 2.6, 0, TAU); c.fillStyle = rgba('cyan', (.4 + .6 * g) * smooth(seg(t, 91.4, 92.4))); c.fill(); });
-  const ta = 1 - smooth(seg(t, 98.2, 99.2));
-  kicker(c, 'FIG. 08 — ASSEMBLY', 120, 862, seg(t, 94.0, 94.8), ta);
-  headline(c, [['Every stadium is a ', 'graphite'], ['climate machine.', 'blue']], 120, 940, seg(t, 94.5, 96.3), { size: 76, maxW: 1600, a: ta });
+  const arc = []; for (let hh = 6; hh <= 18; hh += .25) { const dd = sunDir(hh); arc.push(cm.p(dd[0] * 240, dd[1] * 240, dd[2] * 240)); }
+  c.setLineDash([4, 6]); c.beginPath(); arc.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.strokeStyle = rgba('mid', .6 * smooth(seg(t, 132.4, 133.4))); c.lineWidth = 1; c.stroke(); c.setLineDash([]);
+  drawStadium(c, cm, t, { e: .5 * (1 - ease(seg(t, 132.2, 135.4))), fill: lerp(1, 1.4, smooth(seg(t, 134, 136))), glow: g, pitchA: .5 });
+  LUM.forEach((f, i) => { if (i % 2) return; const A = cm.p(...f); c.beginPath(); c.arc(A[0], A[1], 2.6, 0, TAU); c.fillStyle = rgba('cyan', (.4 + .6 * g) * smooth(seg(t, 135.4, 136.4))); c.fill(); });
+  head(c, [['A stadium is a ', 'graphite'], ['living machine.', 'blue']], seg(t, 136.5, 138.3), 1 - smooth(seg(t, 140.2, 141.2)), 68);
 }
 
 /* =====================================================================
    TIMELINE, CHROME, COMPOSITING
    ===================================================================== */
 const SCENES = [
-  { a: 0, b: 10.6, f: sBall }, { a: 10.0, b: 24.6, f: sSoil }, { a: 24.0, b: 38.6, f: sSun }, { a: 38.0, b: 50.6, f: sAir }, { a: 50.0, b: 62.6, f: sMadrid },
-  { a: 62.0, b: 76.6, f: sLight }, { a: 76.0, b: 82.6, f: sSolar }, { a: 82.0, b: 88.6, f: sCool }, { a: 88.0, b: 100.01, f: sFinal },
+  { a: 0, b: 10.6, f: sBall }, { a: 10.0, b: 22.6, f: sSoil }, { a: 22.0, b: 34.6, f: sSun }, { a: 34.0, b: 45.6, f: sAir },
+  { a: 45.0, b: 57.6, f: sMadrid }, { a: 57.0, b: 72.6, f: sLight }, { a: 72.0, b: 84.6, f: sAcoustic }, { a: 84.0, b: 96.6, f: sAccess },
+  { a: 96.0, b: 108.6, f: sPremium }, { a: 108.0, b: 120.6, f: sLocker }, { a: 120.0, b: 126.6, f: sSolar }, { a: 126.0, b: 132.6, f: sCool },
+  { a: 132.0, b: 142.01, f: sFinal },
 ];
-const CHAPTERS = [{ t: 0, n: '01', name: 'Ball to Pitch' }, { t: 10, n: '02', name: 'The Living Pitch' }, { t: 24, n: '03', name: 'Sun & Orientation' }, { t: 38, n: '04', name: 'Light & Air' }, { t: 50, n: '05', name: 'The Moving Pitch' }, { t: 62, n: '06', name: 'Floodlighting' }, { t: 76, n: '07', name: 'Energy & Climate' }, { t: 88, n: '08', name: 'Closing' }];
+const CHAPTERS = [{ t: 0, n: '01', name: 'Ball to Pitch' }, { t: 10, n: '02', name: 'Living Pitch' }, { t: 22, n: '03', name: 'Sun' }, { t: 34, n: '04', name: 'Light & Air' }, { t: 45, n: '05', name: 'Madrid' }, { t: 57, n: '06', name: 'Floodlights' }, { t: 72, n: '07', name: 'Acoustics' }, { t: 84, n: '08', name: 'Access' }, { t: 96, n: '09', name: 'Premium' }, { t: 108, n: '10', name: 'Locker Rooms' }, { t: 120, n: '11', name: 'Energy & Climate' }, { t: 132, n: '12', name: 'Closing' }];
 const chapterAt = t => { let ch = CHAPTERS[0]; for (const c of CHAPTERS) if (t >= c.t) ch = c; return ch; };
 const tc = t => { const s = Math.floor(t), f = Math.floor((t - s) * 25); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f).padStart(2, '0')}`; };
 
@@ -958,9 +1024,9 @@ const EXPORT = new URLSearchParams(location.search).has('export');
 let forceFull = EXPORT;
 function resize() {
   let pw;
-  if (forceFull) pw = 1920;
+  if (forceFull) pw = W;
   else { const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1); pw = Math.min(2880, Math.max(640, Math.round(r.width * dpr))); }
-  const ph = Math.round(pw * 9 / 16);
+  const ph = Math.round(pw * H / W);
   for (const k of [cv, layer, sil, bg]) { k.width = pw; k.height = ph; }
   SC = pw / W;
   bgCtx.setTransform(SC, 0, 0, SC, 0, 0);
@@ -970,12 +1036,13 @@ function resize() {
 }
 function drawBackground(c, t) {
   c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
-  const g = c.createRadialGradient(960, 520, 240, 960, 520, 1250); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(238,241,244,1)');
+  const g = c.createRadialGradient(W / 2, H * .45, 200, W / 2, H * .45, 1000); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(238,241,244,1)');
   c.fillStyle = g; c.fillRect(0, 0, W, H);
-  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 97, 99)));
+  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 139, 141)));
   if (reveal > 0) { c.save(); c.beginPath(); c.rect(0, 0, W * reveal, H); c.clip(); c.globalAlpha = ga; c.drawImage(bg, 0, 0, W, H); c.restore(); }
 }
 function drawChrome(c, t) {
+  return;  // no header or footer in this cut
   const a = env(t, .6, 2.0, 97.4, 98.8); if (a <= 0) return;
   c.save(); c.globalAlpha = a;
   txt(c, 'ANATOMY OF THE GAME', 120, 92, { w: 700, size: 15, ls: 4 });
@@ -1003,7 +1070,7 @@ function draw(t) {
   }
   ctx.setTransform(SC, 0, 0, SC, 0, 0);
   drawChrome(ctx, t);
-  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 98.0, 99.7)));
+  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 140.0, 141.7)));
   if (white > 0) { ctx.fillStyle = `rgba(255,255,255,${white})`; ctx.fillRect(0, 0, W, H); }
 }
 
@@ -1011,9 +1078,9 @@ function draw(t) {
    SOUND — generative score (Web Audio), shared by live playback,
    WebM export and offline WAV rendering
    ===================================================================== */
-const PINGS = [1.2, 1.8, 4.6, 8.0, 11.2, 12.2, 13.4, 14.6, 16.2, 17.6, 25.6, 27.6, 33.4, 34.0, 39.8, 41.6, 44.4, 52.2, 53.4, 55.2, 57.2, 63.0, 63.8, 65.6, 67.6, 71.4, 77.2, 79.0, 83.4, 84.2, 94.5];
-const WHOOSH = [[3.4, 3.4], [10.4, 3.2], [23.9, .9], [33.2, 1.2], [37.9, .9], [49.9, .9], [52.2, 3.6], [56.8, 2.8], [61.9, .9], [67.6, 2.6], [75.9, .9], [81.9, .9], [87.9, 3.0]];
-const CHORDS = [[0, [110, 164.81, 246.94, 277.18]], [10, [92.5, 138.59, 220, 329.63]], [24, [98, 146.83, 220, 293.66]], [38, [87.31, 130.81, 196, 329.63]], [50, [73.42, 110, 185, 277.18]], [62, [82.41, 123.47, 207.65, 311.13]], [76, [73.42, 110, 164.81, 277.18]], [88, [110, 164.81, 207.65, 277.18]]];
+const PINGS = [1.2, 4.6, 11.2, 12.0, 13.2, 14.0, 15.6, 16.8, 23.4, 25.0, 31.0, 35.6, 37.2, 40.0, 47.2, 48.4, 52.2, 58.8, 66.4, 74.2, 76.8, 78.6, 85.8, 87.2, 89.2, 97.8, 99.4, 101.2, 110.0, 111.2, 121.0, 123.0, 127.2, 128.0, 136.5];
+const WHOOSH = [[3.4, 3.4], [10.4, 3.0], [21.9, .9], [30.2, 1.2], [33.9, .9], [44.9, .9], [47.2, 3.4], [51.8, 2.8], [56.9, .9], [62.6, 2.6], [71.9, .9], [83.9, .9], [95.9, .9], [107.9, .9], [119.9, .9], [125.9, .9], [131.9, 3.0]];
+const CHORDS = [[0, [110, 164.81, 246.94, 277.18]], [10, [92.5, 138.59, 220, 329.63]], [22, [98, 146.83, 220, 293.66]], [34, [87.31, 130.81, 196, 329.63]], [45, [73.42, 110, 185, 277.18]], [57, [82.41, 123.47, 207.65, 311.13]], [72, [73.42, 110, 164.81, 277.18]], [84, [98, 146.83, 220, 293.66]], [96, [92.5, 138.59, 220, 329.63]], [108, [87.31, 130.81, 196, 329.63]], [120, [82.41, 123.47, 207.65, 311.13]], [132, [110, 164.81, 207.65, 277.18]]];
 const PING_NOTES = [1318.5, 1479.98, 1760, 1661.22, 2217.46];
 function noiseBuffer(ac, secs, seed) { const r = rng(seed), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); let p = 0; for (let i = 0; i < d.length; i++) { const w = r() * 2 - 1; p = .97 * p + .03 * w; d[i] = w * .5 + p * 3; } } return b; }
 function impulse(ac, secs) { const r = rng(99), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / d.length, 3.2); } return b; }
@@ -1021,14 +1088,14 @@ function buildScore(ac, out, offset, offline) {
   const now = ac.currentTime + (offline ? 0 : .06), T = x => now + (x - offset), nodes = [];
   const valAt = (keys, x) => { if (x <= keys[0][0]) return keys[0][1]; for (let i = 1; i < keys.length; i++) if (x <= keys[i][0]) return lerp(keys[i - 1][1], keys[i][1], (x - keys[i - 1][0]) / (keys[i][0] - keys[i - 1][0])); return keys[keys.length - 1][1]; };
   const auto = (param, keys) => { param.setValueAtTime(valAt(keys, offset), now); for (const [k, v] of keys) if (k > offset) param.linearRampToValueAtTime(v, T(k)); };
-  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [98, .9], [99.9, 0]]);
+  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [140, .9], [141.9, 0]]);
   const comp = ac.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 3; comp.connect(master);
   const rev = ac.createConvolver(); rev.buffer = impulse(ac, 3.2); const revG = ac.createGain(); revG.gain.value = .45; rev.connect(revG); revG.connect(comp);
   const dry = ac.createGain(); dry.connect(comp);
   const send = ac.createGain(); send.gain.value = 1; send.connect(rev);
   // pad
-  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [10, 900], [24, 1300], [38, 1100], [50, 900], [62, 1300], [76, 1100], [88, 1600], [100, 700]]);
-  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [94, .1], [99.5, 0]]);
+  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [10, 900], [22, 1300], [34, 1100], [45, 900], [57, 1300], [72, 1000], [84, 1200], [96, 1400], [108, 1100], [120, 1300], [132, 1600], [142, 700]]);
+  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [136, .1], [141.5, 0]]);
   padLP.connect(padG); padG.connect(dry); padG.connect(send);
   const lfo = ac.createOscillator(); lfo.frequency.value = .07; const lfoG = ac.createGain(); lfoG.gain.value = 160; lfo.connect(lfoG); lfoG.connect(padLP.frequency); lfo.start(now); nodes.push(lfo);
   let ci = 0; for (let i = 0; i < CHORDS.length; i++) if (CHORDS[i][0] <= offset) ci = i;
@@ -1039,13 +1106,13 @@ function buildScore(ac, out, offset, offline) {
   }
   // heart / data pulse
   const pulse = (time, gain, f = 56) => { if (time < offset) return; const t0 = T(time), o = ac.createOscillator(), g = ac.createGain(), lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220; o.frequency.setValueAtTime(f * 2.2, t0); o.frequency.exponentialRampToValueAtTime(f, t0 + .09); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + .006); g.gain.exponentialRampToValueAtTime(.0001, t0 + .5); o.connect(lp); lp.connect(g); g.connect(dry); o.start(t0); o.stop(t0 + .55); };
-  for (const [bt, gn] of [[6.8, .4], [57.0, .3], [59.6, .35], [63.0, .3]]) pulse(bt, gn);
-  for (let k = 0; ; k++) { const bt = 94.0 + k * BEAT; if (bt > 98.3) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
+  for (const [bt, gn] of [[6.8, .4], [52.0, .3], [54.6, .35], [62.6, .3], [113.0, .3]]) pulse(bt, gn);
+  for (let k = 0; ; k++) { const bt = 136.0 + k * BEAT; if (bt > 140.3) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
   // reveal pings (with a soft pulse underneath)
   PINGS.forEach((pt, i) => {
     if (pt < offset) return; const t0 = T(pt), f = PING_NOTES[i % PING_NOTES.length];
     for (const [mul, gv] of [[1, .045], [2, .012]]) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f * mul; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gv, t0 + .004); g.gain.exponentialRampToValueAtTime(.0001, t0 + .9); o.connect(g); g.connect(dry); g.connect(send); o.start(t0); o.stop(t0 + 1); }
-    if (pt > 10 && pt < 94) pulse(pt, .12, 70);
+    if (pt > 10 && pt < 136) pulse(pt, .12, 70);
   });
   // whooshes on layer peels / transitions
   const nb = noiseBuffer(ac, 4, 5);
@@ -1060,7 +1127,7 @@ function buildScore(ac, out, offset, offline) {
   const crowd = ac.createBufferSource(); crowd.buffer = noiseBuffer(ac, 6, 21); crowd.loop = true;
   const cb = ac.createBiquadFilter(); cb.type = 'bandpass'; cb.frequency.value = 850; cb.Q.value = .5;
   const cl = ac.createBiquadFilter(); cl.type = 'lowshelf'; cl.frequency.value = 300; cl.gain.value = 6;
-  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [60, 0], [64, .015], [68, .04], [70.4, .015], [88, .03], [94, .06], [97, .11], [98.6, .12], [99.9, 0]]);
+  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [72, 0], [74, .04], [77, .16], [82, .16], [84.6, .02], [96, .03], [108, .01], [132, .03], [136, .06], [139, .11], [140.6, .12], [141.9, 0]]);
   const am = ac.createOscillator(); am.frequency.value = .31; const amG = ac.createGain(); amG.gain.value = .012; am.connect(amG); amG.connect(cg.gain);
   crowd.connect(cb); cb.connect(cl); cl.connect(cg); cg.connect(dry); cg.connect(send); crowd.start(now); am.start(now); nodes.push(crowd, am);
   return { now, stop() { try { master.gain.cancelScheduledValues(ac.currentTime); master.gain.setTargetAtTime(0, ac.currentTime, .03); } catch (e) {} setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) {} }); master.disconnect(); }, 200); } };
@@ -1103,7 +1170,7 @@ function loop() {
   if (Math.abs(t - lastUi) > .03) {
     lastUi = t; $('sc').value = t.toFixed(2);
     const f = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-    $('tc').textContent = `${f(t)} / 01:40`;
+    $('tc').textContent = `${f(t)} / 02:22`;
     const ch = chapterAt(t); document.querySelectorAll('.chapters button').forEach(b => b.classList.toggle('on', b.dataset.n === ch.n));
   }
   requestAnimationFrame(loop);
@@ -1116,7 +1183,7 @@ if (EXPORT) {
   resize(); window.__ready = true;
 } else {
   CHAPTERS.forEach(ch => { const b = document.createElement('button'); b.type = 'button'; b.dataset.n = ch.n; b.innerHTML = `<b>${ch.n}</b>${ch.name}`; b.onclick = () => { $('start').classList.add('hidden'); seek(ch.t + .01); if (!playing) play(); }; $('chapters').appendChild(b); const tk = document.createElement('span'); tk.style.left = (ch.t / DUR * 100) + '%'; $('ticks').appendChild(tk); });
-  tHold = 30.0;
+  tHold = 102.0;
   resize(); window.addEventListener('resize', resize);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw(curT()));
   $('start').onclick = () => { $('start').classList.add('hidden'); tHold = 0; play(); };
