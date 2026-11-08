@@ -14,7 +14,7 @@ const path = require('path');
 
 (async () => {
   const out = path.resolve(process.argv[2] || path.join(__dirname, 'anatomy-of-the-game.mp4'));
-  const fps = Number(process.argv[3] || 30), DUR = 80, N = Math.round(DUR * fps);
+  const fps = Number(process.argv[3] || 30), DUR = 110, N = Math.round(DUR * fps);
   const wav = out.replace(/\.mp4$/, '') + '.score.wav';
 
   const browser = await chromium.launch();

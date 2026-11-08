@@ -53,15 +53,15 @@
     <button class="start" id="start" type="button">
       <span class="k">An atlas of sport, data &amp; architecture</span>
       <span class="t">Anatomy of the Game</span>
-      <span class="s">80 seconds · best with sound</span>
+      <span class="s">110 seconds · best with sound</span>
       <span class="p"><i></i>Play film</span>
     </button>
   </div>
 </main>
 <div class="bar">
   <button id="pp" type="button">Play</button>
-  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="80" step="0.01" value="0" aria-label="Timeline"></div>
-  <span class="tc" id="tc">00:00 / 01:20</span>
+  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="110" step="0.01" value="0" aria-label="Timeline"></div>
+  <span class="tc" id="tc">00:00 / 01:50</span>
   <button id="snd" type="button" class="on">Sound on</button>
   <button id="rec" type="button">Export WebM</button>
   <button id="fs" type="button">Fullscreen</button>
@@ -71,11 +71,11 @@
 <script>
 "use strict";
 /* =====================================================================
-   ANATOMY OF THE GAME — 80 s procedural animation
+   ANATOMY OF THE GAME — 110 s procedural animation
    Every frame is a pure function of time t (seconds), so the film can be
    played, scrubbed, or rendered frame-by-frame to video.
    ===================================================================== */
-const W = 1920, H = 1080, DUR = 80, TAU = Math.PI * 2, BEAT = 60 / 70;
+const W = 1920, H = 1080, DUR = 110, TAU = Math.PI * 2, BEAT = 60 / 70;
 const RGB = { white:[255,255,255], light:[238,241,244], mid:[154,163,174], graphite:[58,64,72], blue:[30,91,255], cyan:[110,200,255] };
 const rgba = (k, a) => `rgba(${RGB[k][0]},${RGB[k][1]},${RGB[k][2]},${Math.max(0, Math.min(1, a))})`;
 const FONT = '"Helvetica Neue","HelveticaNeue",Helvetica,Inter,Arial,sans-serif';
@@ -1083,7 +1083,7 @@ function sEgress(c, t) {
 /* =====================================================================
    SCENE 06 — DESIGNED BY DATA (three vignettes)  (58.2 – 70.8)
    ===================================================================== */
-function vignetteTag(c, n, name, t, t0, a) { kicker(c, `${n} / 03 — ${name}`, 120, 196, seg(t, t0, t0 + .8), a, 'blue'); }
+function vignetteTag(c, n, name, t, t0, a, of = '03') { kicker(c, `${n} / ${of} — ${name}`, 120, 196, seg(t, t0, t0 + .8), a, 'blue'); }
 /* V1 — wall of sound */
 function sSound(c, t) {
   const O = [900, 800], k = 8.5, X = m => O[0] + m * k, Y = m => O[1] - m * k;
@@ -1276,7 +1276,261 @@ function sCFD(c, t) {
 }
 
 /* =====================================================================
-   SCENE 07 — CLOSING  (70.2 – 80)
+   SCENE 07 — THE FUTURE (four vignettes)  (70.2 – 100.8)
+   ===================================================================== */
+const STICK = [['pelvis', 'chest'], ['chest', 'neck'], ['neck', 'head'], ['hipL', 'hipR'], ['shL', 'shR'], ['hipL', 'kneeL'], ['kneeL', 'ankleL'], ['ankleL', 'toeL'], ['hipR', 'kneeR'], ['kneeR', 'ankleR'], ['ankleR', 'toeR'], ['shL', 'elL'], ['elL', 'haL'], ['shR', 'elR'], ['elR', 'haR']];
+const MIDS = [['hipL', 'kneeL'], ['kneeL', 'ankleL'], ['hipR', 'kneeR'], ['kneeR', 'ankleR'], ['shL', 'elL'], ['elL', 'haL'], ['shR', 'elR'], ['elR', 'haR'], ['pelvis', 'chest'], ['chest', 'neck'], ['neck', 'head']];
+const placePose = (J, ox, oz) => { const o = {}; for (const k in J) o[k] = [J[k][0] + ox, J[k][1], J[k][2] + oz]; return o; };
+function track29(J) { const pts = Object.keys(J).map(k => J[k]); for (const [a, b] of MIDS) pts.push(lerp3(J[a], J[b], .5)); return pts; } // 18 joints + 11 midpoints
+const bodyFront = J => Math.max(...Object.keys(J).filter(k => !/^(ha|el)/.test(k)).map(k => J[k][0]));  // arms don't count for offside
+const densify = (L, step = 1.5) => { const o = [L[0]]; for (let i = 1; i < L.length; i++) { const a = L[i - 1], b = L[i], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[2] - a[2]) / step)); for (let k = 1; k <= n; k++) o.push(lerp3(a, b, k / n)); } return o; };
+const PLD = PL.map(L => densify(L));
+function strokeSafe(c, pr, minD = 4) { for (let i = 1; i < pr.length; i++) { if (pr[i][2] < minD || pr[i - 1][2] < minD) continue; c.moveTo(pr[i - 1][0], pr[i - 1][1]); c.lineTo(pr[i][0], pr[i][1]); } }
+function drawStick(c, cm, J, col, a) {
+  const P = {}; for (const k in J) P[k] = cm.p(...J[k]);
+  c.beginPath(); for (const [x, y] of STICK) { c.moveTo(P[x][0], P[x][1]); c.lineTo(P[y][0], P[y][1]); }
+  c.lineCap = 'round'; c.strokeStyle = rgba(col, .85 * a); c.lineWidth = 2.4; c.stroke(); c.lineCap = 'butt';
+  const h = P.head; c.beginPath(); c.arc(h[0], h[1], .11 * h[3], 0, TAU); c.fillStyle = rgba('white', a); c.fill(); c.strokeStyle = rgba(col, .85 * a); c.lineWidth = 1.6; c.stroke();
+  return P;
+}
+const pathCum = pts => { const cum = [0]; for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])); return cum; };
+function pathAt(pts, cum, s) { let k = 1; while (k < cum.length - 1 && cum[k] < s) k++; const r = clamp((s - cum[k - 1]) / (cum[k] - cum[k - 1] || 1)); return [lerp(pts[k - 1][0], pts[k][0], r), lerp(pts[k - 1][1], pts[k][1], r)]; }
+
+/* F1 — semi-automated offside */
+const FR = 74.2;  // freeze: the moment the ball is played
+const OFF_ADV = .14;
+const OFFX = (() => bodyFront(pose(FR + 3.55)) - bodyFront(pose(FR + 3)) + OFF_ADV)();
+function sOffside(c, t) {
+  const k = ease(seg(t, 70.2, 77.9)), pt = t < FR ? t : FR + (t - FR) * .03;
+  const cm = cam({ yaw: lerp(.32, .18, k), pitch: lerp(.34, .3, k), dist: lerp(17, 14, k), f: 1000, tx: lerp(31, 34, k), ty: .9, tz: .5, cx: 880, cy: 560 });
+  const ia = smooth(seg(t, 70.2, 70.9)), frz = smooth(seg(t, FR, FR + .5));
+  const run = pt - 70.2;
+  const A = placePose(pose(pt + 3), 25.75 + OFFX + 2.4 * run, -3), D = placePose(pose(pt + 3.55), 25.75 + 2.4 * run, 4), Ps = placePose(pose(pt + 1.2), 22 + 1.3 * run, 1.5);
+  c.save(); c.beginPath(); c.rect(0, 150, 1440, 715); c.clip();
+  c.beginPath(); for (const L of PLD) strokeSafe(c, proj(cm, L)); c.strokeStyle = rgba('cyan', .25 * ia); c.lineWidth = 4; c.stroke(); c.strokeStyle = rgba('graphite', .55 * ia); c.lineWidth = 1.1; c.stroke();
+  // camera rays from the 12 roof cameras
+  const ra = env(t, 71.4, 72.2, 77.2, 77.9);
+  if (ra > 0) {
+    c.beginPath();
+    for (let i = 0; i < 12; i++) { const q = ovPt(124, 104, i / 12 * TAU), C = cm.p(q[0], 46, q[1]); if (C[2] < 4) continue; for (const J of [A, D]) { const h = cm.p(...J.head); c.moveTo(C[0], C[1]); c.lineTo(h[0], h[1]); } }
+    c.strokeStyle = rgba('cyan', .18 * ra); c.lineWidth = 1; c.stroke();
+  }
+  // offside planes at the freeze
+  if (frz > 0) {
+    const xd = bodyFront(D), xa = bodyFront(A);
+    for (const [x, col, fa] of [[xd, 'cyan', .14], [xa, 'blue', .07]]) {
+      const q = [[x, 0, -5], [x, 0, 10], [x, 2.4, 10], [x, 2.4, -5]].map(p => cm.p(...p));
+      c.beginPath(); q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = rgba(col, fa * frz); c.fill(); c.strokeStyle = rgba(col, .9 * frz); c.lineWidth = 1.4; c.stroke();
+    }
+  }
+  // players + 29 tracked points each
+  const ta = smooth(seg(t, 71.0, 72.0));
+  for (const [J, col] of [[Ps, 'mid'], [D, 'graphite'], [A, 'blue']]) {
+    drawStick(c, cm, J, col, ia);
+    if (J !== Ps && ta > 0) { c.fillStyle = rgba(col === 'blue' ? 'blue' : 'graphite', ta); track29(J).forEach((p, i) => { if (i / 29 > ta) return; const q = cm.p(...p); c.beginPath(); c.arc(q[0], q[1], 3, 0, TAU); c.fill(); }); }
+  }
+  // ball with in-ball sensor
+  const toe = Ps.toeR, after = Math.max(0, pt - FR) * 12, ball = [toe[0] + .14 + after, .11, toe[2] + after * .35];
+  const B = cm.p(...ball);
+  for (let i = 0; i < 3; i++) { const r = ((t * (t > FR ? 2.4 : 1) + i / 3) % 1); c.beginPath(); c.arc(B[0], B[1], 6 + 34 * r, 0, TAU); c.strokeStyle = rgba('cyan', (1 - r) * (t > FR ? .9 : .4) * ia); c.lineWidth = 1.2; c.stroke(); }
+  c.beginPath(); c.arc(B[0], B[1], .11 * B[3] + 2, 0, TAU); c.fillStyle = rgba('white', ia); c.fill(); c.strokeStyle = rgba('graphite', ia); c.lineWidth = 1.2; c.stroke();
+  c.restore();
+  // freeze flash
+  const fl = (1 - seg(t, FR, FR + .5)) * (t >= FR ? 1 : 0);
+  if (fl > 0) { c.fillStyle = `rgba(255,255,255,${.55 * fl})`; c.fillRect(0, 0, W, H); }
+  // labels
+  const la = env(t, 72.0, 72.4, 77.3, 77.9);
+  const ah = cm.p(...A.head), dh = cm.p(...D.head);
+  leader(c, ah[0], ah[1], 120, 600, seg(t, 72.0, 73.4), 'Attacker', '29 tracked points', { a: la });
+  leader(c, dh[0], dh[1], 120, 460, seg(t, 72.4, 73.8), 'Second-last defender', '29 tracked points', { a: la });
+  if (frz > 0) {
+    const top = cm.p(bodyFront(D), 2.4, 10), bq = B;
+    leader(c, top[0], top[1], 120, 320, seg(t, FR + .2, FR + 1.6), 'Offside line', `Attacker ahead by ${fmt(OFF_ADV, 2)} m`, { a: la });
+    leader(c, bq[0], bq[1], 120, 750, seg(t, FR + .5, FR + 1.9), 'Kick point', 'Detected by the ball sensor', { a: la });
+  }
+  // counters
+  const ca = env(t, 70.9, 71.4, 77.3, 77.9), Xr = 1490;
+  if (ca > 0) [['TRACKING CAMERAS', 12, ''], ['POINTS PER PLAYER', 29, ''], ['PLAYER DATA', 50, ' / s'], ['BALL SENSOR', 500, ' / s']].forEach(([n, v, u], i) => {
+    const t0 = 71.0 + i * .4, y = 300 + i * 112; kicker(c, n, Xr, y, seg(t, t0, t0 + .6), ca);
+    txt(c, fmt(Math.round(v * easeOut(seg(t, t0, t0 + 1.2)))) + u, Xr - 2, y + 50, { w: 700, size: 44, color: i === 3 ? 'blue' : 'graphite', a: ca });
+  });
+  const ha = 1 - smooth(seg(t, 77.3, 77.9));
+  vignetteTag(c, '01', 'OFFICIATING', t, 70.4, ha, '04');
+  headline(c, [['2022 World Cup:', 'blue'], [' 12 cameras tracked 29 points on every player, 50 times a second.', 'graphite']], 120, 920, seg(t, 70.8, 72.8), { size: 42, maxW: 1240, a: ha });
+}
+
+/* F2 — the adaptive venue */
+function sRetract(c, t) {
+  const cm = cam({ yaw: .75 + .04 * (t - 77.3), pitch: .62, dist: 330, f: 1000, tx: 10, ty: 0, tz: 0, cx: 860, cy: 520 });
+  const ia = smooth(seg(t, 77.3, 78.0)), P = (x, y, z) => cm.p(x, y, z);
+  const poly = (pts, fill, stroke, lw = 1) => { c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); if (fill) { c.fillStyle = fill; c.fill(); } if (stroke) { c.strokeStyle = stroke; c.lineWidth = lw; c.stroke(); } };
+  // the NFL field underneath
+  const yN = -1.6;
+  poly([[-54.85, -24.4], [54.85, -24.4], [54.85, 24.4], [-54.85, 24.4]].map(q => P(q[0], yN, q[1])), rgba('light', ia), rgba('graphite', .6 * ia));
+  for (const s of [-1, 1]) poly([[s * 54.85, -24.4], [s * 45.72, -24.4], [s * 45.72, 24.4], [s * 54.85, 24.4]].map(q => P(q[0], yN, q[1])), rgba('cyan', .22 * ia), null);
+  c.beginPath(); for (let i = 0; i <= 20; i++) { const x = -45.72 + i * 4.572, a = P(x, yN, -24.4), b = P(x, yN, 24.4); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
+  c.strokeStyle = rgba('blue', .55 * ia); c.lineWidth = 1; c.stroke();
+  // bowl tiers, the South Stand highlighted
+  for (let i = 0; i < 10; i += 3) { const R = ringP(cm, lerp(62, 106, i / 9), lerp(44, 88, i / 9), 1 + i * 2.7); c.beginPath(); R.forEach((q, j) => j ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.strokeStyle = rgba('mid', .45 * ia); c.lineWidth = .8; c.stroke(); }
+  c.beginPath(); for (let i = 0; i < 10; i++) { const o = oval(lerp(62, 106, i / 9), lerp(44, 88, i / 9)); for (let j = -5; j <= 5; j++) { const q = o[(j + NS) % NS], p = P(q[0], 1 + i * 2.7, q[1]); j === -5 ? c.moveTo(p[0], p[1]) : c.lineTo(p[0], p[1]); } }
+  c.strokeStyle = rgba('blue', .8 * ia); c.lineWidth = 1.2; c.stroke();
+  // the three grass trays slide under the stand
+  const SLOT = 58;
+  c.beginPath(); { const a = P(SLOT, 0, -34), b = P(SLOT, 0, 34); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); } c.strokeStyle = rgba('graphite', .9 * ia); c.lineWidth = 2; c.stroke();
+  const trays = [[-52.5, -17.5, 80.6, 112], [-17.5, 17.5, 79.7, 77], [17.5, 52.5, 78.8, 42]];
+  let tray0 = null;
+  trays.forEach(([x0, x1, ts, dist], ti) => {
+    const u = ease(seg(t, ts, ts + 2.4)), dx = dist * u, lift = .9 * Math.sin(Math.PI * u);
+    const a0 = Math.min(x0 + dx, SLOT), a1 = Math.min(x1 + dx, SLOT); if (a1 - a0 < .3) return;
+    for (const z of [-34, 34]) poly([[a0, lift, z], [a1, lift, z], [a1, lift - 1.4, z], [a0, lift - 1.4, z]].map(q => P(...q)), rgba('light', ia), rgba('graphite', .5 * ia), .8);
+    const top = [[a0, -34], [a1, -34], [a1, 34], [a0, 34]].map(q => P(q[0], lift, q[1]));
+    poly(top, rgba('white', .97 * ia), null);
+    c.save(); c.beginPath(); top.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); c.clip();
+    for (let s = 0; s < 12; s += 2) { const sx0 = -52.5 + s * 8.75 + dx, sx1 = sx0 + 8.75; poly([[sx0, -34], [sx1, -34], [sx1, 34], [sx0, 34]].map(q => P(q[0], lift, q[1])), rgba('light', .8 * ia), null); }
+    drawPitchLines(c, { p: (x, y, z) => cm.p(x + dx, y + lift, z), o: cm.o }, .8 * ia);
+    c.restore();
+    poly(top, null, rgba('graphite', .75 * ia), 1.2);
+    if (ti === 0) tray0 = P((a0 + a1) / 2, lift, -34);
+  });
+  // labels
+  const la = env(t, 78.0, 78.4, 84.8, 85.4);
+  if (tray0) leader(c, tray0[0], tray0[1], 120, 760, seg(t, 78.0, 79.4), 'Grass pitch', 'Three steel trays', { a: la * (1 - smooth(seg(t, 82.2, 82.8))) });
+  const nf = P(-30, yN, -24.4); leader(c, nf[0], nf[1], 120, 620, seg(t, 82.0, 83.4), 'NFL field', 'Synthetic surface beneath', { a: la });
+  const st = ringP(cm, 84, 66, 13.5)[0]; leader(c, st[0], st[1], 1490, 640, seg(t, 78.6, 80.0), 'South Stand', 'The trays park beneath it', { a: la });
+  const ca = env(t, 78.2, 78.7, 84.8, 85.4), Xr = 1490;
+  if (ca > 0) {
+    kicker(c, 'PLAYING SURFACES', Xr, 300, seg(t, 78.2, 78.8), ca);
+    txt(c, t < 82.4 ? '1' : '2', Xr - 4, 380, { w: 700, size: 80, color: 'blue', a: ca });
+    kicker(c, 'ONE BOWL, TWO SPORTS', Xr, 450, seg(t, 82.4, 83.2), ca);
+    txt(c, typed('Football · NFL', seg(t, 82.6, 83.6)), Xr, 492, { w: 700, size: 28, a: ca });
+  }
+  const ha = 1 - smooth(seg(t, 84.8, 85.4));
+  vignetteTag(c, '02', 'ADAPTIVE VENUES', t, 77.6, ha, '04');
+  headline(c, [['Tottenham’s grass pitch', 'blue'], [' splits into three trays and slides under the stand — revealing an NFL field beneath.', 'graphite']], 120, 920, seg(t, 78.0, 80.4), { size: 40, maxW: 1300, a: ha });
+}
+
+/* F3 — rain to rink */
+const RR = (() => {
+  const roofY = x => 34 - 7 * (x / 66) ** 2, top = x => [x, roofY(x) + 1.6];
+  const L = [], R = [];
+  for (let x = -4; x >= -66; x -= 3) L.push(top(x)); L.push([-67, 28], [-67, -6], [36, -6]);
+  for (let x = 4; x <= 66; x += 3) R.push(top(x)); R.push([67, 28], [67, -6], [56, -6]);
+  const S = [[40, -4], [40, -1.5], [26, -1.5], [26, .3], [-26, .3]];
+  return { roofY, paths: [L, R, S].map(p => ({ p, cum: pathCum(p) })) };
+})();
+function sRain(c, t) {
+  const O = [960, 740], k = 7, X = m => O[0] + m * k, Y = m => O[1] - m * k, { roofY } = RR;
+  const ia = smooth(seg(t, 84.8, 85.6));
+  const path = (pts, close) => { c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(X(q[0]), Y(q[1])) : c.moveTo(X(q[0]), Y(q[1]))); if (close) c.closePath(); };
+  const hatch = () => { c.save(); c.clip(); c.beginPath(); for (let h = -900; h < 900; h += 12) { c.moveTo(O[0] + h, Y(-14)); c.lineTo(O[0] + h + 500, Y(-14) - 500); } c.strokeStyle = rgba('mid', .25); c.lineWidth = 1; c.stroke(); c.restore(); };
+  c.save(); c.globalAlpha = ia;
+  // below grade
+  path([[-82, 0], [82, 0], [82, -13], [-82, -13]], true); c.fillStyle = rgba('light', .55); c.fill();
+  c.beginPath(); c.moveTo(X(-82), Y(0)); c.lineTo(X(82), Y(0)); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
+  // seating both sides
+  for (const s of [-1, 1]) {
+    const pts = [[s * 33, 0], [s * 33, 2]]; for (let i = 0; i < 16; i++) { pts.push([s * (34 + i * 1.5), 2 + i * 1.0]); pts.push([s * (35.5 + i * 1.5), 2 + i * 1.0]); }
+    pts.push([s * 62, 17], [s * 62, 0]);
+    path(pts, true); c.fillStyle = rgba('light', 1); c.fill(); hatch(); path(pts, true); c.strokeStyle = rgba('graphite', .8); c.lineWidth = 1; c.stroke();
+    c.beginPath(); c.moveTo(X(s * 64), Y(0)); c.lineTo(X(s * 64), Y(roofY(64))); c.strokeStyle = rgba('graphite', .7); c.lineWidth = 1.2; c.stroke();
+  }
+  // roof
+  const rtop = [], rbot = []; for (let x = -68; x <= 68; x += 2) { rtop.push([x, roofY(x) + 1.6]); rbot.push([x, roofY(x)]); }
+  path(rtop.concat(rbot.slice().reverse()), true); c.fillStyle = rgba('white', 1); c.fill(); c.strokeStyle = rgba('blue', .9); c.lineWidth = 1.3; c.stroke();
+  // pipes
+  c.strokeStyle = rgba('graphite', .55); c.lineWidth = 1;
+  for (const pts of [[[-67, 28], [-67, -6], [36, -6]], [[67, 28], [67, -6], [56, -6]], RR.paths[2].p]) { path(pts, false); c.stroke(); }
+  // cistern
+  const lvl = ease(seg(t, 86.8, 90.0)) - .4 * ease(seg(t, 90.2, 92.4));
+  path([[36, -4], [56, -4], [56, -11], [36, -11]], true); c.fillStyle = rgba('white', 1); c.fill();
+  if (lvl > 0) { path([[36, -11 + 7 * lvl], [56, -11 + 7 * lvl], [56, -11], [36, -11]], true); c.fillStyle = rgba('cyan', .45); c.fill(); }
+  path([[36, -4], [56, -4], [56, -11], [36, -11]], true); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
+  // rink: water, then ice
+  const ice = smooth(seg(t, 90.6, 92.2)), wet = smooth(seg(t, 89.8, 90.6));
+  path([[-30, 0], [30, 0], [30, .9], [-30, .9]], true); c.fillStyle = ice > 0 ? `rgba(${Math.round(lerp(110, 255, ice))},${Math.round(lerp(200, 255, ice))},255,${lerp(.5, 1, ice) * Math.max(wet, ice)})` : rgba('cyan', .5 * wet); c.fill();
+  c.strokeStyle = rgba(ice > .5 ? 'blue' : 'mid', .9); c.lineWidth = 1.2; c.stroke();
+  c.restore();
+  // rain
+  const rainA = env(t, 85.2, 86.0, 91.4, 92.4) * ia;
+  if (rainA > 0) {
+    c.beginPath();
+    for (let i = 0; i < 170; i++) {
+      const x = -80 + hash(i) * 160, y = 64 - ((t * 26 + hash(i + 999) * 64) % 64);
+      const floor = Math.abs(x) < 68 ? roofY(x) + 1.6 : 0; if (y < floor) continue;
+      c.moveTo(X(x), Y(y)); c.lineTo(X(x - .3), Y(y + 1.8));
+    }
+    c.strokeStyle = rgba('cyan', .9 * rainA); c.lineWidth = 1.2; c.stroke();
+  }
+  // water flow
+  RR.paths.forEach((P, pi) => {
+    const fa = pi < 2 ? env(t, 86.0, 86.8, 91.6, 92.6) : env(t, 89.6, 90.2, 92.2, 92.8); if (fa <= 0) return;
+    const L = P.cum[P.cum.length - 1], n = pi < 2 ? 30 : 16;
+    c.fillStyle = rgba('blue', .9 * fa * ia);
+    for (let j = 0; j < n; j++) { const s = ((t * 26 + j / n * L) % L), q = pathAt(P.p, P.cum, s); c.beginPath(); c.arc(X(q[0]), Y(q[1]), 2.4, 0, TAU); c.fill(); }
+  });
+  // labels
+  const la = env(t, 85.6, 86.0, 92.3, 92.9);
+  const rq = [X(-40), Y(roofY(-40) + 1.6)]; leader(c, rq[0], rq[1], 120, 380, seg(t, 85.8, 87.2), 'Roof catchment', 'Rain collected, not wasted', { a: la });
+  leader(c, X(36), Y(-7.5), 120, 790, seg(t, 87.0, 88.4), 'Cistern', 'Stored below grade', { a: la });
+  leader(c, X(-24), Y(.45), 120, 640, seg(t, 90.4, 91.8), 'Ice', 'Made from rainwater', { a: la });
+  const ca = env(t, 85.6, 86.1, 92.3, 92.9), Xr = 1560;
+  if (ca > 0) {
+    kicker(c, 'OPERATIONS', Xr, 300, seg(t, 85.6, 86.2), ca);
+    txt(c, typed('All-electric', seg(t, 85.8, 86.8)), Xr, 342, { w: 700, size: 30, a: ca });
+    kicker(c, 'CISTERN LEVEL', Xr, 410, seg(t, 86.6, 87.2), ca);
+    txt(c, Math.round(100 * Math.max(0, lvl)) + ' %', Xr - 2, 470, { w: 700, size: 52, color: 'blue', a: ca });
+  }
+  const ha = 1 - smooth(seg(t, 92.3, 92.9));
+  vignetteTag(c, '03', 'NET ZERO', t, 85.1, ha, '04');
+  headline(c, [['Climate Pledge Arena, Seattle:', 'blue'], [' rainwater from the roof is collected to make the ice.', 'graphite']], 120, 920, seg(t, 85.4, 87.4), { size: 42, maxW: 1240, a: ha });
+}
+
+/* F4 — the digital twin */
+const TWIN_RINGS = [[62, 44, 1], [80, 62, 9], [97, 79, 17], [106, 88, 25], [108, 90, 8], [115, 97, 20], [121, 101, 0], [121, 101, 42], [74, 56, 46], [99, 80, 47], [124, 104, 48]];
+const SENSORS = [[124, 104, 48, .2], [124, 104, 48, 1.4], [115, 97, 20, 2.3], [115, 97, 8, 3.3], [121, 101, 0, 4.2], [124, 104, 48, 5.2], [108, 90, 8, 5.9], [74, 56, 46, 2.8]];
+function sTwin(c, t) {
+  const base = { yaw: .85 + .05 * (t - 92.3), pitch: .52, dist: 640, f: 1000, tx: 0, ty: 20, tz: 0, cy: 540 };
+  const cA = cam(Object.assign({}, base, { cx: 520 })), cB = cam(Object.assign({}, base, { cx: 1140 }));
+  const ia = smooth(seg(t, 92.3, 93.0));
+  drawStadium(c, cA, t, { e: 0, a: ia * .9, fill: .9, pitchA: .35 });
+  // twin: a point cloud with a scanning sweep
+  const rev = easeOut(seg(t, 92.8, 95.2)), sw = (t * .9) % TAU;
+  drawPitchLines(c, cB, .3 * ia);
+  TWIN_RINGS.forEach(([a, b, y]) => {
+    const o = oval(a, b);
+    for (let i = 0; i < NS; i += 2) {
+      if (i / NS > rev) break;
+      const q = cB.p(o[i][0], y, o[i][1]), d = Math.abs(angDiff(i / NS * TAU, sw)), hot = d < .25;
+      c.fillStyle = rgba(hot ? 'cyan' : 'blue', (hot ? 1 : .7) * ia); const s = hot ? 3.4 : 2.2; c.fillRect(q[0] - s / 2, q[1] - s / 2, s, s);
+    }
+  });
+  // live data streams from sensors to the twin
+  SENSORS.forEach(([a, b, y, th], i) => {
+    const q = ovPt(a, b, th), A = cA.p(q[0], y, q[1]), Bq = cB.p(q[0], y, q[1]), mx = (A[0] + Bq[0]) / 2, my = Math.min(A[1], Bq[1]) - 90 - i * 12;
+    const sa = ia * smooth(seg(t, 93.4 + i * .15, 94.0 + i * .15)); if (sa <= 0) return;
+    c.beginPath(); c.moveTo(A[0], A[1]); c.quadraticCurveTo(mx, my, Bq[0], Bq[1]); c.strokeStyle = rgba('cyan', .35 * sa); c.lineWidth = 1; c.stroke();
+    for (let kk = 0; kk < 3; kk++) { const u = (t * .45 + kk / 3 + i * .11) % 1, x = (1 - u) * (1 - u) * A[0] + 2 * (1 - u) * u * mx + u * u * Bq[0], yy = (1 - u) * (1 - u) * A[1] + 2 * (1 - u) * u * my + u * u * Bq[1]; c.beginPath(); c.arc(x, yy, 2.6, 0, TAU); c.fillStyle = rgba('blue', .95 * sa); c.fill(); }
+    const r = (t * 1.2 + i * .3) % 1; c.beginPath(); c.arc(A[0], A[1], 4 + 12 * r, 0, TAU); c.strokeStyle = rgba('blue', (1 - r) * sa); c.stroke();
+  });
+  const la = env(t, 93.0, 93.4, 100.2, 100.8);
+  kicker(c, 'PHYSICAL BUILDING · SENSORS', 360, 790, seg(t, 93.0, 93.8), la);
+  kicker(c, 'DIGITAL TWIN · LIVE MODEL', 980, 790, seg(t, 93.4, 94.2), la, 'blue');
+  const ca = env(t, 93.6, 94.1, 100.2, 100.8), Xr = 1490;
+  if (ca > 0) {
+    kicker(c, 'SIMULATED FEED', Xr, 270, seg(t, 93.6, 94.2), ca, 'blue');
+    const occ = Math.round(61284 * easeOut(seg(t, 93.8, 96.5)) + (t > 96.5 ? 7 * Math.sin(t * 3) : 0));
+    [['OCCUPANCY', fmt(occ)], ['CONCOURSE DENSITY', fmt(1.8 * easeOut(seg(t, 94.2, 96)), 1) + ' p/m²'], ['ENERGY DRAW', fmt(3.6 * easeOut(seg(t, 94.6, 96.4)), 1) + ' MW'], ['PREDICTED EGRESS', '07:' + String(Math.round(31 * easeOut(seg(t, 95, 96.8)))).padStart(2, '0')]].forEach(([n, v], i) => {
+      const y = 340 + i * 104; kicker(c, n, Xr, y, seg(t, 93.8 + i * .4, 94.4 + i * .4), ca);
+      txt(c, v, Xr - 2, y + 46, { w: 700, size: 38, color: i === 0 ? 'blue' : 'graphite', a: ca * smooth(seg(t, 93.8 + i * .4, 94.2 + i * .4)) });
+    });
+  }
+  const ha = 1 - smooth(seg(t, 100.2, 100.8));
+  vignetteTag(c, '04', 'DIGITAL TWIN', t, 92.6, ha, '04');
+  headline(c, [['Next:', 'blue'], [' the digital twin — a stadium that senses, predicts and adapts in real time.', 'graphite']], 120, 920, seg(t, 92.9, 95.0), { size: 42, maxW: 1240, a: ha });
+}
+
+/* =====================================================================
+   SCENE 08 — CLOSING  (100.2 – 110; authored on a 70–80 clock, offset by 30 s)
    ===================================================================== */
 const S7KEYS = [
   { t: 70.2, yaw: 1.6, pitch: .42, dist: 470, f: 1000, tx: 0, ty: 62, tz: 0, cx: 980, cy: 545 },
@@ -1298,7 +1552,7 @@ function sClosing(c, t) {
   const ha_ = smooth(seg(t, 74.0, 75.0)) * (1 - smooth(seg(t, 78.0, 79.0)));
   if (ha_ > 0) { const q = cm.p(0, 14, 0); const hcm = cam({ yaw: .25 * Math.sin(t * .8), pitch: .12, dist: 6, f: q[3] * 10 * 6 * (1 + .07 * pulse), tx: 0, ty: 0, tz: 0, cx: q[0], cy: q[1] }); drawHeart(c, hcm, HEART, { a: ha_ * .85, glow: pulse, back: .2, lw: 1 }); }
   const ta = 1 - smooth(seg(t, 78.2, 79.2));
-  kicker(c, 'FIG. 07 — ASSEMBLY', 120, 862, seg(t, 74.0, 74.8), ta);
+  kicker(c, 'FIG. 08 — ASSEMBLY', 120, 862, seg(t, 74.0, 74.8), ta);
   headline(c, [['Design is ', 'graphite'], ['data,', 'blue'], [' made visible.', 'graphite']], 120, 940, seg(t, 74.5, 76.3), { size: 76, maxW: 1600, a: ta });
 }
 
@@ -1308,9 +1562,10 @@ function sClosing(c, t) {
 const SCENES = [
   { a: 0, b: 8.6, f: sOpening }, { a: 8.0, b: 20.7, f: sAthlete }, { a: 20.0, b: 32.3, f: sPitch }, { a: 31.6, b: 46.8, f: sStadium },
   { a: 46.0, b: 52.8, f: sSection }, { a: 52.2, b: 58.8, f: sEgress }, { a: 58.2, b: 62.7, f: sSound }, { a: 62.1, b: 66.7, f: sConcession },
-  { a: 66.1, b: 70.8, f: sCFD }, { a: 70.2, b: 80.01, f: sClosing },
+  { a: 66.1, b: 70.8, f: sCFD }, { a: 70.2, b: 77.9, f: sOffside }, { a: 77.3, b: 85.4, f: sRetract }, { a: 84.8, b: 92.9, f: sRain }, { a: 92.3, b: 100.8, f: sTwin },
+  { a: 100.2, b: 110.01, f: (c, t) => sClosing(c, t - 30) },
 ];
-const CHAPTERS = [{ t: 0, n: '01', name: 'Opening' }, { t: 8, n: '02', name: 'The Athlete' }, { t: 20, n: '03', name: 'The Game, Decoded' }, { t: 32, n: '04', name: 'The Stadium, Dissected' }, { t: 46, n: '05', name: 'Seeing & Moving' }, { t: 58, n: '06', name: 'Designed by Data' }, { t: 70, n: '07', name: 'Closing' }];
+const CHAPTERS = [{ t: 0, n: '01', name: 'Opening' }, { t: 8, n: '02', name: 'The Athlete' }, { t: 20, n: '03', name: 'The Game, Decoded' }, { t: 32, n: '04', name: 'The Stadium, Dissected' }, { t: 46, n: '05', name: 'Seeing & Moving' }, { t: 58, n: '06', name: 'Designed by Data' }, { t: 70, n: '07', name: 'The Future' }, { t: 100, n: '08', name: 'Closing' }];
 const chapterAt = t => { let ch = CHAPTERS[0]; for (const c of CHAPTERS) if (t >= c.t) ch = c; return ch; };
 const tc = t => { const s = Math.floor(t), f = Math.floor((t - s) * 25); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f).padStart(2, '0')}`; };
 
@@ -1337,16 +1592,16 @@ function drawBackground(c, t) {
   c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
   const g = c.createRadialGradient(960, 520, 240, 960, 520, 1250); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(238,241,244,1)');
   c.fillStyle = g; c.fillRect(0, 0, W, H);
-  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 77, 79)));
+  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 107, 109)));
   if (reveal > 0) { c.save(); c.beginPath(); c.rect(0, 0, W * reveal, H); c.clip(); c.globalAlpha = ga; c.drawImage(bg, 0, 0, W, H); c.restore(); }
 }
 function drawChrome(c, t) {
-  const a = env(t, .6, 2.0, 77.4, 78.8); if (a <= 0) return;
+  const a = env(t, .6, 2.0, 107.4, 108.8); if (a <= 0) return;
   c.save(); c.globalAlpha = a;
   txt(c, 'ANATOMY OF THE GAME', 120, 92, { w: 700, size: 15, ls: 4 });
   txt(c, 'An atlas of sport, data and architecture', 120, 116, { size: 15, color: 'mid' });
   const ch = chapterAt(t);
-  txt(c, `PLATE ${ch.n} / 07`, 1800, 92, { size: 15, ls: 4, align: 'right' });
+  txt(c, `PLATE ${ch.n} / 08`, 1800, 92, { size: 15, ls: 4, align: 'right' });
   txt(c, typed(ch.name.toUpperCase(), seg(t, ch.t, ch.t + .9)), 1800, 116, { size: 15, ls: 2, align: 'right', color: 'blue' });
   txt(c, tc(t), 1800, 1036, { size: 13, ls: 2, align: 'right', color: 'mid' });
   txt(c, 'SCALE — 1 : 1  /  1 : 200  /  1 : 2000', 120, 1036, { size: 13, ls: 2, color: 'mid' });
@@ -1368,7 +1623,7 @@ function draw(t) {
   }
   ctx.setTransform(SC, 0, 0, SC, 0, 0);
   drawChrome(ctx, t);
-  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 78.0, 79.7)));
+  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 108.0, 109.7)));
   if (white > 0) { ctx.fillStyle = `rgba(255,255,255,${white})`; ctx.fillRect(0, 0, W, H); }
 }
 
@@ -1376,9 +1631,9 @@ function draw(t) {
    SOUND — generative score (Web Audio), shared by live playback,
    WebM export and offline WAV rendering
    ===================================================================== */
-const PINGS = [4.6, 5.4, 5.8, 9.5, 10.0, 11.0, 12.0, 13.0, 13.4, 13.9, 14.4, 15.0, 15.8, 16.6, 20.8, 23.1, 24.2, 25.6, 27.6, 28.6, 32.4, 40.6, 41.0, 41.4, 41.8, 42.2, 42.6, 42.8, 47.0, 47.4, 49.2, 53.0, 53.4, 53.8, 54.2, 58.4, 59.2, 59.6, 62.4, 62.8, 63.4, 64.0, 66.4, 67.2, 67.8, 74.5];
-const WHOOSH = [[2.9, 2.4], [10.0, 2.0], [13.0, 2.0], [19.2, 1.6], [31.9, 2.6], [38.2, 3.0], [45.4, 1.4], [52.1, .9], [58.1, .9], [62.0, .9], [66.0, .9], [70.4, 3.4]];
-const CHORDS = [[0, [110, 164.81, 246.94, 277.18]], [8, [92.5, 138.59, 220, 329.63]], [20, [73.42, 110, 185, 277.18]], [32, [82.41, 123.47, 207.65, 311.13]], [46, [138.59, 207.65, 246.94, 329.63]], [58, [73.42, 110, 164.81, 277.18]], [70, [110, 164.81, 207.65, 277.18]]];
+const PINGS = [4.6, 5.4, 5.8, 9.5, 10.0, 11.0, 12.0, 13.0, 13.4, 13.9, 14.4, 15.0, 15.8, 16.6, 20.8, 23.1, 24.2, 25.6, 27.6, 28.6, 32.4, 40.6, 41.0, 41.4, 41.8, 42.2, 42.6, 42.8, 47.0, 47.4, 49.2, 53.0, 53.4, 53.8, 54.2, 58.4, 59.2, 59.6, 62.4, 62.8, 63.4, 64.0, 66.4, 67.2, 67.8, 70.8, 71.0, 71.4, 71.8, 72.2, 74.2, 78.0, 78.6, 82.0, 82.4, 85.4, 85.8, 87.0, 90.4, 92.9, 93.4, 93.8, 94.2, 94.6, 104.5];
+const WHOOSH = [[2.9, 2.4], [10.0, 2.0], [13.0, 2.0], [19.2, 1.6], [31.9, 2.6], [38.2, 3.0], [45.4, 1.4], [52.1, .9], [58.1, .9], [62.0, .9], [66.0, .9], [70.0, .9], [74.2, .6], [77.2, .9], [78.8, 4.4], [84.7, .9], [92.2, .9], [100.4, 3.4]];
+const CHORDS = [[0, [110, 164.81, 246.94, 277.18]], [8, [92.5, 138.59, 220, 329.63]], [20, [73.42, 110, 185, 277.18]], [32, [82.41, 123.47, 207.65, 311.13]], [46, [138.59, 207.65, 246.94, 329.63]], [58, [73.42, 110, 164.81, 277.18]], [70, [98, 146.83, 220, 293.66]], [85, [87.31, 130.81, 196, 329.63]], [100, [110, 164.81, 207.65, 277.18]]];
 const PING_NOTES = [1318.5, 1479.98, 1760, 1661.22, 2217.46];
 function noiseBuffer(ac, secs, seed) { const r = rng(seed), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); let p = 0; for (let i = 0; i < d.length; i++) { const w = r() * 2 - 1; p = .97 * p + .03 * w; d[i] = w * .5 + p * 3; } } return b; }
 function impulse(ac, secs) { const r = rng(99), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / d.length, 3.2); } return b; }
@@ -1386,14 +1641,14 @@ function buildScore(ac, out, offset, offline) {
   const now = ac.currentTime + (offline ? 0 : .06), T = x => now + (x - offset), nodes = [];
   const valAt = (keys, x) => { if (x <= keys[0][0]) return keys[0][1]; for (let i = 1; i < keys.length; i++) if (x <= keys[i][0]) return lerp(keys[i - 1][1], keys[i][1], (x - keys[i - 1][0]) / (keys[i][0] - keys[i - 1][0])); return keys[keys.length - 1][1]; };
   const auto = (param, keys) => { param.setValueAtTime(valAt(keys, offset), now); for (const [k, v] of keys) if (k > offset) param.linearRampToValueAtTime(v, T(k)); };
-  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [78, .9], [79.9, 0]]);
+  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [108, .9], [109.9, 0]]);
   const comp = ac.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 3; comp.connect(master);
   const rev = ac.createConvolver(); rev.buffer = impulse(ac, 3.2); const revG = ac.createGain(); revG.gain.value = .45; rev.connect(revG); revG.connect(comp);
   const dry = ac.createGain(); dry.connect(comp);
   const send = ac.createGain(); send.gain.value = 1; send.connect(rev);
   // pad
-  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [8, 900], [32, 1300], [46, 900], [58, 1200], [70, 1600], [80, 700]]);
-  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [74, .1], [79.5, 0]]);
+  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [8, 900], [32, 1300], [46, 900], [58, 1200], [70, 1400], [100, 1600], [110, 700]]);
+  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [104, .1], [109.5, 0]]);
   padLP.connect(padG); padG.connect(dry); padG.connect(send);
   const lfo = ac.createOscillator(); lfo.frequency.value = .07; const lfoG = ac.createGain(); lfoG.gain.value = 160; lfo.connect(lfoG); lfoG.connect(padLP.frequency); lfo.start(now); nodes.push(lfo);
   let ci = 0; for (let i = 0; i < CHORDS.length; i++) if (CHORDS[i][0] <= offset) ci = i;
@@ -1405,12 +1660,12 @@ function buildScore(ac, out, offset, offline) {
   // heart / data pulse
   const pulse = (time, gain, f = 56) => { if (time < offset) return; const t0 = T(time), o = ac.createOscillator(), g = ac.createGain(), lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220; o.frequency.setValueAtTime(f * 2.2, t0); o.frequency.exponentialRampToValueAtTime(f, t0 + .09); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + .006); g.gain.exponentialRampToValueAtTime(.0001, t0 + .5); o.connect(lp); lp.connect(g); g.connect(dry); o.start(t0); o.stop(t0 + .55); };
   for (let k = 0; ; k++) { const bt = 4.6 + k * BEAT; if (bt > 19) break; const gn = bt < 8.6 ? .55 : .2; pulse(bt, gn); pulse(bt + .24, gn * .55, 50); }
-  for (let k = 0; ; k++) { const bt = 74.0 + k * BEAT; if (bt > 78.3) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
+  for (let k = 0; ; k++) { const bt = 104.0 + k * BEAT; if (bt > 108.3) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
   // reveal pings (with a soft pulse underneath)
   PINGS.forEach((pt, i) => {
     if (pt < offset) return; const t0 = T(pt), f = PING_NOTES[i % PING_NOTES.length];
     for (const [mul, gv] of [[1, .045], [2, .012]]) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f * mul; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gv, t0 + .004); g.gain.exponentialRampToValueAtTime(.0001, t0 + .9); o.connect(g); g.connect(dry); g.connect(send); o.start(t0); o.stop(t0 + 1); }
-    if (pt > 9 && pt < 74) pulse(pt, .12, 70);
+    if (pt > 9 && pt < 104) pulse(pt, .12, 70);
   });
   // whooshes on layer peels / transitions
   const nb = noiseBuffer(ac, 4, 5);
@@ -1425,7 +1680,7 @@ function buildScore(ac, out, offset, offline) {
   const crowd = ac.createBufferSource(); crowd.buffer = noiseBuffer(ac, 6, 21); crowd.loop = true;
   const cb = ac.createBiquadFilter(); cb.type = 'bandpass'; cb.frequency.value = 850; cb.Q.value = .5;
   const cl = ac.createBiquadFilter(); cl.type = 'lowshelf'; cl.frequency.value = 300; cl.gain.value = 6;
-  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [57, 0], [62, .01], [70, .025], [74, .06], [77, .11], [78.6, .12], [79.9, 0]]);
+  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [57, 0], [62, .01], [70, .02], [96, .03], [104, .06], [107, .11], [108.6, .12], [109.9, 0]]);
   const am = ac.createOscillator(); am.frequency.value = .31; const amG = ac.createGain(); amG.gain.value = .012; am.connect(amG); amG.connect(cg.gain);
   crowd.connect(cb); cb.connect(cl); cl.connect(cg); cg.connect(dry); cg.connect(send); crowd.start(now); am.start(now); nodes.push(crowd, am);
   return { now, stop() { try { master.gain.cancelScheduledValues(ac.currentTime); master.gain.setTargetAtTime(0, ac.currentTime, .03); } catch (e) {} setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) {} }); master.disconnect(); }, 200); } };
@@ -1468,7 +1723,7 @@ function loop() {
   if (Math.abs(t - lastUi) > .03) {
     lastUi = t; $('sc').value = t.toFixed(2);
     const f = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-    $('tc').textContent = `${f(t)} / 01:20`;
+    $('tc').textContent = `${f(t)} / 01:50`;
     const ch = chapterAt(t); document.querySelectorAll('.chapters button').forEach(b => b.classList.toggle('on', b.dataset.n === ch.n));
   }
   requestAnimationFrame(loop);

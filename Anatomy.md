@@ -1,4 +1,4 @@
-#Anatomy of the Game — Animación de datos (80 s)
+#Anatomy of the Game — Animación de datos (110 s)
 
 <h4>Un estadio y un atleta disecados como una lámina de anatomía: el análisis de datos hoy define cómo se juega el deporte y cómo se diseñan sus estadios.</h4>
 
@@ -14,7 +14,8 @@
 <p>00:32 El estadio, disecado — la red de pases se convierte en la cubierta; axonometría explotada: estructura, circulación, sistemas, piel</p>
 <p>00:46 Ver y moverse — isópticas (valor C) en sección y simulación de evacuación</p>
 <p>00:58 Diseñado con datos — acústica, precios de concesiones, simulación de viento (CFD)</p>
-<p>01:10 Cierre — "Design is data, made visible."</p>
+<p>01:10 El futuro — fuera de juego semiautomático (Mundial 2022), la cancha retráctil del Tottenham, el hielo hecho con agua de lluvia del Climate Pledge Arena y el gemelo digital del estadio</p>
+<p>01:40 Cierre — "Design is data, made visible."</p>
 <br>
 
 [Inicio](index.md)
