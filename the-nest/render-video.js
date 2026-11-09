@@ -1,8 +1,8 @@
 /*
-  Renders the animation in index.html to an MP4 (1080x1350, 4:5, 30 fps, with the generated score).
+  Renders the animation in index.html to an MP4 (4:5 at 1080x1350, or 16:9 at 1920x1080; 30 fps, with the generated score).
   Requires Node, Playwright (Chromium) and ffmpeg on PATH.
 
-    node render-video.js [out.mp4] [fps]
+    node render-video.js [out.mp4] [fps] [4x5|16x9]
 
   Every frame is drawn deterministically by window.__render(t); the score is rendered with an
   OfflineAudioContext, so the output is identical from run to run.
@@ -13,14 +13,14 @@ const fs = require('fs');
 const path = require('path');
 
 (async () => {
-  const out = path.resolve(process.argv[2] || path.join(__dirname, 'the-nest.mp4'));
-  const fps = Number(process.argv[3] || 30), DUR = 90, N = Math.round(DUR * fps);
+  const fps = Number(process.argv[3] || 30), DUR = 90, N = Math.round(DUR * fps), wide = process.argv[4] === '16x9';
+  const out = path.resolve(process.argv[2] || path.join(__dirname, wide ? 'the-nest-16x9.mp4' : 'the-nest.mp4'));
   const wav = out.replace(/\.mp4$/, '') + '.score.wav';
 
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1080, height: 1350 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: wide ? { width: 1920, height: 1080 } : { width: 1080, height: 1350 }, deviceScaleFactor: 1 });
   page.on('pageerror', e => console.error('page error:', e.message));
-  await page.goto('file://' + path.join(__dirname, 'index.html') + '?export=1');
+  await page.goto('file://' + path.join(__dirname, 'index.html') + '?export=1' + (wide ? '&ar=16x9' : ''));
   await page.waitForFunction(() => window.__ready);
 
   console.log('rendering score…');
