@@ -42,3 +42,5 @@ Menú de Ejercicios:
 <br>
 [The Nest — Lincoln Financial Field (4:5 · 16:9)](The-Nest.md)
 <br>
+[Champions Under the Fan — Brewers y American Family Field (16:9)](Brewers.md)
+<br>
