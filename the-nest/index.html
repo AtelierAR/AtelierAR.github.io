@@ -1,0 +1,1134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Nest</title>
+<meta name="description" content="A 90-second vertical (4:5) animation of The Nest, a conceptual renovation of Lincoln Financial Field: the stadium today, the lowered field and new rows, the canopy, acoustics, north and south video boards, new experiences, lighting and technology.">
+<style>
+  :root{
+    --white:#FFFFFF; --light:#ECF0EF; --mid:#A5ACAF; --graphite:#1C282C; --blue:#004C54; --cyan:#2FAE4E;
+    --font:"Helvetica Neue","HelveticaNeue",Helvetica,Inter,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--white);color:var(--graphite);font-family:var(--font);font-weight:300;min-height:100%}
+  body{display:flex;flex-direction:column;min-height:100vh}
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px 8px}
+  .frame{position:relative;width:min(100%, calc((100vh - 150px) * 4 / 5));aspect-ratio:4/5;background:var(--white);
+    box-shadow:0 0 0 1px var(--light), 0 40px 90px -50px rgba(58,64,72,.35)}
+  canvas{display:block;width:100%;height:100%}
+  .start{position:absolute;inset:0;border:0;background:rgba(255,255,255,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:6% 6.25%;cursor:pointer;text-align:left;font-family:var(--font);color:var(--graphite)}
+  .start .k{font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.28em;text-transform:uppercase}
+  .start .t{font-weight:700;font-size:clamp(28px,5vw,76px);letter-spacing:-.02em;margin:.25em 0 .2em;line-height:1}
+  .start .s{font-weight:300;font-size:clamp(12px,1.2vw,18px);color:var(--mid)}
+  .start .p{margin-top:1.4em;display:inline-flex;align-items:center;gap:.7em;font-weight:300;font-size:clamp(12px,1.1vw,16px);letter-spacing:.2em;text-transform:uppercase;color:var(--blue)}
+  .start .p i{display:inline-block;width:0;height:0;border-left:11px solid var(--blue);border-top:7px solid transparent;border-bottom:7px solid transparent}
+  .start.hidden{display:none}
+  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 16px 6px;width:min(100%, calc((100vh - 150px) * 4 / 5 + 32px));margin:0 auto}
+  .bar button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.16em;text-transform:uppercase;background:none;border:0;color:var(--graphite);cursor:pointer;padding:6px 0}
+  .bar button:hover,.bar button.on{color:var(--blue)}
+  .scrub{position:relative;flex:1 1 260px;height:28px;display:flex;align-items:center}
+  .scrub input{width:100%;appearance:none;-webkit-appearance:none;background:transparent;height:28px;position:relative;z-index:2;cursor:pointer}
+  .scrub input::-webkit-slider-runnable-track{height:1px;background:var(--mid)}
+  .scrub input::-moz-range-track{height:1px;background:var(--mid)}
+  .scrub input::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--blue);margin-top:-5px;border:0}
+  .scrub input::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--blue);border:0}
+  .ticks{position:absolute;left:0;right:0;top:50%;height:0;z-index:1;pointer-events:none}
+  .ticks span{position:absolute;top:-5px;width:1px;height:10px;background:var(--mid)}
+  .tc{font-size:12px;letter-spacing:.14em;color:var(--mid);font-variant-numeric:tabular-nums;min-width:110px}
+  .chapters{display:flex;flex-wrap:wrap;gap:4px 18px;padding:0 16px 22px;width:min(100%, calc((100vh - 150px) * 4 / 5 + 32px));margin:0 auto}
+  .chapters button{font-family:var(--font);font-weight:300;font-size:12px;letter-spacing:.04em;color:var(--mid);background:none;border:0;cursor:pointer;padding:2px 0}
+  .chapters button b{font-weight:700;color:var(--graphite);margin-right:6px}
+  .chapters button.on{color:var(--blue)} .chapters button.on b{color:var(--blue)}
+  body.export .bar, body.export .chapters, body.export .start{display:none}
+  body.export .stage{padding:0} body.export .frame{width:1080px;height:1350px;box-shadow:none}
+  @media (max-width:640px){ body{min-height:0} .stage{flex:none;padding:16px 16px 4px} .bar,.chapters{width:100%} }
+</style>
+</head>
+<body>
+<main class="stage">
+  <div class="frame" id="frame">
+    <canvas id="cv" width="1080" height="1350" aria-label="Anatomy of the Game animation"></canvas>
+    <button class="start" id="start" type="button">
+      <span class="k">A proposal · Lincoln Financial Field</span>
+      <span class="t">The Nest</span>
+      <span class="s">90 seconds · best with sound</span>
+      <span class="p"><i></i>Play film</span>
+    </button>
+  </div>
+</main>
+<div class="bar">
+  <button id="pp" type="button">Play</button>
+  <div class="scrub"><div class="ticks" id="ticks"></div><input id="sc" type="range" min="0" max="90" step="0.01" value="0" aria-label="Timeline"></div>
+  <span class="tc" id="tc">00:00 / 01:30</span>
+  <button id="snd" type="button" class="on">Sound on</button>
+  <button id="rec" type="button">Export WebM</button>
+  <button id="fs" type="button">Fullscreen</button>
+</div>
+<nav class="chapters" id="chapters"></nav>
+
+<script>
+"use strict";
+/* =====================================================================
+   ANATOMY OF THE GAME · VOL. II, AMERICAN FOOTBALL — 90 s procedural animation
+   Every frame is a pure function of time t (seconds), so the film can be
+   played, scrubbed, or rendered frame-by-frame to video.
+   ===================================================================== */
+const W = 1080, H = 1350, DUR = 90, TAU = Math.PI * 2, BEAT = 60 / 70;
+const RGB = { white:[255,255,255], light:[236,240,239], mid:[165,172,175], graphite:[28,40,44], blue:[0,76,84], cyan:[47,174,78] };
+const rgba = (k, a) => `rgba(${RGB[k][0]},${RGB[k][1]},${RGB[k][2]},${Math.max(0, Math.min(1, a))})`;
+const FONT = '"Helvetica Neue","HelveticaNeue",Helvetica,Inter,Arial,sans-serif';
+
+/* ---------- math ---------- */
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const smooth = t => t * t * (3 - 2 * t);
+const env = (t, a, b, c, d) => Math.min(smooth(seg(t, a, b)), 1 - smooth(seg(t, c, d)));
+const lerp3 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const fmt = (v, d = 0) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const angDiff = (a, b) => { let d = (a - b) % TAU; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; return d; };
+
+/* heartbeat: lub-dub on a 70 bpm grid */
+const gpulse = x => x < 0 ? 0 : (1 - Math.exp(-x * 45)) * Math.exp(-x * 8.5);
+function heartPulse(t, start, end) {
+  if (t < start || t > end + .8) return 0;
+  const n = Math.floor((t - start) / BEAT); let v = 0;
+  for (let k = n - 1; k <= n; k++) { if (k < 0) continue; const bt = start + k * BEAT; if (bt > end) continue; v += gpulse(t - bt) + .55 * gpulse(t - bt - .24); }
+  return v / .6;
+}
+const G = (l, m, s) => Math.exp(-(((l - m) / s) ** 2));
+function ecg(tt, start) {
+  if (tt < start) return 0;
+  const l = ((tt - start + .1) % BEAT) - .1;
+  return -.12 * G(l, -.012, .008) + G(l, .012, .011) - .28 * G(l, .036, .011) + .2 * G(l, .26, .05) + .07 * G(l, BEAT - .2, .03);
+}
+
+/* ---------- camera ---------- */
+function cam(o) {
+  const cy = Math.cos(o.yaw), sy = Math.sin(o.yaw), cp = Math.cos(o.pitch), sp = Math.sin(o.pitch);
+  return { o, p(x, y, z) {
+    x -= o.tx; y -= o.ty; z -= o.tz;
+    const x1 = x * cy - z * sy, z1 = x * sy + z * cy;
+    const y2 = y * cp + z1 * sp, z2 = -y * sp + z1 * cp;
+    const d = Math.max(.01, o.dist + z2), s = o.f / d;
+    return [o.cx + x1 * s, o.cy - y2 * s, d, s];
+  } };
+}
+function camKeys(keys, t) {
+  if (t <= keys[0].t) return Object.assign({}, keys[0]);
+  for (let i = 0; i < keys.length - 1; i++) {
+    const a = keys[i], b = keys[i + 1];
+    if (t <= b.t) { const k = ease((t - a.t) / (b.t - a.t)); const o = {}; for (const key in a) o[key] = lerp(a[key], b[key], k); return o; }
+  }
+  return Object.assign({}, keys[keys.length - 1]);
+}
+const proj = (c, pts) => pts.map(q => c.p(q[0], q[1], q[2]));
+
+/* ---------- drawing primitives ---------- */
+function polyPartial(c, p2, p) {
+  const n = p2.length - 1; if (n < 1 || p <= 0) return;
+  const f = clamp(p) * n, k = Math.floor(f);
+  c.moveTo(p2[0][0], p2[0][1]);
+  for (let i = 1; i <= Math.min(k, n); i++) c.lineTo(p2[i][0], p2[i][1]);
+  if (k < n) { const a = p2[k], b = p2[k + 1], r = f - k; c.lineTo(a[0] + (b[0] - a[0]) * r, a[1] + (b[1] - a[1]) * r); }
+}
+function polyLen(c, pts, p) {
+  let L = 0; const ls = []; for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); ls.push(l); L += l; }
+  let rem = clamp(p) * L; c.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) {
+    if (rem >= ls[i - 1]) { c.lineTo(pts[i][0], pts[i][1]); rem -= ls[i - 1]; }
+    else { const r = ls[i - 1] ? rem / ls[i - 1] : 0; c.lineTo(lerp(pts[i - 1][0], pts[i][0], r), lerp(pts[i - 1][1], pts[i][1], r)); break; }
+  }
+}
+function strokeDepth(c, pr, dRef, fs, fw, bs, bw) {
+  c.beginPath();
+  for (let i = 1; i < pr.length; i++) if ((pr[i][2] + pr[i - 1][2]) / 2 > dRef) { c.moveTo(pr[i - 1][0], pr[i - 1][1]); c.lineTo(pr[i][0], pr[i][1]); }
+  c.strokeStyle = bs; c.lineWidth = bw; c.stroke();
+  c.beginPath();
+  for (let i = 1; i < pr.length; i++) if ((pr[i][2] + pr[i - 1][2]) / 2 <= dRef) { c.moveTo(pr[i - 1][0], pr[i - 1][1]); c.lineTo(pr[i][0], pr[i][1]); }
+  c.strokeStyle = fs; c.lineWidth = fw; c.stroke();
+}
+function taper(c, A, ra, B, rb) {
+  const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1e-6, nx = -dy / L, ny = dx / L;
+  c.moveTo(A[0] + nx * ra, A[1] + ny * ra); c.lineTo(B[0] + nx * rb, B[1] + ny * rb); c.lineTo(B[0] - nx * rb, B[1] - ny * rb); c.lineTo(A[0] - nx * ra, A[1] - ny * ra); c.closePath();
+  c.moveTo(A[0] + ra, A[1]); c.arc(A[0], A[1], ra, 0, TAU); c.moveTo(B[0] + rb, B[1]); c.arc(B[0], B[1], rb, 0, TAU);
+}
+function spindle(c, A, B, w, t0, t1, off) {
+  const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+  const sx = A[0] + dx * t0 + nx * off, sy = A[1] + dy * t0 + ny * off, ex = A[0] + dx * t1 + nx * off, ey = A[1] + dy * t1 + ny * off;
+  const mx = (sx + ex) / 2, my = (sy + ey) / 2;
+  c.moveTo(sx, sy); c.quadraticCurveTo(mx + nx * w * 2, my + ny * w * 2, ex, ey); c.quadraticCurveTo(mx - nx * w * 2, my - ny * w * 2, sx, sy);
+  for (const f of [.42, -.42]) { c.moveTo(sx, sy); c.quadraticCurveTo(mx + nx * w * 2 * f, my + ny * w * 2 * f, ex, ey); }
+}
+function bone(c, A, B, w) {
+  const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+  for (const s of [1, -1]) { c.moveTo(A[0] + dx * .1 + nx * w * s, A[1] + dy * .1 + ny * w * s); c.lineTo(A[0] + dx * .9 + nx * w * .8 * s, A[1] + dy * .9 + ny * w * .8 * s); }
+  c.moveTo(A[0] + dx * .06 + w * 1.7, A[1] + dy * .06); c.arc(A[0] + dx * .06, A[1] + dy * .06, w * 1.7, 0, TAU);
+  c.moveTo(A[0] + dx * .94 + w * 1.4, A[1] + dy * .94); c.arc(A[0] + dx * .94, A[1] + dy * .94, w * 1.4, 0, TAU);
+}
+
+/* ---------- typography ---------- */
+function txt(c, s, x, y, o = {}) {
+  const { w = 300, size = 20, color = 'graphite', a = 1, ls = 0, align = 'left' } = o;
+  if (!s || a <= 0) return;
+  c.font = `${w} ${size}px ${FONT}`; c.fillStyle = rgba(color, a); c.textAlign = align; c.textBaseline = 'alphabetic';
+  c.letterSpacing = ls + 'px'; c.fillText(s, x, y); c.letterSpacing = '0px';
+}
+const typed = (s, p) => s.slice(0, Math.floor(s.length * clamp(p) + 1e-6));
+function headline(c, segs, x, y, p, o = {}) {
+  const { size = 48, w = 700, maxW = 1200, lh = 1.16, a = 1 } = o;
+  if (p <= 0 || a <= 0) return;
+  c.font = `${w} ${size}px ${FONT}`; c.letterSpacing = (size >= 40 ? -size * .018 : 0) + 'px';
+  c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+  const toks = []; for (const [s, col] of segs) s.split(/(\s+)/).forEach(tk => { if (tk) toks.push([tk, col, c.measureText(tk).width]); });
+  const lines = [[]]; let lw = 0;
+  for (const tk of toks) {
+    const sp = /^\s+$/.test(tk[0]);
+    if (!sp && lw + tk[2] > maxW && lw > 0) { lines.push([]); lw = 0; }
+    if (sp && lw === 0) continue;
+    lines[lines.length - 1].push(tk); lw += tk[2];
+  }
+  let total = 0; for (const L of lines) for (const tk of L) total += tk[0].length;
+  let rem = Math.floor(total * clamp(p) + 1e-6), cx = x, cy = y;
+  for (let li = 0; li < lines.length && rem > 0; li++) {
+    cx = x; cy = y + li * size * lh;
+    for (const tk of lines[li]) {
+      if (rem <= 0) break;
+      const s = tk[0].slice(0, rem); c.fillStyle = rgba(tk[1], a); c.fillText(s, cx, cy);
+      cx += s.length === tk[0].length ? tk[2] : c.measureText(s).width; rem -= tk[0].length;
+    }
+  }
+  if (p < 1) { c.fillStyle = rgba('blue', a); c.fillRect(cx + 4, cy - size * .74, Math.max(2, size * .05), size * .86); }
+  c.letterSpacing = '0px';
+}
+function leader(c, ax, ay, tx, ty, p, title, sub, o = {}) {
+  const { a = 1, tsize = 22 } = o;
+  if (p <= 0 || a <= 0) return;
+  c.font = `700 ${tsize}px ${FONT}`; const w1 = c.measureText(title).width;
+  c.font = `300 16px ${FONT}`; const w2 = sub ? c.measureText(sub).width : 0;
+  const right = tx > ax, ex = right ? tx - 16 : tx + Math.max(w1, w2) + 16, ly = ty - tsize * .34;
+  const dir = Math.sign(ex - ax) || 1, kx = ax + dir * Math.min(Math.abs(ly - ay), Math.abs(ex - ax) * .6);
+  const lp = easeOut(seg(p, 0, .5));
+  c.fillStyle = rgba('blue', a); c.beginPath(); c.arc(ax, ay, 3.2, 0, TAU); c.fill();
+  c.strokeStyle = rgba('blue', .35 * a); c.lineWidth = 1; c.beginPath(); c.arc(ax, ay, 8 * easeOut(seg(p, 0, .3)), 0, TAU); c.stroke();
+  c.strokeStyle = rgba('mid', a); c.beginPath(); polyLen(c, [[ax, ay], [kx, ly], [ex, ly]], lp); c.stroke();
+  if (lp >= 1) { c.fillStyle = rgba('graphite', a); c.fillRect(ex - (right ? 0 : 1), ly - 3, 1, 6); }
+  txt(c, typed(title, seg(p, .35, .75)), tx, ty, { w: 700, size: tsize, color: 'graphite', a });
+  if (sub) txt(c, typed(sub, seg(p, .5, 1)), tx, ty + 25, { size: 16, color: 'mid', a });
+}
+function kicker(c, s, x, y, p, a = 1, color = 'mid') { txt(c, typed(s, p), x, y, { size: 14, ls: 3, color, a }); }
+function marker(c, x, y, a, s = 9) {
+  c.strokeStyle = rgba('blue', a); c.lineWidth = 1.2; c.strokeRect(x - s / 2, y - s / 2, s, s);
+  c.beginPath(); c.moveTo(x - s, y); c.lineTo(x - s / 2 - 2, y); c.moveTo(x + s / 2 + 2, y); c.lineTo(x + s, y);
+  c.moveTo(x, y - s); c.lineTo(x, y - s / 2 - 2); c.moveTo(x, y + s / 2 + 2); c.lineTo(x, y + s); c.stroke();
+}
+function glowStroke(c, color, a, w, blur) {
+  c.save(); c.shadowColor = rgba(color, a); c.shadowBlur = blur * SC; c.strokeStyle = rgba(color, a); c.lineWidth = w; c.stroke(); c.restore();
+}
+
+/* =====================================================================
+   SHARED GEOMETRY
+   ===================================================================== */
+/* superellipse plan used by every stadium view */
+const NS = 96, OVC = new Map();
+function ovPt(a, b, th, n = 2.8) { const cc = Math.cos(th), s = Math.sin(th); return [a * Math.sign(cc) * Math.pow(Math.abs(cc), 2 / n), b * Math.sign(s) * Math.pow(Math.abs(s), 2 / n)]; }
+function oval(a, b) { const k = a + '_' + b; if (!OVC.has(k)) { const p = []; for (let i = 0; i <= NS; i++) p.push(ovPt(a, b, i / NS * TAU)); OVC.set(k, p); } return OVC.get(k); }
+const ring3 = (a, b, y) => oval(a, b).map(q => [q[0], y, q[1]]);
+const ringP = (cm, a, b, y) => oval(a, b).map(q => cm.p(q[0], y, q[1]));
+
+/* American football field (metres; x along the field, z across, y up) */
+const YD = .9144, FX = 54.864, FZ = 24.384, GL = 45.72, yx = y => -GL + y * YD;  // yx: yard line (0 = left goal line) -> x
+const PL = (() => {
+  const L = [], y = 0;
+  L.push([[-FX, y, -FZ], [FX, y, -FZ], [FX, y, FZ], [-FX, y, FZ], [-FX, y, -FZ]]);
+  for (let i = 0; i <= 20; i++) { const x = yx(i * 5); L.push([[x, y, -FZ], [x, y, FZ]]); }
+  return L;
+})();
+const HASH = (() => { const s = []; for (let i = 1; i < 100; i++) { if (i % 5 === 0) continue; for (const z of [-FZ + .35, -2.82, 2.82, FZ - .35]) s.push([yx(i), z]); } return s; })();
+function drawField(c, cm, o = {}) {
+  const { a = 1, lines = 1, hashA = 1, posts = 1, surf = 1, dx = 0, lift = 0 } = o;
+  if (a <= 0) return;
+  const P = (x, y, z) => cm.p(x + dx, y + lift, z);
+  const quad = pts => { c.beginPath(); pts.forEach((q, i) => { const p = P(q[0], 0, q[1]); i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }); c.closePath(); };
+  if (surf > 0) {
+    quad([[-FX, -FZ], [FX, -FZ], [FX, FZ], [-FX, FZ]]); c.fillStyle = rgba('white', .88 * surf * a); c.fill();
+    for (let i = 0; i < 20; i += 2) { const x0 = yx(i * 5), x1 = yx(i * 5 + 5); quad([[x0, -FZ], [x1, -FZ], [x1, FZ], [x0, FZ]]); c.fillStyle = rgba('light', .65 * surf * a); c.fill(); }
+    for (const s of [-1, 1]) { quad([[s * GL, -FZ], [s * FX, -FZ], [s * FX, FZ], [s * GL, FZ]]); c.fillStyle = rgba('cyan', .16 * surf * a); c.fill(); }
+  }
+  if (lines) drawPitchLines(c, { p: P, o: cm.o }, a, lines);
+  if (hashA > 0) { c.beginPath(); for (const [x, z] of HASH) { const p = P(x, 0, z - .3), q = P(x, 0, z + .3); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('graphite', .45 * hashA * a); c.lineWidth = 1; c.stroke(); }
+  if (posts > 0) {
+    c.beginPath();
+    for (const s of [-1, 1]) {
+      const x = s * (FX + 1.2), top = 3.05 + 10.67 * posts;
+      for (const [A, B] of [[[x, 0, 0], [x, 3.05, 0]], [[x, 3.05, -2.82], [x, 3.05, 2.82]], [[x, 3.05, -2.82], [x, top, -2.82]], [[x, 3.05, 2.82], [x, top, 2.82]]]) { const p = P(...A), q = P(...B); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); }
+    }
+    c.strokeStyle = rgba('blue', .9 * a); c.lineWidth = 1.6; c.stroke();
+  }
+}
+
+function drawPitchLines(c, cm, a, prog = 1, t0 = 0) {
+  c.lineWidth = 1.2;
+  PL.forEach((L, i) => {
+    const p = typeof prog === 'function' ? prog(i) : prog; if (p <= 0) return;
+    const pr = proj(cm, L);
+    c.beginPath(); polyPartial(c, pr, p); c.strokeStyle = rgba('cyan', .25 * a); c.lineWidth = 4; c.stroke();
+    c.strokeStyle = rgba('graphite', .6 * a); c.lineWidth = 1.1; c.stroke();
+  });
+}
+
+
+/* =====================================================================
+   SHARED BODY — pose, layered anatomy
+   ===================================================================== */
+function pose(t) {
+  const ph = TAU * .52 * t, lean = .2, bob = .035 * Math.cos(2 * ph);
+  const pelvis = [0, .96 + bob, 0];
+  const neck = [pelvis[0] + .5 * Math.sin(lean), pelvis[1] + .5 * Math.cos(lean), 0];
+  const chest = [lerp(pelvis[0], neck[0], .62), lerp(pelvis[1], neck[1], .62), 0];
+  const head = [neck[0] + .17 * Math.sin(lean * .6), neck[1] + .15, 0];
+  const J = { pelvis, neck, chest, head };
+  for (const [s, zs, off] of [['R', -1, 0], ['L', 1, Math.PI]]) {
+    const psi = ph + off;
+    const hip = [pelvis[0], pelvis[1] - .05, zs * .095];
+    const th = .18 + .62 * Math.sin(psi);
+    const kn = .12 + 1.05 * (.5 + .5 * Math.sin(psi + 1.9));
+    const knee = [hip[0] + .45 * Math.sin(th), hip[1] - .45 * Math.cos(th), hip[2]];
+    const a = th - kn;
+    const ankle = [knee[0] + .43 * Math.sin(a), knee[1] - .43 * Math.cos(a), hip[2]];
+    const fa = a + .15;
+    const toe = [ankle[0] + .2 * Math.cos(fa), ankle[1] + .2 * Math.sin(fa) - .02, hip[2]];
+    const sh = [neck[0] - .03, neck[1] - .06, zs * .185];
+    const ua = -.9 * Math.sin(psi);
+    const el = [sh[0] + .29 * Math.sin(ua), sh[1] - .29 * Math.cos(ua), sh[2] + zs * .02];
+    const ef = 1.45 + .3 * Math.sin(psi);
+    const ha = [el[0] + .26 * Math.sin(ua + ef), el[1] - .26 * Math.cos(ua + ef), el[2]];
+    J['hip' + s] = hip; J['knee' + s] = knee; J['ankle' + s] = ankle; J['toe' + s] = toe; J['sh' + s] = sh; J['el' + s] = el; J['ha' + s] = ha;
+  }
+  return J;
+}
+const CAPS = [['pelvis', 'chest', .135, .15], ['chest', 'neck', .14, .065], ['hipL', 'hipR', .1, .1], ['shL', 'shR', .065, .065], ['neck', 'head', .05, .05],
+  ['hipL', 'kneeL', .085, .055], ['kneeL', 'ankleL', .052, .034], ['ankleL', 'toeL', .035, .022], ['hipR', 'kneeR', .085, .055], ['kneeR', 'ankleR', .052, .034], ['ankleR', 'toeR', .035, .022],
+  ['shL', 'elL', .048, .037], ['elL', 'haL', .036, .026], ['shR', 'elR', .048, .037], ['elR', 'haR', .036, .026]];
+function drawSilhouette(c, pj, alpha, caps = CAPS, headR = .105) {
+  if (alpha <= 0) return;
+  const s = silCtx; s.setTransform(1, 0, 0, 1, 0, 0); s.clearRect(0, 0, sil.width, sil.height); s.setTransform(SC, 0, 0, SC, 0, 0);
+  const hd = pj.head;
+  const disc = (q, r) => { s.beginPath(); s.arc(q[0], q[1], Math.max(.5, r), 0, TAU); s.fill(); };
+  for (const pass of [0, 1]) {
+    const add = pass ? 0 : 1.5;
+    if (pass === 0) s.fillStyle = rgba('mid', .9);
+    else { const g = s.createLinearGradient(0, hd[1] - 60, 0, hd[1] + 640); g.addColorStop(0, '#FFFFFF'); g.addColorStop(.6, '#F3F5F7'); g.addColorStop(1, '#E4E8ED'); s.fillStyle = g; }
+    // each primitive filled on its own so overlapping windings never punch holes
+    for (const [a, b, ra, rb] of caps) {
+      const A = pj[a], B = pj[b], r1 = ra * A[3] + add, r2 = rb * B[3] + add, dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1e-6, nx = -dy / L, ny = dx / L;
+      s.beginPath(); s.moveTo(A[0] + nx * r1, A[1] + ny * r1); s.lineTo(B[0] + nx * r2, B[1] + ny * r2); s.lineTo(B[0] - nx * r2, B[1] - ny * r2); s.lineTo(A[0] - nx * r1, A[1] - ny * r1); s.closePath(); s.fill();
+      disc(A, r1); disc(B, r2);
+    }
+    disc(hd, headR * hd[3] + add);
+    for (const h of ['haL', 'haR']) disc(pj[h], .035 * pj[h][3] + add);
+  }
+  c.save(); c.globalAlpha = alpha; c.shadowColor = 'rgba(58,64,72,0.13)'; c.shadowBlur = 28 * SC; c.shadowOffsetY = 12 * SC;
+  c.drawImage(sil, 0, 0, W, H); c.restore();
+}
+function frontSign(A, B, fd) { const dx = B[0] - A[0], dy = B[1] - A[1]; return Math.sign(-dy * fd[0] + dx * fd[1]) || 1; }
+function sideOrder(pj) { return pj.hipL[2] > pj.hipR[2] ? ['L', 'R'] : ['R', 'L']; }
+function drawMuscles(c, pj, fd, a) {
+  if (a <= 0) return;
+  const ord = sideOrder(pj);
+  c.lineWidth = 1;
+  for (const s of ord) {
+    const fa = (s === ord[0] ? .45 : 1) * a;
+    const Hp = pj['hip' + s], K = pj['knee' + s], A = pj['ankle' + s], S = pj['sh' + s], E = pj['el' + s], Hd = pj['ha' + s];
+    const rT = .075 * Hp[3], rC = .048 * K[3], rU = .045 * S[3], rF = .034 * E[3];
+    c.beginPath();
+    let f = frontSign(Hp, K, fd); spindle(c, Hp, K, rT * .6, .12, .9, f * rT * .32); spindle(c, Hp, K, rT * .45, .2, .95, -f * rT * .42);
+    f = frontSign(K, A, fd); spindle(c, K, A, rC * .85, .05, .6, -f * rC * .3); spindle(c, K, A, rC * .3, .1, .85, f * rC * .5);
+    f = frontSign(S, E, fd); spindle(c, S, E, rU * .55, .15, .9, f * rU * .25); spindle(c, S, E, rU * .5, .1, .85, -f * rU * .35); spindle(c, S, E, rU * .95, -.12, .35, 0);
+    spindle(c, E, Hd, rF * .6, .05, .7, 0);
+    c.strokeStyle = rgba('blue', .72 * fa); c.stroke();
+  }
+  const Pl = pj.pelvis, Nk = pj.neck, rCh = .15 * pj.chest[3], fT = frontSign(Pl, Nk, fd);
+  c.beginPath();
+  spindle(c, Pl, Nk, rCh * .35, .62, .92, fT * rCh * .55);
+  for (let i = 0; i < 4; i++) spindle(c, Pl, Nk, rCh * .12, .1 + i * .12, .2 + i * .12, fT * rCh * .62);
+  spindle(c, Pl, Nk, rCh * .3, .08, .55, fT * rCh * .2);
+  spindle(c, Pl, Nk, rCh * .45, .35, .88, -fT * rCh * .45);
+  spindle(c, Pl, Nk, rCh * .14, .05, .95, -fT * rCh * .78);
+  spindle(c, Nk, pj.head, .03 * Nk[3], 0, .7, 0);
+  c.strokeStyle = rgba('blue', .72 * a); c.stroke();
+}
+function drawSkeleton(c, pj, fd, a) {
+  if (a <= 0) return;
+  const ord = sideOrder(pj);
+  for (const s of ord) {
+    const fa = (s === ord[0] ? .45 : 1) * a;
+    const sc = pj['hip' + s][3];
+    c.beginPath();
+    bone(c, pj['hip' + s], pj['knee' + s], .017 * sc); bone(c, pj['knee' + s], pj['ankle' + s], .015 * sc); bone(c, pj['ankle' + s], pj['toe' + s], .009 * sc);
+    bone(c, pj['sh' + s], pj['el' + s], .014 * sc); bone(c, pj['el' + s], pj['ha' + s], .011 * sc);
+    c.strokeStyle = rgba('graphite', .8 * fa); c.lineWidth = 1.1; c.stroke();
+    c.fillStyle = rgba('blue', fa);
+    for (const j of ['hip', 'knee', 'ankle', 'sh', 'el']) { const q = pj[j + s]; c.beginPath(); c.arc(q[0], q[1], 2.6, 0, TAU); c.fill(); }
+  }
+  const Pl = pj.pelvis, Nk = pj.neck, Hd = pj.head, sc = pj.chest[3], fT = frontSign(Pl, Nk, fd);
+  const dx = Nk[0] - Pl[0], dy = Nk[1] - Pl[1], L = Math.hypot(dx, dy), nx = -dy / L * fT, ny = dx / L * fT, ang = Math.atan2(ny, nx);
+  c.beginPath();
+  for (let i = 0; i < 15; i++) { const u = .04 + i / 14 * .94, x = Pl[0] + dx * u - nx * .1 * sc, y = Pl[1] + dy * u - ny * .1 * sc; c.moveTo(x + nx * .012 * sc, y + ny * .012 * sc); c.lineTo(x - nx * .012 * sc, y - ny * .012 * sc); }
+  for (let i = 0; i < 4; i++) { const u = (i + .5) / 4, x = lerp(Nk[0], Hd[0], u * .7), y = lerp(Nk[1], Hd[1], u * .7); c.moveTo(x - 4, y); c.lineTo(x + 4, y); }
+  c.strokeStyle = rgba('graphite', .75 * a); c.lineWidth = 2; c.stroke();
+  c.beginPath();
+  // ribcage: an outline plus ribs sweeping from the spine down toward the sternum
+  const rcx = Pl[0] + dx * .7 + nx * .03 * sc, rcy = Pl[1] + dy * .7 + ny * .03 * sc, sAng = Math.atan2(dy, dx);
+  c.moveTo(rcx + Math.cos(sAng) * .2 * sc, rcy + Math.sin(sAng) * .2 * sc); c.ellipse(rcx, rcy, .2 * sc, .12 * sc, sAng, 0, TAU);
+  for (let i = 0; i < 7; i++) {
+    const u = .55 + i * .055, bx = Pl[0] + dx * u - nx * .09 * sc, by = Pl[1] + dy * u - ny * .09 * sc;
+    const fx = Pl[0] + dx * (u - .09) + nx * .11 * sc, fy = Pl[1] + dy * (u - .09) + ny * .11 * sc;
+    const cx_ = (bx + fx) / 2 + dx * .06 + nx * .02 * sc, cy_ = (by + fy) / 2 + dy * .06 + ny * .02 * sc;
+    c.moveTo(bx, by); c.quadraticCurveTo(cx_, cy_, fx, fy);
+  }
+  void ang;
+  c.moveTo(pj.shL[0], pj.shL[1]); c.lineTo(lerp(pj.shL[0], pj.shR[0], .5), lerp(pj.shL[1], pj.shR[1], .5) + .02 * sc); c.lineTo(pj.shR[0], pj.shR[1]);
+  c.moveTo(Pl[0] + .12 * sc, Pl[1]); c.ellipse(Pl[0], Pl[1] + .01 * sc, .12 * sc, .075 * sc, ang, 0, TAU);
+  c.moveTo(Hd[0] + .095 * sc, Hd[1]); c.arc(Hd[0], Hd[1], .095 * sc, 0, TAU);
+  c.moveTo(Hd[0] + nx * .05 * sc + .02 * sc, Hd[1] + ny * .05 * sc - .01 * sc); c.arc(Hd[0] + nx * .05 * sc, Hd[1] + ny * .05 * sc - .01 * sc, .02 * sc, 0, TAU);
+  c.moveTo(Hd[0] + nx * .085 * sc, Hd[1] + .03 * sc); c.quadraticCurveTo(Hd[0] + nx * .07 * sc, Hd[1] + .12 * sc, Hd[0] - nx * .02 * sc, Hd[1] + .09 * sc);
+  c.strokeStyle = rgba('graphite', .7 * a); c.lineWidth = 1; c.stroke();
+}
+
+/* =====================================================================
+   STADIUM (exploded axonometric)
+   ===================================================================== */
+const OFF = { found: -55, bowl: 0, circ: 42, sys: 84, skin: 126, roof: 140 };
+function bandPath(c, A, B) { c.beginPath(); A.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); for (let i = B.length - 1; i >= 0; i--) i === B.length - 1 ? c.moveTo(B[i][0], B[i][1]) : c.lineTo(B[i][0], B[i][1]); c.closePath(); }
+function drawStadium(c, cm, t, o) {
+  const { e = 0, pr = {}, fill = 1, glow = 0, a = 1, pitchA = .5, flows = 1 } = o;
+  const P = k => pr[k] === undefined ? 1 : pr[k];
+  const dRef = cm.o.dist + cm.o.ty * Math.sin(cm.o.pitch);
+  const dy = k => OFF[k] * e;
+  const L = (pts, p, col, al, lw) => { c.beginPath(); polyPartial(c, pts, p); c.strokeStyle = rgba(col, al * a); c.lineWidth = lw; c.stroke(); };
+  // FOUNDATIONS
+  if (P('found') > 0) {
+    const y = -3 + dy('found'), p = P('found');
+    const inner = ringP(cm, 60, 42, y), outer = ringP(cm, 121, 101, y);
+    L(inner, p, 'graphite', .5, 1); L(outer, p, 'graphite', .5, 1);
+    c.beginPath(); const oi = oval(60, 42), oo = oval(121, 101);
+    for (let i = 0; i < NS * p; i += 4) { const A = cm.p(oo[i][0], y, oo[i][1]), B = cm.p(oo[i][0], y - 10, oo[i][1]); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); const C = cm.p(oi[i][0], y, oi[i][1]), D = cm.p(oi[i][0], y - 8, oi[i][1]); c.moveTo(C[0], C[1]); c.lineTo(D[0], D[1]); if (i % 8 === 0) { c.moveTo(A[0], A[1]); c.lineTo(C[0], C[1]); } }
+    c.strokeStyle = rgba('graphite', .35 * a); c.lineWidth = .8; c.stroke();
+  }
+  // BOWL + pitch
+  if (P('bowl') > 0) {
+    const p = P('bowl'), y0 = dy('bowl');
+    const pcm = { p: (x, y, z) => cm.p(x, y + y0, z), o: cm.o };
+    drawPitchLines(c, pcm, pitchA * a, 1);
+    const tiers = []; for (let i = 0; i < 10; i++) tiers.push(ringP(cm, lerp(62, 106, i / 9), lerp(44, 88, i / 9), y0 + 1 + i * 2.7));
+    if (p >= 1) { bandPath(c, tiers[9], tiers[0]); c.fillStyle = rgba('white', .55 * fill * a); c.fill('evenodd'); }
+    tiers.forEach((T, i) => L(T, p, i === 0 || i === 9 ? 'graphite' : 'mid', i === 0 || i === 9 ? .7 : .55, i === 9 ? 1.1 : .7));
+    c.beginPath(); for (let i = 0; p > .02 && i < NS * p; i += 4) { c.moveTo(tiers[0][i][0], tiers[0][i][1]); c.lineTo(tiers[9][i][0], tiers[9][i][1]); }
+    c.strokeStyle = rgba('graphite', .3 * a); c.lineWidth = .7; c.stroke();
+  }
+  // CIRCULATION
+  if (P('circ') > 0) {
+    const p = P('circ'), y0 = dy('circ');
+    for (const y of [8, 20]) {
+      const A = ringP(cm, 108, 90, y + y0), B = ringP(cm, 115, 97, y + y0);
+      if (p >= 1) { bandPath(c, B, A); c.fillStyle = rgba('cyan', .16 * fill * a); c.fill('evenodd'); }
+      L(A, p, 'blue', .65, .9); L(B, p, 'blue', .65, .9);
+      c.beginPath(); const o1 = oval(104, 86), o2 = oval(108, 90);
+      for (let i = 3; i < NS * p; i += 6) { const q1 = cm.p(o1[i][0], y + y0, o1[i][1]), q2 = cm.p(o2[i][0], y + y0, o2[i][1]); c.moveTo(q1[0], q1[1]); c.lineTo(q2[0], q2[1]); }
+      c.strokeStyle = rgba('blue', .8 * a); c.lineWidth = 2; c.stroke();
+      if (p >= 1 && flows > 0) { c.fillStyle = rgba('blue', .9 * a * flows); for (let k = 0; k < 44; k++) { const th = (k / 44) * TAU + t * (y === 8 ? .12 : -.09), q0 = ovPt(111.5, 93.5, th), q = cm.p(q0[0], y + y0, q0[1]); c.fillRect(q[0] - 1.5, q[1] - 1.5, 3, 3); } }
+    }
+  }
+  // SYSTEMS
+  if (P('sys') > 0) {
+    const p = P('sys'), y0 = dy('sys');
+    L(ringP(cm, 110, 92, 30 + y0), p, 'blue', .85, 1.4);
+    c.setLineDash([6, 6]); L(ringP(cm, 112, 94, 24 + y0), p, 'cyan', .9, 1.2); c.setLineDash([]);
+    const o1 = oval(110, 92); c.beginPath();
+    for (let i = 0; i < NS * p; i += 8) { const A = cm.p(o1[i][0], y0, o1[i][1]), B = cm.p(o1[i][0], 30 + y0, o1[i][1]); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); }
+    c.strokeStyle = rgba('blue', .45 * a); c.lineWidth = .8; c.stroke();
+    if (p >= 1) for (let i = 0; i < NS; i += 8) {
+      const B = cm.p(o1[i][0], 30 + y0, o1[i][1]); c.strokeStyle = rgba('blue', a); c.lineWidth = 1; c.strokeRect(B[0] - 3, B[1] - 3, 6, 6);
+      if (flows > 0) { const yy = (t * 14 + i * 3) % 30, q = cm.p(o1[i][0], yy + y0, o1[i][1]); c.fillStyle = rgba('cyan', a * flows); c.beginPath(); c.arc(q[0], q[1], 2.4, 0, TAU); c.fill(); }
+    }
+  }
+  // SKIN
+  if (P('skin') > 0) {
+    const p = P('skin'), y0 = dy('skin'), o1 = oval(121, 101), n = Math.floor(NS * p);
+    const bot = ringP(cm, 121, 101, y0), top = oval(121, 101).map((q, i) => { const r = ovPt(121, 101, i / NS * TAU + .05); return cm.p(r[0], 42 + y0, r[1]); });
+    for (let i = 0; i < n; i += 2) {
+      const j = Math.min(i + 2, NS); c.beginPath(); c.moveTo(bot[i][0], bot[i][1]); c.lineTo(top[i][0], top[i][1]); c.lineTo(top[j][0], top[j][1]); c.lineTo(bot[j][0], bot[j][1]); c.closePath();
+      c.fillStyle = rgba('white', .26 * fill * a); c.fill();
+    }
+    c.beginPath(); for (let i = 0; i < n; i += 2) { c.moveTo(bot[i][0], bot[i][1]); c.lineTo(top[i][0], top[i][1]); }
+    c.strokeStyle = rgba('mid', .55 * a); c.lineWidth = .7; c.stroke();
+    L(bot, p, 'graphite', .6, 1); L(top, p, 'graphite', .6, 1);
+    if (glow > 0) { c.beginPath(); bot.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .7 * glow * a, 1.5 + 2 * glow, 22 * glow); }
+  }
+  // ROOF
+  if (P('roof') > 0) {
+    const p = P('roof'), y0 = dy('roof');
+    const it = ringP(cm, 74, 56, 46 + y0), ib = ringP(cm, 74, 56, 41 + y0), ot = ringP(cm, 124, 104, 48 + y0), ob = ringP(cm, 124, 104, 45 + y0);
+    if (p >= 1) { bandPath(c, ot, it); c.fillStyle = rgba('white', .62 * fill * a); c.fill('evenodd'); bandPath(c, ot, it); c.fillStyle = rgba('cyan', .05 * fill * a); c.fill('evenodd'); }
+    c.beginPath();
+    for (let i = 0; i < NS * p; i += 2) {
+      const pts = [it[i], ot[i]], bts = [ib[i], ob[i]];
+      c.moveTo(it[i][0], it[i][1]); c.lineTo(ot[i][0], ot[i][1]); c.moveTo(ib[i][0], ib[i][1]); c.lineTo(ob[i][0], ob[i][1]);
+      c.moveTo(it[i][0], it[i][1]); c.lineTo(ib[i][0], ib[i][1]);
+      for (let k = 0; k < 4; k++) { const u0 = k / 4, u1 = (k + 1) / 4, A = k % 2 ? [lerp(it[i][0], ot[i][0], u0), lerp(it[i][1], ot[i][1], u0)] : [lerp(ib[i][0], ob[i][0], u0), lerp(ib[i][1], ob[i][1], u0)], B = k % 2 ? [lerp(ib[i][0], ob[i][0], u1), lerp(ib[i][1], ob[i][1], u1)] : [lerp(it[i][0], ot[i][0], u1), lerp(it[i][1], ot[i][1], u1)]; c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); }
+      void pts; void bts;
+    }
+    c.strokeStyle = rgba('blue', .42 * a); c.lineWidth = .7; c.stroke();
+    L(it, p, 'blue', .9, 1.3); L(ib, p, 'blue', .5, .8); L(ot, p, 'blue', .9, 1.3); L(ob, p, 'blue', .5, .8);
+    if (glow > 0) { for (const R of [ot, it]) { c.beginPath(); R.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); glowStroke(c, 'cyan', .85 * glow * a, 1.5 + 2.5 * glow, 26 * glow); } }
+  }
+  void dRef;
+}
+function leftmost(pts) { let b = pts[0]; for (const q of pts) if (q[0] < b[0]) b = q; return b; }
+function vignetteTag(c, n, name, t, t0, a, of = '03') { kicker(c, `${n} / ${of} — ${name}`, 120, 196, seg(t, t0, t0 + .8), a, 'blue'); }
+
+/* ---------- stick figures + path helpers ---------- */
+const STICK = [['pelvis', 'chest'], ['chest', 'neck'], ['neck', 'head'], ['hipL', 'hipR'], ['shL', 'shR'], ['hipL', 'kneeL'], ['kneeL', 'ankleL'], ['ankleL', 'toeL'], ['hipR', 'kneeR'], ['kneeR', 'ankleR'], ['ankleR', 'toeR'], ['shL', 'elL'], ['elL', 'haL'], ['shR', 'elR'], ['elR', 'haR']];
+const MIDS = [['hipL', 'kneeL'], ['kneeL', 'ankleL'], ['hipR', 'kneeR'], ['kneeR', 'ankleR'], ['shL', 'elL'], ['elL', 'haL'], ['shR', 'elR'], ['elR', 'haR'], ['pelvis', 'chest'], ['chest', 'neck'], ['neck', 'head']];
+const placePose = (J, ox, oz) => { const o = {}; for (const k in J) o[k] = [J[k][0] + ox, J[k][1], J[k][2] + oz]; return o; };
+function track29(J) { const pts = Object.keys(J).map(k => J[k]); for (const [a, b] of MIDS) pts.push(lerp3(J[a], J[b], .5)); return pts; } // 18 joints + 11 midpoints
+const bodyFront = J => Math.max(...Object.keys(J).filter(k => !/^(ha|el)/.test(k)).map(k => J[k][0]));  // arms don't count for offside
+const densify = (L, step = 1.5) => { const o = [L[0]]; for (let i = 1; i < L.length; i++) { const a = L[i - 1], b = L[i], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[2] - a[2]) / step)); for (let k = 1; k <= n; k++) o.push(lerp3(a, b, k / n)); } return o; };
+const PLD = PL.map(L => densify(L));
+function strokeSafe(c, pr, minD = 4) { for (let i = 1; i < pr.length; i++) { if (pr[i][2] < minD || pr[i - 1][2] < minD) continue; c.moveTo(pr[i - 1][0], pr[i - 1][1]); c.lineTo(pr[i][0], pr[i][1]); } }
+function drawStick(c, cm, J, col, a) {
+  const P = {}; for (const k in J) P[k] = cm.p(...J[k]);
+  c.beginPath(); for (const [x, y] of STICK) { c.moveTo(P[x][0], P[x][1]); c.lineTo(P[y][0], P[y][1]); }
+  c.lineCap = 'round'; c.strokeStyle = rgba(col, .85 * a); c.lineWidth = 2.4; c.stroke(); c.lineCap = 'butt';
+  const h = P.head; c.beginPath(); c.arc(h[0], h[1], .11 * h[3], 0, TAU); c.fillStyle = rgba('white', a); c.fill(); c.strokeStyle = rgba(col, .85 * a); c.lineWidth = 1.6; c.stroke();
+  return P;
+}
+const pathCum = pts => { const cum = [0]; for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])); return cum; };
+function pathAt(pts, cum, s) { let k = 1; while (k < cum.length - 1 && cum[k] < s) k++; const r = clamp((s - cum[k - 1]) / (cum[k] - cum[k - 1] || 1)); return [lerp(pts[k - 1][0], pts[k][0], r), lerp(pts[k - 1][1], pts[k][1], r)]; }
+
+/* =====================================================================
+   LAYOUT (4:5) + helpers
+   ===================================================================== */
+const MX = 72, HY = 1190;
+const head = (c, segs, p, a, size = 52) => headline(c, segs, MX, HY, p, { size, maxW: W - 2 * MX, a });
+const lab = (c, ax, ay, tx, ty, p, title, a) => leader(c, ax, ay, tx, ty, p, title, null, { a, tsize: 24 });
+function stat(c, k, v, x, y, p, a) { kicker(c, k, x, y, seg(p, 0, .5), a); txt(c, v, x - 2, y + 62, { w: 700, size: 60, color: 'blue', a: a * smooth(seg(p, .2, .6)) }); }
+const linePts = (c, pts) => { c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); };
+
+/* =====================================================================
+   THE LINC — axonometric model (metres; x along the field N–S, z across, y up)
+   ===================================================================== */
+const SEN = 4, NR = 128;
+function sePt(a, b, th) { const cc = Math.cos(th), s = Math.sin(th); return [a * Math.sign(cc) * Math.pow(Math.abs(cc), 2 / SEN), b * Math.sign(s) * Math.pow(Math.abs(s), 2 / SEN)]; }
+const TH = [...Array(NR + 1)].map((_, i) => i / NR * TAU);
+const upperTop = th => 36 + 13 * Math.pow(Math.abs(Math.sin(th)), 2.2);
+const ring = (a, b, y) => TH.map(th => { const q = sePt(a, b, th); return [q[0], typeof y === 'function' ? y(th) : y, q[1]]; });
+const LB_IN = [62, 36], LB_OUT = [87, 60], MIDR = [89, 62], UB_IN = [91, 64], UB_OUT = [116, 90], FAC = [118, 92];
+function box3(c, cm, x0, x1, y0, y1, z0, z1, fill, fa, stroke, sa, lw = 1) {
+  const V = [[x0, y0, z0], [x1, y0, z0], [x1, y0, z1], [x0, y0, z1], [x0, y1, z0], [x1, y1, z0], [x1, y1, z1], [x0, y1, z1]].map(q => cm.p(...q));
+  const F = [[0, 1, 2, 3], [4, 5, 6, 7], [0, 1, 5, 4], [2, 3, 7, 6], [1, 2, 6, 5], [3, 0, 4, 7]];
+  F.map(f => [f, f.reduce((s, i) => s + V[i][2], 0)]).sort((a, b) => b[1] - a[1]).forEach(([f]) => {
+    c.beginPath(); f.forEach((i, k) => k ? c.lineTo(V[i][0], V[i][1]) : c.moveTo(V[i][0], V[i][1])); c.closePath();
+    if (fa > 0) { c.fillStyle = rgba(fill, fa); c.fill(); }
+    if (sa > 0) { c.strokeStyle = rgba(stroke, sa); c.lineWidth = lw; c.stroke(); }
+  });
+}
+function quad3(c, cm, pts, fill, fa, stroke, sa, lw = 1) { const q = pts.map(p => cm.p(...p)); linePts(c, q); c.closePath(); if (fa > 0) { c.fillStyle = rgba(fill, fa); c.fill(); } if (sa > 0) { c.strokeStyle = rgba(stroke, sa); c.lineWidth = lw; c.stroke(); } }
+// existing "wing" canopies over the sideline upper decks
+function oldCanopy(c, cm, s, a, lift = 0) {
+  if (a <= 0) return;
+  const P = (u, v) => { const x = lerp(-78, 78, u); return cm.p(x, 47 + 11 * Math.pow(2 * u - 1, 2) + 3 * v + lift, s * lerp(72, 102, v)); };
+  const out = []; for (let i = 0; i <= 24; i++) out.push(P(i / 24, 0)); for (let i = 24; i >= 0; i--) out.push(P(i / 24, 1));
+  linePts(c, out); c.closePath(); c.fillStyle = rgba('white', .7 * a); c.fill(); c.strokeStyle = rgba('graphite', .75 * a); c.lineWidth = 1.2; c.stroke();
+  c.beginPath(); for (let i = 1; i < 12; i++) { const p = P(i / 12, 0), q = P(i / 12, 1); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('mid', .8 * a); c.lineWidth = .8; c.stroke();
+  c.beginPath(); for (const u of [.15, .5, .85]) { const x = lerp(-78, 78, u), top = cm.p(x, 47 + 11 * Math.pow(2 * u - 1, 2) + 3 + lift + 6, s * 106), base = cm.p(x, 0, s * 112), tip = P(u, .9); c.moveTo(base[0], base[1]); c.lineTo(top[0], top[1]); c.lineTo(tip[0], tip[1]); } c.strokeStyle = rgba('graphite', .6 * a); c.lineWidth = 1.4; c.stroke();
+}
+// The Nest canopies: deep rectangular roofs with a diagonal lattice and a lit leading edge
+const NC = { x: 104, zf: 44, zb: 112, y: 60, yf: 57.5, yb: 52 };
+function newCanopy(c, cm, s, a, o = {}) {
+  if (a <= 0) return;
+  const { drop = 0, glow = 0, solar = 0, lights = 0, t = 0 } = o, Y = NC.y + drop;
+  const T = (u, v) => [lerp(-NC.x, NC.x, u), Y, s * lerp(NC.zf, NC.zb, v)];
+  // masts and back struts
+  c.beginPath(); for (const x of [-84, -42, 0, 42, 84]) { const b = cm.p(x, 0, s * 120), m = cm.p(x, NC.yb + drop, s * (NC.zb - 4)), f = cm.p(x, Y, s * 80); c.moveTo(b[0], b[1]); c.lineTo(m[0], m[1]); c.lineTo(f[0], f[1]); } c.strokeStyle = rgba('graphite', .55 * a); c.lineWidth = 1.5; c.stroke();
+  // fascia (front edge depth) and roof plane
+  quad3(c, cm, [[-NC.x, Y, s * NC.zf], [NC.x, Y, s * NC.zf], [NC.x, NC.yf + drop, s * NC.zf], [-NC.x, NC.yf + drop, s * NC.zf]], 'white', .9 * a, 'graphite', .6 * a);
+  quad3(c, cm, [T(0, 0), T(1, 0), T(1, 1), T(0, 1)], 'white', .82 * a, 'graphite', .85 * a, 1.2);
+  quad3(c, cm, [T(0, 0), T(1, 0), T(1, 1), T(0, 1)], 'blue', .07 * a, 'blue', 0);
+  // diagonal lattice
+  c.beginPath();
+  for (let k = -8; k <= 16; k++) for (const sg of [1, -1]) {
+    const pts = []; for (let j = 0; j <= 20; j++) { const v = j / 20, u = (k / 8 + (sg > 0 ? v : -v) * .32); if (u < 0 || u > 1) continue; pts.push(cm.p(...T(u, v))); }
+    pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]));
+  }
+  c.strokeStyle = rgba('blue', .22 * a); c.lineWidth = .7; c.stroke();
+  // photovoltaic modules
+  if (solar > 0) for (let i = 0; i < 14; i++) for (let j = 0; j < 5; j++) {
+    if ((i * 5 + j) / 70 > solar) continue;
+    const u0 = .04 + i * .066, v0 = .2 + j * .15; quad3(c, cm, [T(u0, v0), T(u0 + .055, v0), T(u0 + .055, v0 + .11), T(u0, v0 + .11)], 'graphite', .32 * a, 'graphite', 0);
+  }
+  // lit leading edge
+  const e0 = cm.p(...T(0, 0)), e1 = cm.p(...T(1, 0));
+  if (glow > 0) { c.beginPath(); c.moveTo(e0[0], e0[1]); c.lineTo(e1[0], e1[1]); glowStroke(c, 'cyan', glow * a, 2.4, 14); const b0 = cm.p(...T(1, 1)), b1 = cm.p(...T(0, 1)); c.beginPath(); c.moveTo(e1[0], e1[1]); c.lineTo(b0[0], b0[1]); c.moveTo(e0[0], e0[1]); c.lineTo(b1[0], b1[1]); glowStroke(c, 'cyan', .6 * glow * a, 1.4, 8); }
+  // LED sports lights along the leading edge
+  if (lights > 0) for (let i = 0; i < 13; i++) {
+    const on = smooth(seg(lights * 13 - i, 0, 1)); if (on <= 0) continue;
+    const x = lerp(-96, 96, i / 12), f = cm.p(x, NC.yf + drop - .4, s * NC.zf), g0 = cm.p(x - 9, 0, s * 14), g1 = cm.p(x + 9, 0, -s * 4);
+    c.beginPath(); c.moveTo(f[0], f[1]); c.lineTo(g0[0], g0[1]); c.lineTo(g1[0], g1[1]); c.closePath(); c.fillStyle = rgba('cyan', .06 * on * a); c.fill();
+    c.fillStyle = rgba('graphite', on * a); c.fillRect(f[0] - 3, f[1] - 2, 6, 4);
+  }
+}
+// end-zone video boards
+function oldBoards(c, cm, a) { if (a <= 0) return; for (const s of [-1, 1]) quad3(c, cm, [[s * 97, 34, -15], [s * 97, 34, 15], [s * 97, 45, 15], [s * 97, 45, -15]], 'light', .9 * a, 'graphite', .8 * a, 1.2); }
+function newBoards(c, cm, a, rise = 1, t = 0, show = 0) {
+  if (a <= 0) return;
+  for (const s of [-1, 1]) {
+    const y0 = 20, y1 = lerp(20, 47, rise), xi = s * 84, xo = s * 98;
+    box3(c, cm, Math.min(xi, xo), Math.max(xi, xo), y0, y1, -34, 34, 'white', .75 * a, 'graphite', .7 * a, 1.1);
+    for (const x of [xi, xo]) {
+      const pulse = .32 + .1 * Math.sin(t * 2.4 + x * .1) + .25 * show * (.5 + .5 * Math.sin(t * 6 + x));
+      quad3(c, cm, [[x, y0 + 1.2, -32], [x, y0 + 1.2, 32], [x, y1 - 1.2, 32], [x, y1 - 1.2, -32]], 'cyan', pulse * a, 'blue', .9 * a, 1.2);
+      c.beginPath(); for (let k = 0; k < 9; k++) { const z = -32 + k * 8, p = cm.p(x, y0 + 1.2, z), q = cm.p(x, y1 - 1.2, Math.min(32, z + 8 * (y1 - y0) / 27)); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('white', .35 * a); c.lineWidth = .8; c.stroke();
+    }
+  }
+}
+function drawLinc(c, cm, t, o = {}) {
+  const { a = 1, build = 1, old = 0, nw = 0, drop = 0, oldBd = 0, newBd = 0, rise = 1, glow = 0, solar = 0, lights = 0, show = 0, lower = 0, fieldA = 1, beat = 0 } = o;
+  const B = k => clamp(build * 6 - k);
+  drawField(c, cm, { a: a * fieldA * clamp(build * 4), lift: -1.2 * lower, lines: clamp(build * 3 - .3), posts: clamp(build * 3 - 1) });
+  const R = (pts, p, col, al, lw) => { const pr = proj(cm, pts); c.beginPath(); polyPartial(c, pr, p); c.strokeStyle = rgba(col, al * a); c.lineWidth = lw; c.stroke(); };
+  // lower bowl
+  const lb = B(.5);
+  if (lb > 0) {
+    const inner = proj(cm, ring(LB_IN[0] - 2 * lower, LB_IN[1] - 2 * lower, 1 - 1.2 * lower)), outer = proj(cm, ring(...LB_OUT, 15));
+    bandPath(c, inner, outer); c.fillStyle = rgba('light', .55 * lb * a); c.fill('evenodd');
+    for (let k = 0; k <= 6; k++) { const f = k / 6; R(ring(lerp(LB_IN[0] - 2 * lower, LB_OUT[0], f), lerp(LB_IN[1] - 2 * lower, LB_OUT[1], f), lerp(1 - 1.2 * lower, 15, f)), lb, k % 3 ? 'mid' : 'graphite', k % 3 ? .45 : .8, k % 3 ? .7 : 1); }
+    c.beginPath(); for (let i = 0; i < NR; i += 8) { const p = cm.p(...ring(...LB_IN, 1)[i]), q = cm.p(...ring(...LB_OUT, 15)[i]); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('mid', .35 * lb * a); c.lineWidth = .7; c.stroke();
+  }
+  // club / suite band
+  const mb = B(1.5);
+  if (mb > 0) { R(ring(...MIDR, 15), mb, 'graphite', .7, 1); R(ring(...MIDR, 23), mb, 'graphite', .7, 1); c.beginPath(); for (let i = 0; i < NR; i += 4) { const p = cm.p(...ring(...MIDR, 15)[i]), q = cm.p(...ring(...MIDR, 23)[i]); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('blue', .3 * mb * a); c.lineWidth = .8; c.stroke(); }
+  // upper bowl
+  const ub = B(2.4);
+  if (ub > 0) {
+    const inner = proj(cm, ring(...UB_IN, 24)), outer = proj(cm, ring(...UB_OUT, upperTop));
+    bandPath(c, inner, outer); c.fillStyle = rgba('light', .55 * ub * a); c.fill('evenodd');
+    for (let k = 0; k <= 6; k++) { const f = k / 6; R(ring(lerp(UB_IN[0], UB_OUT[0], f), lerp(UB_IN[1], UB_OUT[1], f), th => lerp(24, upperTop(th), f)), ub, k % 3 ? 'mid' : 'graphite', k % 3 ? .45 : .8, k % 3 ? .7 : 1); }
+    c.beginPath(); for (let i = 0; i < NR; i += 8) { const p = cm.p(...ring(...UB_IN, 24)[i]), q = cm.p(...ring(...UB_OUT, upperTop)[i]); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('mid', .35 * ub * a); c.lineWidth = .7; c.stroke();
+  }
+  // façade + corner stair towers
+  const fc = B(3.4);
+  if (fc > 0) {
+    R(ring(...FAC, th => upperTop(th) + 2), fc, 'graphite', .7, 1); R(ring(...FAC, 0), fc, 'graphite', .55, 1);
+    c.beginPath(); for (let i = 0; i < NR; i += 2) { const q = ring(...FAC, 0)[i], p = cm.p(...q), r = cm.p(q[0], upperTop(TH[i]) + 2, q[2]); c.moveTo(p[0], p[1]); c.lineTo(r[0], r[1]); } c.strokeStyle = rgba('mid', .3 * fc * a); c.lineWidth = .7; c.stroke();
+    for (const [sx, sz] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) box3(c, cm, sx * 100 - 6, sx * 100 + 6, 0, 44 * fc, sz * 84 - 6, sz * 84 + 6, 'white', .8 * a, 'graphite', .6 * a);
+  }
+  if (beat > 0) for (const s of [-1, 1]) { const p = cm.p(-NC.x, NC.y, s * NC.zf), q = cm.p(NC.x, NC.y, s * NC.zf); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); glowStroke(c, 'cyan', beat * a, 3, 22); }
+  oldBoards(c, cm, oldBd * a * B(4));
+  newBoards(c, cm, newBd * a, rise, t, show);
+  const order = cm.p(0, 50, -80)[2] > cm.p(0, 50, 80)[2] ? [-1, 1] : [1, -1];  // far canopy first
+  for (const s of order) { oldCanopy(c, cm, s, old * a * B(4.5), (1 - old) * 30); newCanopy(c, cm, s, nw * a, { drop, glow, solar, lights, t }); }
+}
+
+/* =====================================================================
+   THE WEST STAND — section (feet; r from the field centreline, y up)
+   ===================================================================== */
+const SEC = (() => {
+  const LB = [...Array(33)].map((_, i) => ({ r: 130 + 2.75 * i, y: 13.5 + 1.05 * i + .0125 * i * i, T: 2.75 }));
+  const FR = [...Array(4)].map((_, i) => ({ r: 119 + 2.75 * i, y: 8.7 + 1.2 * i, T: 2.75 }));
+  const CM = [...Array(13)].map((_, i) => ({ r: 260 + 3 * i, y: 101 + 1.6 * i, T: 3 }));
+  const UB = [...Array(28)].map((_, i) => ({ r: 300 + 2.67 * i, y: 136 + 1.8 * i, T: 2.67 }));
+  return { LB, FR, CM, UB, CY: 213, FACE: 378 };
+})();
+const soffit = r => r < 208 ? SEC.CY - lerp(1.4, 7, clamp((r - 168) / 40)) : r < 375 ? SEC.CY - 7 : SEC.CY - lerp(7, 12.6, clamp((r - 375) / 18));
+function secView(z) { const k = lerp(7.4, 3.05, z), r0 = lerp(68, 66, z), yb = lerp(900, 1010, z); return { k, X: r => 40 + (r - r0) * k, Y: y => yb - y * k }; }
+function drawSection(c, V, t, o = {}) {
+  const { X, Y, k } = V, { a = 1, lower = 1, rows = 1, guard = 0, suites = 0, club = 0, vom = 0, cOld = 0, cNew = 0, deck = 1, truss = 1, soff = 1, ex = 0, crowd = 0, lvl = 0, terr = 0, people = 0, player = 0, sight = 0, upper = 1, hiSuites = 0 } = o;
+  const P = (r, y) => [X(r), Y(y)];
+  const path = (pts, close) => { c.beginPath(); pts.forEach((q, i) => { const p = P(q[0], q[1]); i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }); if (close) c.closePath(); };
+  const hatchFill = (pts, al = 1) => { path(pts, true); c.fillStyle = rgba('light', al * a); c.fill(); c.save(); c.clip(); c.beginPath(); for (let h = -1400; h < 1600; h += 9) { c.moveTo(h, 1100); c.lineTo(h + 900, 200); } c.strokeStyle = rgba('mid', .3 * al * a); c.lineWidth = 1; c.stroke(); c.restore(); path(pts, true); c.strokeStyle = rgba('graphite', .85 * al * a); c.lineWidth = 1; c.stroke(); };
+  const steps = (rows, back) => { const pts = []; rows.forEach(rw => { pts.push([rw.r, rw.y], [rw.r + rw.T, rw.y]); }); return pts; };
+  const fy = 4 - 4 * lower;
+  // ground, plaza, field
+  c.save(); c.globalAlpha = a;
+  path([[SEC.FACE, 4], [420, 4]]); c.strokeStyle = rgba('graphite', .85); c.lineWidth = 1.2; c.stroke();
+  path([[40, fy], [118.5, fy]]); c.strokeStyle = rgba('graphite', .9); c.lineWidth = 1.4; c.stroke();
+  c.fillStyle = rgba('cyan', .16); c.fillRect(X(40), Y(fy), X(118.5) - X(40), 1.2 * k);
+  c.beginPath(); for (const r of [80, 60]) { const p = P(r, fy); c.moveTo(p[0], p[1]); c.lineTo(p[0], p[1] + 6); } c.strokeStyle = rgba('mid', .8); c.lineWidth = 1; c.stroke();
+  if (lower > 0 && lower < 1 || (lower >= 1 && guard > 0)) { c.setLineDash([5, 5]); path([[40, 4], [118.5, 4]]); c.strokeStyle = rgba('mid', .8 * Math.max(guard, 1 - lower)); c.lineWidth = 1; c.stroke(); c.setLineDash([]); }
+  // existing podium + guard (removed as the new rows go in)
+  if (guard > 0) { path([[118.5, fy], [118.5, 4], [129.3, 4], [129.3, 13.5 - .6]]); c.strokeStyle = rgba('graphite', .8 * guard); c.lineWidth = 1.2; c.stroke(); path([[129.8, 13.5], [129.8, 16]]); c.strokeStyle = rgba('mid', guard); c.lineWidth = 2; c.stroke(); }
+  // field club under the lower bowl
+  if (club > 0) {
+    const pts = [[140, -2], [196, -2], [196, soffLB(196)], [140, soffLB(140)]];
+    path(pts, true); c.fillStyle = rgba('cyan', .2 * club); c.fill(); c.strokeStyle = rgba('blue', .9 * club); c.lineWidth = 1.3; c.stroke();
+    if (people > 0) { c.fillStyle = rgba('blue', .8 * club * people); for (let i = 0; i < 9; i++) { const r = 146 + i * 5.6; c.beginPath(); c.arc(X(r), Y(-2) - 2.3 * k, 1.1 * k, 0, TAU); c.fill(); c.fillRect(X(r) - .7 * k, Y(-2) - 2 * k, 1.4 * k, 2 * k); } }
+  }
+  // field suites behind glass at the touchline
+  if (suites > 0) {
+    path([[118.5, -2], [140, -2], [140, 8], [118.5, 8]], true); c.fillStyle = rgba('cyan', (.28 + .2 * hiSuites) * suites); c.fill(); c.strokeStyle = rgba('blue', suites); c.lineWidth = 1.3; c.stroke();
+    path([[118.5, -2], [118.5, 8]]); c.strokeStyle = rgba('cyan', suites); c.lineWidth = 3; c.stroke();
+    if (people > 0) { c.fillStyle = rgba('blue', .8 * suites * people); for (const r of [123, 128, 134]) { c.beginPath(); c.arc(X(r), Y(-2) - 2.3 * k, 1.1 * k, 0, TAU); c.fill(); c.fillRect(X(r) - .7 * k, Y(-2) - 2 * k, 1.4 * k, 2 * k); } }
+    // steps down from the sideline to the sunken suite fronts
+    path([[112, fy], [114, fy], [114, fy - .6], [116, fy - .6], [116, fy - 1.2], [118.5, fy - 1.2], [118.5, -2]]); c.strokeStyle = rgba('graphite', .7 * suites); c.lineWidth = 1; c.stroke();
+  }
+  // vomitory stair from the fourth new row down into the club
+  if (vom > 0) { path([[130, 12.3], [lerp(130, 152, vom), lerp(12.3, -2, vom)]]); c.strokeStyle = rgba('blue', vom); c.lineWidth = 2; c.setLineDash([4, 3]); c.stroke(); c.setLineDash([]); }
+  // lower bowl (existing) as a hatched precast mass
+  const LB = SEC.LB, lbEnd = LB[32].r + LB[32].T;
+  hatchFill([...steps(LB), [lbEnd, 60.5], [lbEnd, soffLB(lbEnd)], [140, soffLB(140)], [130, soffLB(130)], [130, LB[0].y]]);
+  // four new front rows
+  for (let i = 0; i < 4; i++) {
+    const g = smooth(seg(rows * 4 - i, 0, 1)); if (g <= 0) continue;
+    const rw = SEC.FR[i], prev = i ? SEC.FR[i - 1].y : 8.7 - 1.2;
+    path([[rw.r, prev], [rw.r, rw.y], [rw.r + rw.T, rw.y], [rw.r + rw.T, rw.y - 1.4], [rw.r, rw.y - 1.4]], true); c.fillStyle = rgba('cyan', .55 * g); c.fill(); c.strokeStyle = rgba('blue', g); c.lineWidth = 1.2; c.stroke();
+    c.fillStyle = rgba('blue', g); c.fillRect(X(rw.r + 1.6), Y(rw.y + 1.9), .6 * k, 1.9 * k);
+  }
+  if (rows > 0) { path([[118.9, 8.7], [118.9, 11.3]]); c.strokeStyle = rgba('cyan', smooth(seg(rows, 0, .25))); c.lineWidth = 2.4; c.stroke(); }
+  // concourse, clubs and suites
+  const blocks = [[[222, 60.5], [262, 61.5]], [[226, 61.5], [258, 74]], [[226, 74], [258, 87]], [[226, 87], [258, 100]], [[296, 123], [SEC.FACE, 124.2]]];
+  blocks.forEach(([[r0, y0], [r1, y1]], i) => { path([[r0, y0], [r1, y0], [r1, y1], [r0, y1]], true); c.fillStyle = rgba(i >= 1 && i <= 3 && hiSuites > 0 ? 'cyan' : 'white', i >= 1 && i <= 3 ? .25 + .3 * hiSuites : .9); c.fill(); c.strokeStyle = rgba('graphite', .75); c.lineWidth = 1; c.stroke(); if (i >= 1 && i <= 3) { path([[226, y0], [226, y1]]); c.strokeStyle = rgba('blue', .7); c.lineWidth = 2; c.stroke(); } });
+  // club mid bowl + upper bowl
+  const CM = SEC.CM, UB = SEC.UB, cmEnd = CM[12].r + 3, ubEnd = UB[27].r + UB[27].T;
+  hatchFill([...steps(CM), [cmEnd, 123], [262, 99], [CM[0].r, CM[0].y]], upper);
+  hatchFill([...steps(UB), [ubEnd, UB[27].y + 3], [SEC.FACE, UB[27].y + 3], [SEC.FACE, 124.2], [296, 124.2], [UB[0].r, 130], [UB[0].r, UB[0].y]], upper);
+  path([[SEC.FACE, 4], [SEC.FACE, UB[27].y + 3]]); c.strokeStyle = rgba('graphite', .8 * upper); c.lineWidth = 1.4; c.stroke();
+  c.beginPath(); for (let y = 10; y < 190; y += 12) { const p = P(SEC.FACE, y); c.moveTo(p[0], p[1]); c.lineTo(p[0] + 1.6 * k, p[1]); } c.strokeStyle = rgba('mid', .6 * upper); c.lineWidth = 1; c.stroke();
+  // terraces on the façade
+  if (terr > 0) for (const y of [61, 124, 192]) { path([[SEC.FACE, y], [SEC.FACE + 14, y], [SEC.FACE + 14, y + 3.5]]); c.strokeStyle = rgba('blue', terr); c.lineWidth = 1.6; c.stroke(); c.fillStyle = rgba('blue', .8 * terr); for (let i = 0; i < 4; i++) { const r = SEC.FACE + 2 + i * 3; c.beginPath(); c.arc(X(r), Y(y) - 2.6 * k, 1 * k, 0, TAU); c.fill(); c.fillRect(X(r) - .6 * k, Y(y) - 2.2 * k, 1.2 * k, 2.2 * k); } }
+  c.restore();
+  // existing canopy
+  if (cOld > 0) { c.save(); c.globalAlpha = a * cOld; const pts = []; for (let i = 0; i <= 20; i++) { const r = lerp(302, 386, i / 20); pts.push([r, 198 + 8 * Math.sin(Math.PI * i / 20) * .6 + (r - 302) * .04]); } path(pts); c.strokeStyle = rgba('graphite', .9); c.lineWidth = 2.2; c.stroke(); path([[384, 4], [384, 205]]); c.strokeStyle = rgba('graphite', .6); c.lineWidth = 1.4; c.stroke(); c.restore(); }
+  // The Nest canopy: solar deck, hidden trusses, reflective underside
+  if (cNew > 0) {
+    const r0 = lerp(395, 168, easeOut(cNew)), dUp = 22 * ex, dDn = 10 * ex;
+    c.save(); c.globalAlpha = a;
+    path([[383, 4], [383, SEC.CY]]); c.strokeStyle = rgba('graphite', .8); c.lineWidth = 2.4; c.stroke();
+    hatchFill([[383, 4], [395, 4], [395, SEC.CY - 12], [383, SEC.CY - 12]], .8);
+    if (soff > 0) { const pts = []; for (let r = r0; r <= 395; r += 3) pts.push([r, soffit(r) - dDn]); path(pts); c.strokeStyle = rgba('cyan', soff); c.lineWidth = 2; c.stroke(); }
+    if (truss > 0) { c.beginPath(); let up = true; for (let r = Math.ceil(r0 / 9) * 9; r <= 392; r += 9) { const p = P(r, up ? SEC.CY + dUp : soffit(r) - dDn); c[r === Math.ceil(r0 / 9) * 9 ? 'moveTo' : 'lineTo'](p[0], p[1]); up = !up; } c.strokeStyle = rgba('mid', truss); c.lineWidth = 1; c.stroke(); }
+    if (deck > 0) {
+      path([[r0, SEC.CY + dUp], [395, SEC.CY + dUp]]); c.strokeStyle = rgba('graphite', deck); c.lineWidth = 2.2; c.stroke();
+      c.beginPath(); for (let r = r0 + 3; r < 392; r += 7) { const p = P(r, SEC.CY + dUp + .6), q = P(r + 6, SEC.CY + dUp + 1.8); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('blue', .9 * deck); c.lineWidth = 2.2; c.stroke();
+    }
+    const e = P(r0, SEC.CY - 1.4); c.beginPath(); c.arc(e[0], e[1], 3, 0, TAU); c.fillStyle = rgba('cyan', 1); c.fill();
+    c.restore();
+  }
+  // crowd
+  if (crowd > 0) {
+    c.fillStyle = rgba('blue', .7 * crowd * a);
+    const rowsAll = [...(rows > .99 ? SEC.FR : []), ...SEC.LB, ...SEC.CM, ...SEC.UB];
+    rowsAll.forEach((rw, i) => { if (i % 2) return; const b = (.15 + .55 * lvl) * Math.max(0, Math.sin(t * (8 + 6 * lvl) + i * .7)); c.beginPath(); c.arc(X(rw.r + rw.T * .55), Y(rw.y + 3.4 + b * 2), Math.max(1.6, .55 * k), 0, TAU); c.fill(); });
+  }
+  // player at the point of focus (4 ft inside the sideline)
+  if (player > 0) { const p = P(76, fy); c.fillStyle = rgba('blue', player * a); c.fillRect(p[0] - .5 * k, p[1] - 5.2 * k, 1 * k, 5.2 * k); c.beginPath(); c.arc(p[0], p[1] - 5.8 * k, .55 * k, 0, TAU); c.fill(); }
+  if (sight > 0) { const f = P(76, fy + 5); c.beginPath(); for (const rw of [SEC.FR[0], SEC.FR[3], SEC.LB[8], SEC.LB[18], SEC.LB[30]]) { const e = P(rw.r + rw.T * .5, rw.y + 3.9); c.moveTo(e[0], e[1]); c.lineTo(lerp(e[0], f[0], sight), lerp(e[1], f[1], sight)); } c.strokeStyle = rgba('blue', .55 * a); c.lineWidth = 1; c.stroke(); }
+}
+const soffLB = r => 13.5 + 1.05 * ((r - 130) / 2.75) + .0125 * ((r - 130) / 2.75) ** 2 - 6.5;
+
+/* =====================================================================
+   01 — THE LINC TODAY  (0 – 10.6)
+   ===================================================================== */
+const K1 = [
+  { t: 0, yaw: .55, pitch: .62, dist: 310, f: 1000, tx: 0, ty: 14, tz: 0, cx: 540, cy: 680 },
+  { t: 10.6, yaw: .95, pitch: .5, dist: 300, f: 1000, tx: 0, ty: 16, tz: 0, cx: 540, cy: 680 },
+];
+function sToday(c, t) {
+  const cm = cam(camKeys(K1, t)), build = easeOut(seg(t, .6, 6.4));
+  drawLinc(c, cm, t, { build, old: 1, oldBd: 1 });
+  const la = env(t, 6.6, 7.0, 10.0, 10.6), cq = cm.p(-40, 52, -88), bq = cm.p(97, 44, 0), uq = cm.p(...ring(...UB_OUT, upperTop)[NR * .75 | 0]);
+  lab(c, cq[0], cq[1], MX, 330, seg(t, 6.8, 8.0), 'Wing canopies', la);
+  lab(c, bq[0], bq[1], 720, 330, seg(t, 7.4, 8.6), 'End-zone boards', la);
+  stat(c, 'OPENED', '2003', MX, 180, seg(t, 3.0, 4.0), env(t, 3.0, 3.4, 10.0, 10.6));
+  stat(c, 'SEATS', fmt(Math.round(69000 * easeOut(seg(t, 3.4, 5.6)) / 100) * 100) + '+', 620, 180, seg(t, 3.4, 4.4), env(t, 3.4, 3.8, 10.0, 10.6));
+  head(c, [['The Linc,', 'blue'], [' Philadelphia, today.', 'graphite']], seg(t, 1.8, 3.4), 1 - smooth(seg(t, 10.0, 10.6)));
+}
+
+/* =====================================================================
+   02 — THE NEST  (10 – 22.6)
+   ===================================================================== */
+const K2 = [
+  { t: 10, yaw: .95, pitch: .5, dist: 300, f: 1000, tx: 0, ty: 16, tz: 0, cx: 540, cy: 680 },
+  { t: 16, yaw: 1.25, pitch: .58, dist: 330, f: 1000, tx: 0, ty: 20, tz: 0, cx: 540, cy: 700 },
+  { t: 22.6, yaw: 1.55, pitch: .62, dist: 320, f: 1000, tx: 0, ty: 20, tz: 0, cx: 540, cy: 700 },
+];
+function sNest(c, t) {
+  const cm = cam(camKeys(K2, t)), off = smooth(seg(t, 11.6, 13.6)), on = ease(seg(t, 13.4, 16.0)), bd = ease(seg(t, 15.4, 17.6));
+  drawLinc(c, cm, t, { old: 1 - off, oldBd: 1 - smooth(seg(t, 14.8, 15.6)), nw: smooth(seg(t, 13.4, 14.4)), drop: 46 * (1 - on), newBd: smooth(seg(t, 15.2, 15.8)), rise: bd, glow: smooth(seg(t, 16.8, 18.2)) });
+  const la = env(t, 17.0, 17.4, 22.0, 22.6), cq = cm.p(-60, NC.y, -70), nq = cm.p(91, 40, -34), sq = cm.p(-91, 40, 34);
+  lab(c, cq[0], cq[1], MX, 260, seg(t, 17.2, 18.4), 'New canopies', la);
+  lab(c, nq[0], nq[1], MX, 330, seg(t, 17.8, 19.0), 'North board', la);
+  lab(c, sq[0], sq[1], MX, 400, seg(t, 18.4, 19.6), 'South board', la);
+  head(c, [['The Nest:', 'blue'], [' a new Linc.', 'graphite']], seg(t, 12.0, 13.6), 1 - smooth(seg(t, 22.0, 22.6)), 62);
+}
+
+/* =====================================================================
+   03 — LOWER THE FIELD, ADD ROWS  (22 – 36.6)  — west section, close up
+   ===================================================================== */
+function sLower(c, t) {
+  const z = ease(seg(t, 34.4, 36.4)), V = secView(z), ia = smooth(seg(t, 22.0, 22.8));
+  const lower = ease(seg(t, 23.6, 25.6)), rows = seg(t, 26.0, 28.4);
+  drawSection(c, V, t, { a: ia, lower, rows, guard: 1 - smooth(seg(t, 25.6, 26.2)), suites: smooth(seg(t, 28.8, 29.6)), club: smooth(seg(t, 30.6, 31.4)), vom: easeOut(seg(t, 31.4, 32.4)), people: smooth(seg(t, 31.0, 32.0)), player: 1 - z, sight: easeOut(seg(t, 32.6, 33.8)) * (1 - smooth(seg(t, 34.2, 34.8))), cNew: 0, cOld: 1 });
+  // 4 ft dimension
+  const da = env(t, 23.6, 24.0, 33.8, 34.4) * (1 - z);
+  if (da > 0) {
+    const x = V.X(100), y0 = V.Y(4), y1 = V.Y(4 - 4 * lower);
+    c.beginPath(); c.moveTo(x, y0); c.lineTo(x, y1); c.moveTo(x - 8, y0); c.lineTo(x + 8, y0); c.moveTo(x - 8, y1); c.lineTo(x + 8, y1); c.strokeStyle = rgba('blue', da); c.lineWidth = 1.6; c.stroke();
+    txt(c, '−4 ft', x + 14, (y0 + y1) / 2 + 9, { w: 700, size: 28, color: 'blue', a: da * smooth(seg(t, 24.2, 24.8)) });
+  }
+  const nRows = 33 + Math.round(4 * smooth(rows));
+  stat(c, 'LOWER BOWL', nRows + ' rows', MX, 180, seg(t, 25.8, 26.8), env(t, 25.8, 26.2, 36.0, 36.6));
+  const la = env(t, 26.4, 26.8, 34.0, 34.6), A = (r, y) => [V.X(r), V.Y(y)];
+  const fr = A(125, 11.5), fs = A(129, 3), fc = A(170, 6);
+  lab(c, fr[0], fr[1], 640, 300, seg(t, 26.6, 27.8), 'New front rows', la);
+  lab(c, fs[0], fs[1], 640, 370, seg(t, 29.0, 30.2), 'Field suites', la * smooth(seg(t, 28.8, 29.6)));
+  lab(c, fc[0], fc[1], 640, 440, seg(t, 30.8, 32.0), 'Field club', la * smooth(seg(t, 30.6, 31.4)));
+  head(c, [['Lower the field 4 ft.', 'blue'], [' Add four rows.', 'graphite']], seg(t, 23.0, 25.0), 1 - smooth(seg(t, 36.0, 36.6)), 48);
+}
+
+/* =====================================================================
+   04 — THE CANOPY  (36 – 46.6)
+   ===================================================================== */
+const NEW_SEC = { lower: 1, rows: 1, suites: 1, club: 1, vom: 1 };
+function sCanopy(c, t) {
+  const V = secView(1), ia = smooth(seg(t, 36.0, 36.6)), cn = seg(t, 37.0, 39.6), ex = ease(seg(t, 40.2, 41.6)) * (1 - ease(seg(t, 44.0, 45.4)));
+  drawSection(c, V, t, Object.assign({}, NEW_SEC, { a: ia, cOld: 1 - smooth(seg(t, 36.8, 37.8)), cNew: cn, ex }));
+  // sun and shade
+  const sa = env(t, 38.6, 39.4, 46.0, 46.6);
+  if (sa > 0) {
+    const ang = .62, dx = -Math.cos(ang), dy = Math.sin(ang);
+    c.beginPath(); for (let i = 0; i < 6; i++) { const r = 200 + i * 38, p = [V.X(r), V.Y(SEC.CY + 26 * ex)], s0 = [p[0] - dx * 220 * sa, p[1] - dy * 220 * sa]; c.moveTo(s0[0], s0[1]); c.lineTo(p[0], p[1]); } c.strokeStyle = rgba('mid', .7 * sa); c.lineWidth = 1; c.setLineDash([3, 5]); c.stroke(); c.setLineDash([]);
+    const e = [V.X(168), V.Y(SEC.CY - 1.4)], sh = [e[0] + dx * (V.Y(SEC.CY) - V.Y(SEC.LB[10].y)) / dy, V.Y(SEC.LB[10].y)];
+    c.beginPath(); c.moveTo(e[0], e[1]); c.lineTo(sh[0], sh[1]); c.lineTo(V.X(SEC.FACE), V.Y(SEC.UB[27].y)); c.lineTo(V.X(SEC.FACE), V.Y(SEC.CY - 7)); c.closePath(); c.fillStyle = rgba('cyan', .1 * sa * (1 - ex)); c.fill();
+  }
+  // light bounced off the reflective underside
+  const ba = env(t, 42.0, 42.8, 46.0, 46.6);
+  if (ba > 0) { c.beginPath(); for (let i = 0; i < 6; i++) { const r = 190 + i * 28, p = [V.X(r), V.Y(soffit(r) - 10 * ex)], q = [V.X(r - 24), V.Y(SEC.LB[Math.min(32, 4 + i * 5)].y + 4)]; c.moveTo(p[0], p[1]); c.lineTo(lerp(p[0], q[0], easeOut(seg(t, 42 + i * .1, 43.2 + i * .1))), lerp(p[1], q[1], easeOut(seg(t, 42 + i * .1, 43.2 + i * .1)))); } c.strokeStyle = rgba('cyan', .8 * ba); c.lineWidth = 1.2; c.stroke(); }
+  const la = env(t, 40.4, 40.8, 46.0, 46.6), A = (r, y) => [V.X(r), V.Y(y)];
+  const dq = A(240, SEC.CY + 22 * ex), tq = A(281, SEC.CY + 11 * ex - 3), sq = A(220, soffit(220) - 10 * ex);
+  lab(c, dq[0], dq[1], MX, 200, seg(t, 40.6, 41.8), 'Solar deck', la);
+  lab(c, tq[0], tq[1], MX, 260, seg(t, 41.2, 42.4), 'Hidden trusses', la);
+  lab(c, sq[0], sq[1], MX, 320, seg(t, 41.8, 43.0), 'Reflective underside', la);
+  head(c, [['The canopy:', 'blue'], [' shade, power, light.', 'graphite']], seg(t, 37.0, 38.6), 1 - smooth(seg(t, 46.0, 46.6)));
+}
+
+/* =====================================================================
+   05 — ACOUSTICS  (46 – 56.6)
+   ===================================================================== */
+function sAcoustic(c, t) {
+  const V = secView(1), ia = smooth(seg(t, 46.0, 46.6)), lvl = ease(seg(t, 46.8, 50.4)), fo = 1 - smooth(seg(t, 56.0, 56.6));
+  drawSection(c, V, t, Object.assign({}, NEW_SEC, { a: ia, cNew: 1, crowd: smooth(seg(t, 46.4, 47.2)), lvl }));
+  const wa = smooth(seg(t, 47.0, 47.8)) * fo, cy = soffit(260);
+  if (wa > 0) {
+    c.save(); c.beginPath(); c.rect(0, V.Y(cy), W, V.Y(-4) - V.Y(cy)); c.clip();
+    const per = lerp(.9, .5, lvl), spd = 95;
+    for (const [sr, sy] of [[180, 34], [230, 72], [280, 114], [335, 165]]) for (let e = 0; e < 6; e++) {
+      const te = Math.floor((t - 47) / per) * per + 47 - e * per, r = (t - te) * spd; if (r <= 0 || te < 46.9) continue;
+      const al = (1 - r / (spd * per * 6)) * wa * (.35 + .65 * lvl); if (al <= 0) continue;
+      c.beginPath(); c.arc(V.X(sr), V.Y(sy), r * V.k, Math.PI * .5, Math.PI * 1.5); c.strokeStyle = rgba('blue', .45 * al); c.lineWidth = 1.2; c.stroke();
+      if (r > cy - sy && sr > 168) { c.beginPath(); c.arc(V.X(sr), V.Y(2 * cy - sy), r * V.k, Math.PI / 2, Math.PI); c.strokeStyle = rgba('cyan', .9 * al); c.lineWidth = 1.5; c.stroke(); }
+    }
+    c.restore();
+  }
+  const la = env(t, 48.4, 48.8, 56.0, 56.6), sq = [V.X(240), V.Y(soffit(240))], cq = [V.X(SEC.LB[16].r), V.Y(SEC.LB[16].y + 4)];
+  lab(c, cq[0], cq[1], MX, 260, seg(t, 48.6, 49.8), 'Crowd', la);
+  lab(c, sq[0], sq[1], MX, 330, seg(t, 50.4, 51.6), 'Reflective underside', la);
+  head(c, [['Acoustics:', 'blue'], [' the roar comes back.', 'graphite']], seg(t, 47.2, 48.8), 1 - smooth(seg(t, 56.0, 56.6)));
+}
+
+/* =====================================================================
+   06 — VIDEO BOARDS, NORTH AND SOUTH  (56 – 66.6)
+   ===================================================================== */
+const K6 = [
+  { t: 56, yaw: Math.PI / 2 + .45, pitch: .32, dist: 330, f: 1000, tx: 30, ty: 24, tz: 0, cx: 540, cy: 660 },
+  { t: 60.5, yaw: Math.PI / 2 + .25, pitch: .3, dist: 300, f: 1000, tx: 40, ty: 26, tz: 0, cx: 540, cy: 660 },
+  { t: 64.2, yaw: -Math.PI / 2 - .5 + TAU, pitch: .26, dist: 240, f: 1000, tx: 80, ty: 26, tz: 0, cx: 540, cy: 680 },
+  { t: 66.6, yaw: -Math.PI / 2 - .6 + TAU, pitch: .26, dist: 250, f: 1000, tx: 80, ty: 26, tz: 0, cx: 540, cy: 680 },
+];
+function sBoards(c, t) {
+  const cm = cam(camKeys(K6, t)), ia = smooth(seg(t, 56.0, 56.7));
+  drawLinc(c, cm, t, { a: ia, nw: 1, newBd: 1, glow: .7, lower: 1 });
+  const sa = env(t, 57.6, 58.2, 60.8, 61.4);
+  if (sa > 0) {
+    c.beginPath();
+    for (const f of [.25, .7]) for (let i = 0; i < NR; i += 6) { const th = TH[i]; if (Math.cos(th) > .3) continue; const q = sePt(lerp(LB_IN[0], UB_OUT[0], f), lerp(LB_IN[1], UB_OUT[1], f), th), y = f < .5 ? 6 : 38; if ((i / NR + f) % 1 > easeOut(seg(t, 57.6, 59.6))) continue; const p = cm.p(q[0], y, q[1]), b = cm.p(84, 33, clamp(q[1] * .4, -30, 30)); c.moveTo(p[0], p[1]); c.lineTo(b[0], b[1]); }
+    c.strokeStyle = rgba('cyan', .45 * sa); c.lineWidth = 1; c.stroke();
+  }
+  const la = env(t, 57.0, 57.4, 60.8, 61.4), nq = cm.p(84, 40, 0);
+  lab(c, nq[0], nq[1], MX, 260, seg(t, 57.2, 58.4), 'Faces the bowl', la);
+  const lb = env(t, 63.6, 64.0, 66.0, 66.6), oq = cm.p(98, 40, 0);
+  lab(c, oq[0], oq[1], MX, 260, seg(t, 63.8, 65.0), 'Faces the plaza', lb);
+  head(c, [['Two boards,', 'blue'], [' north and south.', 'graphite']], seg(t, 56.8, 58.4), 1 - smooth(seg(t, 66.0, 66.6)));
+}
+
+/* =====================================================================
+   07 — NEW EXPERIENCES  (66 – 76.6)
+   ===================================================================== */
+function sExperience(c, t) {
+  const V = secView(1), ia = smooth(seg(t, 66.0, 66.6));
+  const s1 = smooth(seg(t, 67.0, 67.8)), s2 = smooth(seg(t, 68.6, 69.4)), s3 = smooth(seg(t, 70.2, 71.0)), s4 = smooth(seg(t, 71.8, 72.6));
+  drawSection(c, V, t, Object.assign({}, NEW_SEC, { a: ia, cNew: 1, suites: 1, club: 1, people: Math.max(s1, s2), hiSuites: s3, terr: s4 }));
+  // pulse rings on each new space
+  const ring_ = (r, y, s, t0) => { if (s <= 0) return; const ph = ((t - t0) * .8) % 1; c.beginPath(); c.arc(V.X(r), V.Y(y), 8 + 24 * ph, 0, TAU); c.strokeStyle = rgba('cyan', (1 - ph) * s); c.lineWidth = 1.4; c.stroke(); };
+  ring_(129, 3, s1, 67); ring_(168, 4, s2, 68.6); ring_(242, 80, s3, 70.2); ring_(SEC.FACE + 7, 126, s4, 71.8);
+  const la = env(t, 67.2, 67.6, 76.0, 76.6), A = (r, y) => [V.X(r), V.Y(y)];
+  const q1 = A(129, 3), q2 = A(168, 4), q3 = A(242, 80), q4 = A(SEC.FACE + 10, 128);
+  lab(c, q1[0], q1[1], MX, 200, seg(t, 67.2, 68.4), 'Field suites', la);
+  lab(c, q2[0], q2[1], MX, 260, seg(t, 68.8, 70.0), 'Field club', la);
+  lab(c, q3[0], q3[1], MX, 320, seg(t, 70.4, 71.6), 'Clubs + suites', la);
+  lab(c, q4[0], q4[1], 640, 320, seg(t, 72.0, 73.2), 'Terraces', la);
+  head(c, [['New experiences', 'blue'], [' at every level.', 'graphite']], seg(t, 67.0, 68.6), 1 - smooth(seg(t, 76.0, 76.6)));
+}
+
+/* =====================================================================
+   08 — LIGHTING + TECHNOLOGY  (76 – 84.6)
+   ===================================================================== */
+function sTech(c, t) {
+  const cm = cam({ yaw: .3 + .025 * (t - 76), pitch: .5, dist: 310, f: 1000, tx: 0, ty: 18, tz: 8, cx: 540, cy: 690 }), ia = smooth(seg(t, 76.0, 76.7));
+  const lights = seg(t, 77.0, 78.6), show = smooth(seg(t, 79.4, 80.4)), solar = seg(t, 81.0, 82.6);
+  drawLinc(c, cm, t, { a: ia, nw: 1, newBd: 1, lower: 1, glow: .5 + .5 * show * (.5 + .5 * Math.sin(t * 5)), lights, show, solar });
+  // connected seats: Wi-Fi / 5G nodes over the bowl
+  const na = smooth(seg(t, 80.2, 81.0)) * ia;
+  if (na > 0) for (let i = 0; i < NR; i += 11) { const q = sePt(lerp(LB_IN[0], LB_OUT[0], .6), lerp(LB_IN[1], LB_OUT[1], .6), TH[i]), p = cm.p(q[0], 10, q[1]), ph = ((t * .9 + i * .13) % 1); c.fillStyle = rgba('blue', na); c.beginPath(); c.arc(p[0], p[1], 2.6, 0, TAU); c.fill(); c.beginPath(); c.arc(p[0], p[1], 4 + 14 * ph, 0, TAU); c.strokeStyle = rgba('cyan', (1 - ph) * na); c.lineWidth = 1; c.stroke(); }
+  const la = env(t, 77.2, 77.6, 84.0, 84.6), lq = cm.p(-60, NC.yf, -NC.zf), gq = cm.p(60, NC.y, NC.zf), sq = cm.p(-30, NC.y, -90), wq = (() => { const q = sePt(lerp(LB_IN[0], LB_OUT[0], .6), lerp(LB_IN[1], LB_OUT[1], .6), TH[44]); return cm.p(q[0], 10, q[1]); })();
+  lab(c, lq[0], lq[1], MX, 200, seg(t, 77.4, 78.6), 'LED sports lights', la);
+  lab(c, gq[0], gq[1], MX, 260, seg(t, 79.6, 80.8), 'Show lighting', la);
+  lab(c, wq[0], wq[1], MX, 320, seg(t, 80.4, 81.6), 'Wi-Fi + 5G', la);
+  lab(c, sq[0], sq[1], MX, 380, seg(t, 81.2, 82.4), 'Solar canopy', la);
+  head(c, [['Light + tech,', 'blue'], [' built into the canopy.', 'graphite']], seg(t, 76.8, 78.4), 1 - smooth(seg(t, 84.0, 84.6)));
+}
+
+/* =====================================================================
+   09 — CLOSING  (84 – 90)
+   ===================================================================== */
+const K9 = [
+  { t: 84, yaw: 1.15, pitch: .56, dist: 300, f: 1000, tx: 0, ty: 18, tz: 0, cx: 540, cy: 660 },
+  { t: 90, yaw: 1.55, pitch: .5, dist: 360, f: 1000, tx: 0, ty: 20, tz: 0, cx: 540, cy: 640 },
+];
+function sFinal(c, t) {
+  const cm = cam(camKeys(K9, t)), pulse = heartPulse(t, 85.6, 88.6);
+  if (t > 85.6) {
+    const n = Math.floor((t - 85.6) / BEAT);
+    for (let k = Math.max(0, n - 2); k <= n; k++) { const bt = 85.6 + k * BEAT; if (bt > 88.6) continue; const r = (t - bt) / 2.2; if (r > 1) continue; const s = 1 + r * .7; linePts(c, ring(FAC[0] * s, FAC[1] * s, 0).map(q => cm.p(...q))); c.strokeStyle = rgba('cyan', .6 * (1 - r)); c.lineWidth = 1.4; c.stroke(); }
+  }
+  drawLinc(c, cm, t, { nw: 1, newBd: 1, lower: 1, glow: .6 + .4 * pulse, solar: 1, beat: .5 * pulse });
+  const ta = 1 - smooth(seg(t, 88.4, 89.4));
+  kicker(c, 'A CONCEPTUAL PROPOSAL FOR LINCOLN FINANCIAL FIELD', MX, 1080, seg(t, 86.4, 87.6), ta);
+  head(c, [['The Nest.', 'blue'], [' Built for the roar.', 'graphite']], seg(t, 85.0, 86.6), ta, 62);
+}
+
+/* =====================================================================
+   TIMELINE, CHROME, COMPOSITING
+   ===================================================================== */
+const SCENES = [
+  { a: 0, b: 10.6, f: sToday }, { a: 10.0, b: 22.6, f: sNest }, { a: 22.0, b: 36.6, f: sLower }, { a: 36.0, b: 46.6, f: sCanopy },
+  { a: 46.0, b: 56.6, f: sAcoustic }, { a: 56.0, b: 66.6, f: sBoards }, { a: 66.0, b: 76.6, f: sExperience }, { a: 76.0, b: 84.6, f: sTech },
+  { a: 84.0, b: 90.01, f: sFinal },
+];
+const CHAPTERS = [{ t: 0, n: '01', name: 'The Linc Today' }, { t: 10, n: '02', name: 'The Nest' }, { t: 22, n: '03', name: 'Lower the Field' }, { t: 36, n: '04', name: 'The Canopy' }, { t: 46, n: '05', name: 'Acoustics' }, { t: 56, n: '06', name: 'Video Boards' }, { t: 66, n: '07', name: 'Experiences' }, { t: 76, n: '08', name: 'Light + Tech' }, { t: 84, n: '09', name: 'Closing' }];
+const chapterAt = t => { let ch = CHAPTERS[0]; for (const c of CHAPTERS) if (t >= c.t) ch = c; return ch; };
+const tc = t => { const s = Math.floor(t), f = Math.floor((t - s) * 25); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f).padStart(2, '0')}`; };
+
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const layer = document.createElement('canvas'), lctx = layer.getContext('2d');
+const sil = document.createElement('canvas'), silCtx = sil.getContext('2d');
+const bg = document.createElement('canvas'), bgCtx = bg.getContext('2d');
+let SC = 1;
+const EXPORT = new URLSearchParams(location.search).has('export');
+let forceFull = EXPORT;
+function resize() {
+  let pw;
+  if (forceFull) pw = W;
+  else { const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1); pw = Math.min(2880, Math.max(640, Math.round(r.width * dpr))); }
+  const ph = Math.round(pw * H / W);
+  for (const k of [cv, layer, sil, bg]) { k.width = pw; k.height = ph; }
+  SC = pw / W;
+  bgCtx.setTransform(SC, 0, 0, SC, 0, 0);
+  bgCtx.fillStyle = rgba('mid', .3);
+  for (let x = 72; x < W; x += 48) for (let y = 60; y < H; y += 48) { bgCtx.beginPath(); bgCtx.arc(x, y, .9, 0, TAU); bgCtx.fill(); }
+  draw(curT());
+}
+function drawBackground(c, t) {
+  c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
+  const g = c.createRadialGradient(W / 2, H * .45, 200, W / 2, H * .45, 1000); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(238,241,244,1)');
+  c.fillStyle = g; c.fillRect(0, 0, W, H);
+  const reveal = easeOut(seg(t, .3, 2.6)), ga = .75 * (1 - .4 * smooth(seg(t, 87, 89)));
+  if (reveal > 0) { c.save(); c.beginPath(); c.rect(0, 0, W * reveal, H); c.clip(); c.globalAlpha = ga; c.drawImage(bg, 0, 0, W, H); c.restore(); }
+}
+function drawChrome(c, t) {
+  return;  // no header or footer in this cut
+  const a = env(t, .6, 2.0, 87.4, 88.8); if (a <= 0) return;
+  c.save(); c.globalAlpha = a;
+  txt(c, 'ANATOMY OF THE GAME', 120, 92, { w: 700, size: 15, ls: 4 });
+  txt(c, 'The Nest', 120, 116, { size: 15, color: 'mid' });
+  const ch = chapterAt(t);
+  txt(c, `PLATE ${ch.n} / 07`, 1800, 92, { size: 15, ls: 4, align: 'right' });
+  txt(c, typed(ch.name.toUpperCase(), seg(t, ch.t, ch.t + .9)), 1800, 116, { size: 15, ls: 2, align: 'right', color: 'blue' });
+  txt(c, tc(t), 1800, 1036, { size: 13, ls: 2, align: 'right', color: 'mid' });
+  txt(c, 'SCALE — 1 : 1  /  1 : 200  /  1 : 2000', 120, 1036, { size: 13, ls: 2, color: 'mid' });
+  c.fillStyle = rgba('light', 1); c.fillRect(120, 1006, 1680, 1); c.fillStyle = rgba('blue', 1); c.fillRect(120, 1006, 1680 * t / DUR, 1);
+  for (const [x, y] of [[60, 60], [1860, 60], [60, 1020], [1860, 1020]]) { c.strokeStyle = rgba('mid', .7); c.lineWidth = 1; c.beginPath(); c.moveTo(x - 9, y); c.lineTo(x + 9, y); c.moveTo(x, y - 9); c.lineTo(x, y + 9); c.stroke(); }
+  c.restore();
+}
+function draw(t) {
+  t = clamp(t, 0, DUR);
+  ctx.setTransform(SC, 0, 0, SC, 0, 0);
+  drawBackground(ctx, t);
+  const act = [];
+  SCENES.forEach((s, i) => { if (t < s.a || t > s.b) return; const fi = i === 0 ? 1 : smooth(seg(t, s.a, s.a + .6)), fo = i === SCENES.length - 1 ? 1 : 1 - smooth(seg(t, s.b - .6, s.b)); const al = Math.min(fi, fo); if (al > 0) act.push([s, al]); });
+  for (const [s, al] of act) {
+    if (al >= .999) { ctx.save(); s.f(ctx, t); ctx.restore(); continue; }
+    lctx.setTransform(1, 0, 0, 1, 0, 0); lctx.clearRect(0, 0, layer.width, layer.height); lctx.setTransform(SC, 0, 0, SC, 0, 0);
+    lctx.save(); s.f(lctx, t); lctx.restore();
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = al; ctx.drawImage(layer, 0, 0); ctx.restore();
+  }
+  ctx.setTransform(SC, 0, 0, SC, 0, 0);
+  drawChrome(ctx, t);
+  const white = Math.max(1 - smooth(seg(t, 0, 1.2)), smooth(seg(t, 88.0, 89.7)));
+  if (white > 0) { ctx.fillStyle = `rgba(255,255,255,${white})`; ctx.fillRect(0, 0, W, H); }
+}
+
+/* =====================================================================
+   SOUND — generative score (Web Audio), shared by live playback,
+   WebM export and offline WAV rendering
+   ===================================================================== */
+const PINGS = [1.8, 3.0, 3.4, 6.8, 7.4, 12.0, 13.4, 15.4, 17.2, 17.8, 18.4, 23.0, 24.2, 26.0, 26.6, 27.2, 27.8, 29.0, 30.8, 31.4, 32.6, 37.0, 40.6, 41.2, 41.8, 47.2, 48.6, 50.4, 56.8, 57.2, 63.8, 67.2, 68.8, 70.4, 72.0, 77.0, 77.4, 79.6, 80.4, 81.2, 85.0, 86.4];
+const WHOOSH = [[3.4, 3.0], [11.6, 2.0], [13.4, 2.6], [21.6, 1.0], [23.6, 2.0], [34.4, 2.0], [35.6, 1.0], [40.2, 1.4], [44.0, 1.4], [45.6, .9], [55.6, .9], [60.6, 3.6], [65.6, .9], [75.6, .9], [83.4, 2.6]];
+const CHORDS = [[0, [98, 146.83, 220, 293.66]], [10, [110, 164.81, 246.94, 329.63]], [22, [87.31, 130.81, 196, 293.66]], [36, [98, 146.83, 246.94, 293.66]], [46, [82.41, 123.47, 185, 277.18]], [56, [110, 164.81, 220, 329.63]], [66, [92.5, 138.59, 220, 277.18]], [76, [98, 146.83, 220, 329.63]], [84, [110, 164.81, 207.65, 277.18]]];
+const PING_NOTES = [1318.5, 1479.98, 1760, 1661.22, 2217.46];
+function noiseBuffer(ac, secs, seed) { const r = rng(seed), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); let p = 0; for (let i = 0; i < d.length; i++) { const w = r() * 2 - 1; p = .97 * p + .03 * w; d[i] = w * .5 + p * 3; } } return b; }
+function impulse(ac, secs) { const r = rng(99), b = ac.createBuffer(2, Math.floor(ac.sampleRate * secs), ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / d.length, 3.2); } return b; }
+function buildScore(ac, out, offset, offline) {
+  const now = ac.currentTime + (offline ? 0 : .06), T = x => now + (x - offset), nodes = [];
+  const valAt = (keys, x) => { if (x <= keys[0][0]) return keys[0][1]; for (let i = 1; i < keys.length; i++) if (x <= keys[i][0]) return lerp(keys[i - 1][1], keys[i][1], (x - keys[i - 1][0]) / (keys[i][0] - keys[i - 1][0])); return keys[keys.length - 1][1]; };
+  const auto = (param, keys) => { param.setValueAtTime(valAt(keys, offset), now); for (const [k, v] of keys) if (k > offset) param.linearRampToValueAtTime(v, T(k)); };
+  const master = ac.createGain(); master.connect(out); auto(master.gain, [[0, .9], [88.2, .9], [89.9, 0]]);
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 3; comp.connect(master);
+  const rev = ac.createConvolver(); rev.buffer = impulse(ac, 3.2); const revG = ac.createGain(); revG.gain.value = .45; rev.connect(revG); revG.connect(comp);
+  const dry = ac.createGain(); dry.connect(comp);
+  const send = ac.createGain(); send.gain.value = 1; send.connect(rev);
+  // pad
+  const padLP = ac.createBiquadFilter(); padLP.type = 'lowpass'; padLP.Q.value = .4; auto(padLP.frequency, [[0, 500], [10, 900], [22, 1100], [36, 1300], [46, 1000], [56, 1400], [66, 1200], [76, 1500], [84, 1600], [90, 700]]);
+  const padG = ac.createGain(); auto(padG.gain, [[0, 0], [3, .09], [85, .1], [89.5, 0]]);
+  padLP.connect(padG); padG.connect(dry); padG.connect(send);
+  const lfo = ac.createOscillator(); lfo.frequency.value = .07; const lfoG = ac.createGain(); lfoG.gain.value = 160; lfo.connect(lfoG); lfoG.connect(padLP.frequency); lfo.start(now); nodes.push(lfo);
+  let ci = 0; for (let i = 0; i < CHORDS.length; i++) if (CHORDS[i][0] <= offset) ci = i;
+  for (let v = 0; v < 4; v++) for (const [type, det, gv] of [['sine', 0, .55], ['triangle', 5, .35], ['sine', -7, .25]]) {
+    const o = ac.createOscillator(); o.type = type; o.detune.value = det; o.frequency.setValueAtTime(CHORDS[ci][1][v] * (type === 'sine' && det < 0 ? 2 : 1), now);
+    for (let i = ci + 1; i < CHORDS.length; i++) o.frequency.setTargetAtTime(CHORDS[i][1][v] * (type === 'sine' && det < 0 ? 2 : 1), T(CHORDS[i][0]), .35);
+    const g = ac.createGain(); g.gain.value = gv / 4; o.connect(g); g.connect(padLP); o.start(now); nodes.push(o);
+  }
+  // heart / data pulse
+  const pulse = (time, gain, f = 56) => { if (time < offset) return; const t0 = T(time), o = ac.createOscillator(), g = ac.createGain(), lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220; o.frequency.setValueAtTime(f * 2.2, t0); o.frequency.exponentialRampToValueAtTime(f, t0 + .09); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + .006); g.gain.exponentialRampToValueAtTime(.0001, t0 + .5); o.connect(lp); lp.connect(g); g.connect(dry); o.start(t0); o.stop(t0 + .55); };
+  for (const [bt, gn] of [[25.6, .4], [28.4, .3], [40.2, .3], [44.0, .3], [64.2, .3], [78.6, .35]]) { pulse(bt, gn); }
+  for (let k = 0; ; k++) { const bt = 85.6 + k * BEAT; if (bt > 88.6) break; pulse(bt, .6); pulse(bt + .24, .33, 50); }
+  // reveal pings (with a soft pulse underneath)
+  PINGS.forEach((pt, i) => {
+    if (pt < offset) return; const t0 = T(pt), f = PING_NOTES[i % PING_NOTES.length];
+    for (const [mul, gv] of [[1, .045], [2, .012]]) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f * mul; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gv, t0 + .004); g.gain.exponentialRampToValueAtTime(.0001, t0 + .9); o.connect(g); g.connect(dry); g.connect(send); o.start(t0); o.stop(t0 + 1); }
+    if (pt > 10 && pt < 85) pulse(pt, .12, 70);
+  });
+  // whooshes on layer peels / transitions
+  const nb = noiseBuffer(ac, 4, 5);
+  WHOOSH.forEach(([wt, d]) => {
+    if (wt + d < offset) return; const st = Math.max(wt, offset), t0 = T(st), src = ac.createBufferSource(); src.buffer = nb;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = .9; const k0 = (st - wt) / d;
+    bp.frequency.setValueAtTime(lerp(280, 2600, k0), t0); bp.frequency.exponentialRampToValueAtTime(2600, T(wt + d));
+    const g = ac.createGain(); g.gain.setValueAtTime(.0001, t0); g.gain.linearRampToValueAtTime(.05, T(wt + d * .6)); g.gain.linearRampToValueAtTime(.0001, T(wt + d));
+    src.connect(bp); bp.connect(g); g.connect(dry); g.connect(send); src.start(t0, 0, d + .1);
+  });
+  // crowd ambience rising toward the end
+  const crowd = ac.createBufferSource(); crowd.buffer = noiseBuffer(ac, 6, 21); crowd.loop = true;
+  const cb = ac.createBiquadFilter(); cb.type = 'bandpass'; cb.frequency.value = 850; cb.Q.value = .5;
+  const cl = ac.createBiquadFilter(); cl.type = 'lowshelf'; cl.frequency.value = 300; cl.gain.value = 6;
+  const cg = ac.createGain(); auto(cg.gain, [[0, 0], [46, 0], [47, .05], [49, .16], [50.4, .22], [54, .2], [56.6, .03], [84, .03], [86, .08], [88.6, .12], [89.9, 0]]);
+  const am = ac.createOscillator(); am.frequency.value = .31; const amG = ac.createGain(); amG.gain.value = .012; am.connect(amG); amG.connect(cg.gain);
+  crowd.connect(cb); cb.connect(cl); cl.connect(cg); cg.connect(dry); cg.connect(send); crowd.start(now); am.start(now); nodes.push(crowd, am);
+  return { now, stop() { try { master.gain.cancelScheduledValues(ac.currentTime); master.gain.setTargetAtTime(0, ac.currentTime, .03); } catch (e) {} setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) {} }); master.disconnect(); }, 200); } };
+}
+function wavBase64(buf) {
+  const n = buf.length, ch = buf.numberOfChannels, sr = buf.sampleRate, bytes = 44 + n * ch * 2, ab = new ArrayBuffer(bytes), v = new DataView(ab);
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, 'RIFF'); v.setUint32(4, bytes - 8, true); ws(8, 'WAVE'); ws(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, ch, true); v.setUint32(24, sr, true); v.setUint32(28, sr * ch * 2, true); v.setUint16(32, ch * 2, true); v.setUint16(34, 16, true); ws(36, 'data'); v.setUint32(40, n * ch * 2, true);
+  const data = [...Array(ch)].map((_, i) => buf.getChannelData(i)); let o = 44;
+  for (let i = 0; i < n; i++) for (let c = 0; c < ch; c++) { const s = clamp(data[c][i], -1, 1); v.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7FFF, true); o += 2; }
+  let bin = ''; const u8 = new Uint8Array(ab); for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
+/* =====================================================================
+   PLAYER
+   ===================================================================== */
+let playing = false, tHold = 0, startT = 0, startClock = 0, ac = null, score = null, soundOn = true, recorder = null, recDest = null, recBus = null;
+const clockNow = () => (soundOn && ac) ? ac.currentTime : performance.now() / 1000;
+function curT() { if (!playing) return tHold; return clamp(startT + Math.max(0, clockNow() - startClock), 0, DUR); }
+function ensureAC() { if (!ac) { ac = new (window.AudioContext || window.webkitAudioContext)(); recBus = ac.createGain(); recBus.connect(ac.destination); } if (ac.state === 'suspended') ac.resume(); }
+function play() {
+  if (playing) return; if (tHold >= DUR - .05) tHold = 0;
+  startT = tHold; playing = true;
+  if (soundOn) { ensureAC(); score = buildScore(ac, recBus, startT, false); startClock = score.now; } else startClock = performance.now() / 1000;
+  ui();
+}
+function pause() { if (!playing) return; tHold = curT(); playing = false; if (score) { score.stop(); score = null; } ui(); }
+function seek(t) { const was = playing; if (was) pause(); tHold = clamp(t, 0, DUR); draw(tHold); if (was) play(); ui(); }
+const $ = id => document.getElementById(id);
+function ui() {
+  $('pp').textContent = playing ? 'Pause' : (curT() >= DUR - .05 ? 'Replay' : 'Play');
+  $('snd').textContent = soundOn ? 'Sound on' : 'Sound off'; $('snd').classList.toggle('on', soundOn);
+}
+let lastUi = -1;
+function loop() {
+  const t = curT();
+  if (!EXPORT) draw(t);
+  if (playing && t >= DUR) { tHold = DUR; pause(); if (recorder) recorder.stop(); }
+  if (Math.abs(t - lastUi) > .03) {
+    lastUi = t; $('sc').value = t.toFixed(2);
+    const f = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    $('tc').textContent = `${f(t)} / 01:30`;
+    const ch = chapterAt(t); document.querySelectorAll('.chapters button').forEach(b => b.classList.toggle('on', b.dataset.n === ch.n));
+  }
+  requestAnimationFrame(loop);
+}
+
+if (EXPORT) {
+  document.body.classList.add('export');
+  window.__render = t => draw(t);
+  window.__renderAudio = async () => { const oac = new OfflineAudioContext(2, 48000 * DUR, 48000); buildScore(oac, oac.destination, 0, true); const buf = await oac.startRendering(); return wavBase64(buf); };
+  resize(); window.__ready = true;
+} else {
+  CHAPTERS.forEach(ch => { const b = document.createElement('button'); b.type = 'button'; b.dataset.n = ch.n; b.innerHTML = `<b>${ch.n}</b>${ch.name}`; b.onclick = () => { $('start').classList.add('hidden'); seek(ch.t + .01); if (!playing) play(); }; $('chapters').appendChild(b); const tk = document.createElement('span'); tk.style.left = (ch.t / DUR * 100) + '%'; $('ticks').appendChild(tk); });
+  tHold = 70.0;
+  resize(); window.addEventListener('resize', resize);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw(curT()));
+  $('start').onclick = () => { $('start').classList.add('hidden'); tHold = 0; play(); };
+  $('pp').onclick = () => { $('start').classList.add('hidden'); playing ? pause() : play(); };
+  $('sc').oninput = e => { $('start').classList.add('hidden'); seek(parseFloat(e.target.value)); };
+  $('snd').onclick = () => { const was = playing; if (was) pause(); soundOn = !soundOn; if (was) play(); ui(); };
+  $('fs').onclick = () => { const f = $('frame'); (document.fullscreenElement ? document.exitFullscreen() : (f.requestFullscreen || f.webkitRequestFullscreen).call(f)); };
+  document.addEventListener('keydown', e => { if (e.target.tagName === 'INPUT' && e.code !== 'Space') return; if (e.code === 'Space') { e.preventDefault(); $('start').classList.add('hidden'); playing ? pause() : play(); } if (e.code === 'ArrowRight') seek(curT() + 2); if (e.code === 'ArrowLeft') seek(curT() - 2); });
+  $('rec').onclick = () => {
+    if (recorder) return;
+    if (!window.MediaRecorder || !cv.captureStream) { alert('Recording is not supported in this browser.'); return; }
+    $('start').classList.add('hidden'); pause(); soundOn = true; ensureAC();
+    forceFull = true; resize();
+    recDest = ac.createMediaStreamDestination(); recBus.connect(recDest);
+    const stream = new MediaStream([...cv.captureStream(60).getVideoTracks(), ...recDest.stream.getAudioTracks()]);
+    const type = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'].find(m => MediaRecorder.isTypeSupported(m)) || '';
+    recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 16e6 }); const chunks = [];
+    recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+    recorder.onstop = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(chunks, { type: 'video/webm' })); a.download = 'the-nest.webm'; a.click(); recBus.disconnect(recDest); recorder = null; forceFull = false; resize(); $('rec').textContent = 'Export WebM'; $('rec').classList.remove('on'); };
+    recorder.start(250); $('rec').textContent = 'Recording…'; $('rec').classList.add('on');
+    tHold = 0; play();
+  };
+  ui(); requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>
