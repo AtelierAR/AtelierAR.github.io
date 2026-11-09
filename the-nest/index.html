@@ -593,7 +593,8 @@ function stand3(c, P, s, a, o) {
   poly3(c, P, [[x0, ROOF, Z(345)], [x1, ROOF, Z(345)], [x1, ROOF, Z(FACADE)], [x0, ROOF, Z(FACADE)]], 'light', .8 * a, 'graphite', .6 * a);
   // upper bowl rake
   poly3(c, P, [[x0, UBy(0), Z(UBr(0))], [x1, UBy(0), Z(UBr(0))], [x1, UB_TOP, Z(UB_END)], [x0, UB_TOP, Z(UB_END)]], 'light', .75 * a, 'graphite', .8 * a);
-  for (let j = 4; j < 25; j += 4) L(UBr(j), UBy(j), 'mid', .5, .7);
+  if (WIDE) { poly3(c, P, [[x0, UBy(0), Z(UBr(0))], [x1, UBy(0), Z(UBr(0))], [x1, UB_TOP, Z(UB_END)], [x0, UB_TOP, Z(UB_END)]], 'blue', .2 * a, 'blue', 0); for (let j = 2; j < 25; j += 2) L(UBr(j), UBy(j), 'blue', .25, .6); c.beginPath(); for (let x = Math.ceil(x0 / 40) * 40; x <= x1; x += 40) seg3(c, P, [x, UBy(0), Z(UBr(0))], [x, UB_TOP, Z(UB_END)]); c.strokeStyle = rgba('white', .8 * a); c.lineWidth = 1.2; c.stroke(); }
+  else for (let j = 4; j < 25; j += 4) L(UBr(j), UBy(j), 'mid', .5, .7);
   // stepped front: club and suite levels behind glass
   for (let i = 0; i < FRONT.length - 1; i++) { const [ra, ya] = FRONT[i], [rb, yb] = FRONT[i + 1]; poly3(c, P, [[x0, ya, Z(ra)], [x1, ya, Z(ra)], [x1, yb, Z(rb)], [x0, yb, Z(rb)]], ra === rb ? 'blue' : 'white', ra === rb ? .08 * a : .7 * a, 'graphite', .55 * a, .8); }
   // fins carrying the canopy
@@ -676,22 +677,103 @@ function newCanopy3(c, P, s, a, o) {
     c.fillStyle = rgba('graphite', on * a); c.fillRect(f[0] - 3, f[1] - 2, 6, 4);
   }
 }
+/* ---------------------------------------------------------------------
+   16:9 bowl — seating tiers drawn as tinted bands with rows, closer to
+   the reference images (existing: open corners, suite band, ramp towers;
+   The Nest: tiers wrapping the corners and both ends)
+   --------------------------------------------------------------------- */
+const N8 = 8, NB = 240, THB = [...Array(NB + 1)].map((_, i) => i / NB * TAU);
+const s8 = (A, B, th) => { const cc = Math.cos(th), s = Math.sin(th); return [A * Math.sign(cc) * Math.pow(Math.abs(cc), 2 / N8), B * Math.sign(s) * Math.pow(Math.abs(s), 2 / N8)]; };
+function tierBand(c, P, R0, R1, a, o = {}) {
+  const { xmin = -999, keep = () => true, rows = 10, tint = .16, aisles = 10 } = o;
+  const [A0, B0, y0] = R0, [A1, B1, y1] = R1, pt = (f, th) => { const q = s8(lerp(A0, A1, f), lerp(B0, B1, f), th); return [q[0], lerp(y0, y1, f), q[1]]; };
+  const ok = i => { const th = THB[i], m = pt(.5, th); return keep(m[0], m[2]) && pt(0, th)[0] >= xmin && pt(1, th)[0] >= xmin; };
+  const runs = []; let cur = null;
+  for (let i = 0; i <= NB; i++) { if (ok(i)) { if (!cur) { cur = [i, i]; runs.push(cur); } cur[1] = i; } else cur = null; }
+  if (runs.length > 1 && runs[0][0] === 0 && runs[runs.length - 1][1] === NB) { runs[0][0] = runs[runs.length - 1][0] - NB; runs.pop(); }
+  for (const [i0, i1] of runs) {
+    const idx = []; for (let i = i0; i <= i1; i++) idx.push(((i % NB) + NB) % NB);
+    const inner = idx.map(i => P(...pt(0, THB[i]))), outer = idx.map(i => P(...pt(1, THB[i])));
+    linePts(c, [...inner, ...outer.reverse()]); c.closePath(); c.fillStyle = rgba('light', .85 * a); c.fill(); c.fillStyle = rgba('blue', tint * a); c.fill();
+    for (let k = 1; k < rows; k++) { linePts(c, idx.map(i => P(...pt(k / rows, THB[i])))); c.strokeStyle = rgba('blue', .22 * a); c.lineWidth = .6; c.stroke(); }
+    linePts(c, inner); c.strokeStyle = rgba('white', a); c.lineWidth = 2; c.stroke(); c.strokeStyle = rgba('graphite', .8 * a); c.lineWidth = .9; c.stroke();
+    linePts(c, idx.map(i => P(...pt(1, THB[i])))); c.strokeStyle = rgba('graphite', .8 * a); c.lineWidth = 1; c.stroke();
+    c.beginPath(); idx.forEach((i, k) => { if (k % aisles) return; seg3(c, P, pt(0, THB[i]), pt(1, THB[i])); }); c.strokeStyle = rgba('white', .8 * a); c.lineWidth = 1.2; c.stroke();
+  }
+  return runs;
+}
+function ringWall(c, P, A, B, y0, y1, a, keep, xmin, fill = 'white', fa = .8, glass = 0) {
+  const idx = []; for (let i = 0; i <= NB; i++) { const q = s8(A, B, THB[i]); if (keep(q[0], q[1]) && q[0] >= xmin) idx.push(i); else if (idx.length && idx[idx.length - 1] !== null) idx.push(null); }
+  const runs = []; let cur = []; for (const i of idx) { if (i === null) { if (cur.length > 1) runs.push(cur); cur = []; } else cur.push(i); } if (cur.length > 1) runs.push(cur);
+  for (const run of runs) {
+    const bot = run.map(i => { const q = s8(A, B, THB[i]); return P(q[0], y0, q[1]); }), top = run.map(i => { const q = s8(A, B, THB[i]); return P(q[0], y1, q[1]); });
+    linePts(c, [...bot, ...top.slice().reverse()]); c.closePath(); c.fillStyle = rgba(fill, fa * a); c.fill(); if (glass) { c.fillStyle = rgba('blue', glass * a); c.fill(); }
+    c.strokeStyle = rgba('graphite', .7 * a); c.lineWidth = 1; c.stroke();
+    c.beginPath(); run.forEach((i, k) => { if (k % 6) return; const q = s8(A, B, THB[i]); seg3(c, P, [q[0], y0, q[1]], [q[0], y1, q[1]]); }); c.strokeStyle = rgba('mid', .4 * a); c.lineWidth = .7; c.stroke();
+  }
+}
+const isEnd = (x, z) => Math.abs(x) > 206;                     // ends + corners (outside the sideline stands)
+const isEndOnly = (x, z) => Math.abs(x) > 206 && Math.abs(z) < 150; // existing: the corners stay open
+function bowlWide(c, P, a, o) {
+  const { lower = 1, old = 0, xmin = -999, build = 1 } = o, B = k => clamp(build * 6 - k) * a;
+  const nwA = 1 - old;
+  // lower bowl, all the way round
+  const lb = B(.5);
+  if (lb > 0) tierBand(c, P, [lerp(203, 192, lower), lerp(130, 119, lower), lerp(LBy(4), LBy(0), lower)], [300, LB_END, LB_TOP], lb, { xmin, rows: 12, tint: .18 });
+  // existing: suite band around the bowl + end upper decks with open corners
+  if (old > 0 && B(1.5) > 0) {
+    const ea = B(1.5) * old;
+    ringWall(c, P, 370, 304, PLAZA, 98, ea, isEndOnly, xmin, 'white', .7);
+    ringWall(c, P, 303, 226, LB_TOP, 46, ea, isEnd, xmin, 'graphite', .12, .1);
+    tierBand(c, P, [306, 230, 48], [368, 302, 98], ea, { xmin, keep: isEndOnly, rows: 14, tint: .2 });
+  }
+  // The Nest: a second tier sweeping round the corners and across both ends
+  if (nwA > 0 && B(1.5) > 0) {
+    const ea = B(1.5) * nwA;
+    ringWall(c, P, 374, 308, PLAZA, 92, ea, isEnd, xmin, 'white', .75);
+    ringWall(c, P, 303, 226, LB_TOP, 40, ea, isEnd, xmin, 'white', .7, .12);
+    tierBand(c, P, [306, 230, 42], [372, 306, 92], ea, { xmin, keep: isEnd, rows: 14, tint: .24 });
+  }
+}
+// existing ramp towers in the corners (cylinders), new dark corner blocks
+function cornersWide(c, P, a, old, xmin) {
+  for (const e of [-1, 1]) for (const s of [-1, 1]) {
+    const cx = e * 352, cz = s * 318; if (cx + 40 < xmin) continue;
+    if (old > 0) {
+      const al = a * old, R = 34, H = 84, ring_ = y => [...Array(33)].map((_, i) => { const an = i / 32 * TAU; return P(cx + R * Math.cos(an), y, cz + R * Math.sin(an)); });
+      linePts(c, ring_(0)); c.closePath(); c.fillStyle = rgba('white', .7 * al); c.fill();
+      for (let y = 0; y <= H; y += 12) { linePts(c, ring_(y)); c.strokeStyle = rgba(y % 24 ? 'mid' : 'graphite', (y % 24 ? .45 : .7) * al); c.lineWidth = .9; c.stroke(); }
+      const sil = ring_(H); linePts(c, sil); c.closePath(); c.fillStyle = rgba('light', .9 * al); c.fill(); c.strokeStyle = rgba('graphite', .8 * al); c.stroke();
+      c.beginPath(); for (const an of [0, Math.PI]) { const p = P(cx + R * Math.cos(an + 1.57), 0, cz + R * Math.sin(an + 1.57)), q = P(cx + R * Math.cos(an + 1.57), H, cz + R * Math.sin(an + 1.57)); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); } c.strokeStyle = rgba('graphite', .5 * al); c.stroke();
+    }
+    if (old < 1) boxF(c, P, cx - 22, cx + 22, 0, 96, cz - 22, cz + 22, 'graphite', .07 * a * (1 - old), 'graphite', .55 * a * (1 - old));
+  }
+}
+// rim truss on the existing wing canopies
+function oldRim(c, P, s, a, lift, xmin) {
+  if (a <= 0) return;
+  const F = (x, dy) => [x, 150 + 30 * (x / LS) ** 2 + lift + dy, s * 252], x0 = Math.max(-LS, xmin);
+  c.beginPath(); for (let i = 0; i <= 40; i++) { const x = lerp(x0, LS, i / 40), p = P(...F(x, 0)), q = P(...F(x, -7)); if (i) { const pp = P(...F(lerp(x0, LS, (i - 1) / 40), i % 2 ? -7 : 0)); c.moveTo(pp[0], pp[1]); c.lineTo(i % 2 ? p[0] : q[0], i % 2 ? p[1] : q[1]); } }
+  c.strokeStyle = rgba('graphite', .6 * a); c.lineWidth = .8; c.stroke();
+  linePts(c, [...Array(41)].map((_, i) => P(...F(lerp(x0, LS, i / 40), -7)))); c.strokeStyle = rgba('white', a); c.lineWidth = 2.4; c.stroke(); c.strokeStyle = rgba('graphite', .8 * a); c.lineWidth = 1; c.stroke();
+}
 function drawNest(c, cm, t, o = {}) {
   const { a = 1, build = 1, old = 0, nw = 0, drop = 0, oldBd = 0, newBd = 0, rise = 1, glow = 0, solar = 0, lights = 0, show = 0, lower = 1, xmin = -999, beat = 0, fins = 0 } = o;
   const P = Qp(cm), B = k => clamp(build * 6 - k) * a, cut = xmin > -LS ? 1 : 0;
   field3(c, P, clamp(build * 4) * a, xmin, 4 * (1 - lower));
-  if (B(.5) > 0) lowerBowl(c, P, B(.5), lower, xmin);
+  if (WIDE) bowlWide(c, P, a, { lower, old, xmin, build });
+  else if (B(.5) > 0) lowerBowl(c, P, B(.5), lower, xmin);
   if (cut) for (const s of [-1, 1]) lbCut(c, P, s, a, xmin);
   const ends = [-1, 1].sort((p, q) => P(q * 340, 60, 0)[2] - P(p * 340, 60, 0)[2]);
-  for (const e of ends) end3(c, P, e, B(1.5), xmin);
-  if (B(2) > 0) towers3(c, P, B(2), xmin);
+  if (WIDE) { if (B(2) > 0) cornersWide(c, P, B(2), old, xmin); }
+  else { for (const e of ends) end3(c, P, e, B(1.5), xmin); if (B(2) > 0) towers3(c, P, B(2), xmin); }
   const sides = [-1, 1].sort((p, q) => P(0, 80, q * 300)[2] - P(0, 80, p * 300)[2]);
   for (const s of sides) if (B(2.6) > 0) stand3(c, P, s, B(2.6), { xmin, fins, cut });
   if (beat > 0) for (const s of [-1, 1]) { c.beginPath(); seg3(c, P, [-LC, CAN.yb, s * CAN.r0], [LC, CAN.yb, s * CAN.r0]); glowStroke(c, 'cyan', beat * a, 3, 22); }
   if (oldBd > 0) boardsOld(c, P, oldBd * B(4), xmin);
   if (old > 0 && xmin < 372) turbines(c, P, old * B(4.2), t);
   if (newBd > 0) boardsNew(c, P, newBd * a, rise, t, show, xmin);
-  for (const s of sides) { oldCanopy3(c, P, s, old * B(4.5), (1 - old) * 90, xmin); newCanopy3(c, P, s, nw * a, { drop, glow, solar, lights, xmin, cut }); }
+  for (const s of sides) { oldCanopy3(c, P, s, old * B(4.5), (1 - old) * 90, xmin); if (WIDE) oldRim(c, P, s, old * B(4.5), (1 - old) * 90, xmin); newCanopy3(c, P, s, nw * a, { drop, glow, solar, lights, xmin, cut }); }
 }
 
 /* =====================================================================
@@ -943,7 +1025,7 @@ function sExperience(c, t) {
    08 — LIGHTING + TECHNOLOGY  (76 – 84.6)
    ===================================================================== */
 function sTech(c, t) {
-  const cm = vcam({ yaw: .3 + .025 * (t - 76), pitch: .5, dist: 330, f: 1000, tx: 0, ty: 20, tz: 8, cx: 540, cy: 700 }), P = Qp(cm), ia = smooth(seg(t, 76.0, 76.7));
+  const cm = vcam({ yaw: .3 + .025 * (t - 76), pitch: .5, dist: WIDE ? 410 : 330, f: 1000, tx: 0, ty: 20, tz: 8, cx: 540, cy: 700 }), P = Qp(cm), ia = smooth(seg(t, 76.0, 76.7));
   const lights = seg(t, 77.0, 78.6), show = smooth(seg(t, 79.4, 80.4)), solar = seg(t, 81.0, 82.6);
   drawNest(c, cm, t, { a: ia, nw: 1, newBd: 1, fins: 1, glow: .5 + .5 * show * (.5 + .5 * Math.sin(t * 5)), lights, show, solar });
   const na = smooth(seg(t, 80.2, 81.0)) * ia, node = i => { const q = se(lerp(192, 300, .6), lerp(119, LB_END, .6), THS[i]); return P(q[0], 30, q[1]); };
